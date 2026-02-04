@@ -40,6 +40,7 @@ readability*,
 -readability-convert-member-functions-to-static,
 -readability-magic-numbers,
 -readability-math-missing-parentheses,
+-readability-redundant-member-init,
 performance*,
 -performance-avoid-endl,
 -performance-enum-size'
