@@ -193,7 +193,9 @@ jobs:
 
       - name: Build Windows C# example
         if: matrix.os == 'windows-latest'
-        run: dotnet build csharp/PeakExamplesWithFramework.sln -c Release -p:Platform=x64
+        run: |
+          dotnet build csharp/PeakExamples.sln -c Release -p:Platform=x64
+          dotnet build csharp/PeakExamplesFramework.sln -c Release -p:Platform=x64
 
       - name: Build Linux C# example
         # only build C# examples once on Linux
