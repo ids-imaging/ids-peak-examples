@@ -44,7 +44,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 
 BinPackArguments: true
-BinPackParameters: BinPack #  Clang 3.7
+BinPackParameters: true  # Clang 3.7 # BinPack Clang 20 changed to Enum
 
 BitFieldColonSpacing: Both # Clang 12
 

@@ -151,7 +151,7 @@ namespace IDSImaging.Peak.Samples.Reconnect
 
                 using var dataStream = device.DataStreams()[0].OpenDataStream();
 
-                var payloadSize = (uint)remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
+                var payloadSize = (uint) remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
                 var minBuffers = dataStream.NumBuffersAnnouncedMinRequired();
                 for (int i = 0; i < minBuffers; i++)
                 {
@@ -205,7 +205,7 @@ namespace IDSImaging.Peak.Samples.Reconnect
             using var device = reconnectedDevice.OpenedDevice();
             using var remoteDeviceNodeMap = device.RemoteDevice().NodeMaps()[0];
             using var dataStream = device.DataStreams()[0].OpenedDataStream();
-            var payloadSize = (uint)remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
+            var payloadSize = (uint) remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
 
             bool hasPayloadSizeMismatch = payloadSize != dataStream.AnnouncedBuffers()[0].Size();
 

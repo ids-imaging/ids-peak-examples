@@ -81,6 +81,13 @@ config.set("kivy", "desktop", 1)
 
 SIDEPANEL_SIZE = 450
 
+T = TypeVar("T")
+
+
+def not_none(x: T | None) -> Any:
+    assert x is not None
+    return x
+
 
 @dataclass
 class ProcessedImage:
@@ -425,12 +432,6 @@ class DefaultPipelineSample(MDApp):
     def update_pipeline_settings(self) -> None:
         # After loading a JSON file or pipeline reset, we need to update
         # the state of all controls
-
-        T = TypeVar("T")
-
-        def not_none(x: T | None) -> T:
-            assert x is not None
-            return x
 
         not_none(self.auto_brightness_toggle).state = (
             "down"

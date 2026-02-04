@@ -1,5 +1,5 @@
 # Graphical Kivy Demo Using the IDS peak DefaultPipeline
- 
+
 
 ![Image of kivy pipeline demo](image.png)
 
@@ -74,7 +74,7 @@ The plyer file chooser used in this sample requires one of the following command
 * yad (a zenity fork)
 * kdialog (KDE)
 
-If none of these utilities are available, a dialog will notify the user, 
+If none of these utilities are available, a dialog will notify the user,
 and loading or saving pipeline settings will not be possible.
 
 > Note for Python 3.12 or later: If you’re using plyer 2.1.0 or earlier, you must install `setuptools`.
