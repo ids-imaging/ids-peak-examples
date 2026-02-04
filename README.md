@@ -76,10 +76,10 @@ Official manual describing both camera and programming related topics can be fou
 - [IDS peak ComfortC](https://de.ids-imaging.com/manuals/ids-peak/ids-peak-comfortsdk-documentation/en/index.html)
 
 ## Support & Feedback
-For feedback or issues strictly regarding the IDS peak examples, please [open an issue](https://github.com/ids-imaging/ids-peak-examples/issues/new). 
+For feedback or issues strictly regarding the IDS peak examples, please [open an issue](https://github.com/ids-imaging/ids-peak-examples/issues/new).
 
 For general feedback or support regarding the IDS peak SDK, please contact us here:
-- Support: support@ids-imaging.com  
+- Support: support@ids-imaging.com
 - Feedback: peak-feedback@ids-imaging.com
 
 ## Contributing

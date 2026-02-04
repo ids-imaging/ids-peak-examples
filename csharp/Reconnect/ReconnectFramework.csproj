@@ -17,6 +17,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <BuildProject>false</BuildProject>
+  </PropertyGroup>
 
   <Target Name="ValidateCommandLine" BeforeTargets="ResolveAssemblyReferences">
       <Error Text=" The 'Platform' property must be set on the command line."

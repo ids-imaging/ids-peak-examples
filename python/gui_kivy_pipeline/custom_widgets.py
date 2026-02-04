@@ -394,7 +394,7 @@ class TextSlider(MDBoxLayout):
         self.min = range_like.minimum
         self.max = range_like.maximum
 
-        if type(range_like) is Range and type(range_like.maximum) is int:
+        if isinstance(range_like, Range) and isinstance(range_like.maximum, int):
             self.step = range_like.increment
 
 
