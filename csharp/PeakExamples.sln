@@ -1,5 +1,7 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36327.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCamera", "OpenCamera\OpenCamera.csproj", "{097B4DC6-0170-4257-BE6D-8084F3EB97D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reconnect", "Reconnect\Reconnect.csproj", "{6D42387B-BA08-4568-B757-6C49F5E3F23E}"
@@ -7,16 +9,59 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM32 = Debug|ARM32
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|ARM32 = Release|ARM32
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|ARM32.ActiveCfg = Debug|ARM32
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|ARM32.Build.0 = Debug|ARM32
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|ARM64.Build.0 = Debug|ARM64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|x64.ActiveCfg = Debug|x64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|x64.Build.0 = Debug|x64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|x86.ActiveCfg = Debug|x86
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Debug|x86.Build.0 = Debug|x86
 		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|ARM32.ActiveCfg = Release|ARM32
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|ARM32.Build.0 = Release|ARM32
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|ARM64.ActiveCfg = Release|ARM64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|ARM64.Build.0 = Release|ARM64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|x64.ActiveCfg = Release|x64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|x64.Build.0 = Release|x64
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|x86.ActiveCfg = Release|x86
+		{097B4DC6-0170-4257-BE6D-8084F3EB97D1}.Release|x86.Build.0 = Release|x86
 		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|ARM32.ActiveCfg = Debug|ARM32
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|ARM32.Build.0 = Debug|ARM32
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|ARM64.Build.0 = Debug|ARM64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|x64.ActiveCfg = Debug|x64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|x64.Build.0 = Debug|x64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|x86.ActiveCfg = Debug|x86
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Debug|x86.Build.0 = Debug|x86
 		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|ARM32.ActiveCfg = Release|ARM32
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|ARM32.Build.0 = Release|ARM32
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|ARM64.ActiveCfg = Release|ARM64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|ARM64.Build.0 = Release|ARM64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|x64.ActiveCfg = Release|x64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|x64.Build.0 = Release|x64
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|x86.ActiveCfg = Release|x86
+		{6D42387B-BA08-4568-B757-6C49F5E3F23E}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
