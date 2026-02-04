@@ -62,8 +62,15 @@ void InitializeLibraries()
 // Shutdown peak libraries
 void ExitLibraries()
 {
-    peak::icv::library::Exit();
-    peak::Library::Close();
+    try
+    {
+        peak::icv::library::Exit();
+        peak::Library::Close();
+    }
+    catch (...)
+    {
+        std::cerr << "Error: Exception occured while exiting libraries!";
+    }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -124,7 +131,7 @@ peak::icv::CalibrationParameters DeviceReadCalibrationParameters(const std::shar
 {
     const peak::core::file::FileAdapter adapter(nodeMap, "LensCalibrationData");
 
-    if (adapter.Size() <= 0)
+    if ((int)adapter.Size() <= 0)
     {
         throw std::runtime_error("No factory calibration data available.");
     }
