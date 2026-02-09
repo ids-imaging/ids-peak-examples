@@ -6,7 +6,7 @@ API. It shows how to monitor device removal, loss of connection, and subsequent
 reconnection, and how to safely resume image acquisition once the device
 becomes available again.
 
-### Example Output
+## Example Output
 ```bash
 Received Frame ID: 40
 Received Frame ID: 41
