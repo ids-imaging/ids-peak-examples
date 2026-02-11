@@ -21,4 +21,4 @@ To run this example, you need:
 - An **IDS** camera
 - [IDS peak standard Setup](https://en.ids-imaging.com/download-peak.html) version 2.21 or later
 - **CMake** version 3.10 or later
-- A supported C++ compiler (MSVC, GCC, or Clang)  
+- A supported C++ compiler (MSVC, GCC, or Clang)

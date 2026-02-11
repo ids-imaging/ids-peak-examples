@@ -35,4 +35,3 @@ python main.py
 ```
 
 or, if Python files (*.py) are associated with the Python interpreter, by double-clicking the file.
-
