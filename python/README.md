@@ -56,6 +56,8 @@ python3 example_name.py
 
 - [Calibration From File](calibration_from_file) Shows how to perform a camera calibration.
 - [Firmware Update](firmware_update) Shows how to programmatically update the firmware of a device.
+- [HDR](hdr) Demonstrates how to acquire multiple images with different exposure times using an IDS camera and combine
+  them into a single High Dynamic Range (HDR) image.
 - [Image Region From File](image_region_from_file) Shows what image regions are and how to use them in `IDS peak ICV`.
 - [Morphology](morphology) Shows how to use region morphology using `IDS peak ICV`.
 - [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
