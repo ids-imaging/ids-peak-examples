@@ -53,6 +53,8 @@ Open the Visual Studio Project and build it.
   `IDS peak ICV`.
 * [Get First Pixel](get_first_pixel) This example demonstrates how to acquire an image and print the value of the first
   pixel.
+* [HDR](hdr) Demonstrates how to acquire multiple images with different exposure times
+  using an IDS camera and combine them into a single High Dynamic Range (HDR) image.
 * [Image Region From File](image_region_from_file) Shows what image regions are and how to use them in `IDS peak ICV`.
 * [Morphology](morphology) Shows how to use region morphology using `IDS peak ICV`.
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
