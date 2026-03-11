@@ -5,7 +5,7 @@ peak Generic SDK via its **.NET** Bindings.
 
 The examples require at least:
 - **.NET Framework 4.6.1** (classic)
-- **.NET 6** (modern)
+- **.NET 8** (modern)
 
 ## Requirements
 
@@ -82,3 +82,4 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
 - [Unicast](Unicast) This example demonstrates how to use the unicast discovery features of the
   transport layer (TL) to locate cameras that are not in the same subnet as the host system.
+- [Pipeline](Pipeline) This command-line example demonstrates how to use the image processing pipeline.
