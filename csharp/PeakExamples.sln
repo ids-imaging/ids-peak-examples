@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmwareUpdate", "FirmwareU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicast", "Unicast\Unicast.csproj", "{2A780A15-C157-6535-4CBB-D6826F3E6687}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipeline", "Pipeline\Pipeline.csproj", "{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,26 @@ Global
 		{2A780A15-C157-6535-4CBB-D6826F3E6687}.Release|x64.Build.0 = Release|x64
 		{2A780A15-C157-6535-4CBB-D6826F3E6687}.Release|x86.ActiveCfg = Release|x86
 		{2A780A15-C157-6535-4CBB-D6826F3E6687}.Release|x86.Build.0 = Release|x86
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|x64.Build.0 = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Debug|x86.Build.0 = Debug|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|ARM32.Build.0 = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|ARM64.Build.0 = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|x64.ActiveCfg = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|x64.Build.0 = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|x86.ActiveCfg = Release|Any CPU
+		{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
