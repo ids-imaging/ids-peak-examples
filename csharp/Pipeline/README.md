@@ -9,7 +9,7 @@ pipeline and how to process images loaded from disk.
 This example requires:
 
 * **C# 8.0 or later**
-* **.NET Framework 4.6.1** (for classic projects)
+* **.NET Framework 4.8** (for classic projects)
 * **.NET 8** (for modern SDK-style projects)
 
 ## Build Instructions

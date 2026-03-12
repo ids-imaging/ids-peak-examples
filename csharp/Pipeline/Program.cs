@@ -32,7 +32,7 @@ namespace IDSImaging.Peak.Samples.Pipeline
             const string DATA_PATH = "../../data/pipeline_from_file/";
 
             // The library must be initialized before use.
-            // Each call to `Initialize` must be matched with a corresponding call to `Close`.
+            // Each call to `Init` must be matched with a corresponding call to `Exit`.
             Library.Init();
 
             try
@@ -89,7 +89,7 @@ namespace IDSImaging.Peak.Samples.Pipeline
             }
             finally
             {
-                // One call to `Close` is required for each call to `Initialize`.
+                // One call to `Exit` is required for each call to `Init`.
                 Library.Exit();
             }
         }
