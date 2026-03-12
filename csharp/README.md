@@ -4,7 +4,7 @@ This directory contains C# examples demonstrating how to use the IDS
 peak Generic SDK via its **.NET** Bindings.
 
 The examples require at least:
-- **.NET Framework 4.6.1** (classic)
+- **.NET Framework 4.8** (classic)
 - **.NET 8** (modern)
 
 ## Requirements
@@ -41,14 +41,14 @@ output by including only the native libraries for a single runtime.
 
 ```bash
 dotnet build -p:Platform=x64 exampleProject.csproj
-dotnet run  -p:Platform=x64 --project exampleProject.csproj
+dotnet run   -p:Platform=x64 --project exampleProject.csproj
 ```
 
 **Optional (smaller output):**
 
 ```bash
 dotnet build -r win-x64 -p:Platform=x64 exampleProject.csproj
-dotnet run  -r win-x64 -p:Platform=x64 --project exampleProject.csproj
+dotnet run   -r win-x64 -p:Platform=x64 --project exampleProject.csproj
 ```
 
 You can substitute another architecture/runtime pair if needed, e.g.:
