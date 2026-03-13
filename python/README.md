@@ -45,6 +45,7 @@ python3 example_name.py
 
 ## Included Examples
 
+- [Open Camera](open_camera) Shows to how enumerate devices and access device information.
 - [Graphical Kivy Demo Using the IDS peak DefaultPipeline](gui_kivy_pipeline)
   Shows how the image pipeline can be applied to process camera images. Pipeline settings can be saved and loaded,
   allowing, for example, easy transfer of settings to and from the `IDS peak Cockpit`.
