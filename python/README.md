@@ -45,9 +45,10 @@ python3 example_name.py
 
 ## Included Examples
 
-- [Open Camera](open_camera) Shows to how enumerate devices and access device information.
+- [Firmware Update](firmware_update) Shows how to programatically update the firmware of a device.
 - [Graphical Kivy Demo Using the IDS peak DefaultPipeline](gui_kivy_pipeline)
   Shows how the image pipeline can be applied to process camera images. Pipeline settings can be saved and loaded,
   allowing, for example, easy transfer of settings to and from the `IDS peak Cockpit`.
 - [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
   and `IDS peak ICV`.
+- [Open Camera](open_camera) Shows to how enumerate devices and access device information.
