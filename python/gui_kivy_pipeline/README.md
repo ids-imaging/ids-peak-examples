@@ -20,12 +20,13 @@ settings such as output pixel format, host gain, binning, and more.
 Custom widgets used by this demo are defined in `custom_widgets.py`.
 
 ## Requirements
+
 This demo depends on the following third-party packages:
 * `kivy >= 2.3`
 * `kivymd2 >=2.0` (or `kivymd >= 2.0` once released)
 * `plyer`
 
-It is also designed to work with these `IDS peak` python packages:
+The following IDS peak python packages are required:
 * `ids-peak-common >= 1.1.0`
 * `ids-peak-ipl >= 1.17.1`
 * `ids-peak-icv >= 1.0.0`

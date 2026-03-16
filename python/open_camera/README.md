@@ -1,10 +1,10 @@
 # Open Camera Example
 
 This example demonstrates how to discover and open a camera device using the
-IDS peak API for Python.
+IDS peak generic API for Python.
 
 The program performs the following steps:
-1. Initializes the IDS peak library.
+1. Initializes the library.
 2. Uses the DeviceManager to detect all available GenTL-compatible devices.
 3. Lists all discovered devices with basic interface and system information.
 4. Prompts the user to select a device if multiple devices are available.
