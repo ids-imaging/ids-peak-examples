@@ -120,25 +120,31 @@ def device_read_calibration_parameters(node_map: NodeMap) -> CalibrationParamete
 
 
 def device_get_depth_minimum_valid_value(node_map: NodeMap) -> float:
-    return cast(
+    value = cast(
         ids_peak.FloatNode,
         node_map.FindNode("Scan3dAxisMin"),
     ).Value()
 
+    return cast(float, value)
+
 
 def device_get_depth_maximum_valid_value(node_map: NodeMap) -> float:
-    return cast(
+    value = cast(
         ids_peak.FloatNode,
         node_map.FindNode("Scan3dAxisMax"),
     ).Value()
 
+    return cast(float, value)
+
 
 # Get the scale factor for converting depth values into metric units
 def device_get_depth_scale_factor(node_map: NodeMap) -> float:
-    return cast(
+    value = cast(
         ids_peak.FloatNode,
         node_map.FindNode("Scan3dCoordinateScale"),
     ).Value()
+
+    return cast(float, value)
 
 
 # Create a metadata object containing binning and ROI information

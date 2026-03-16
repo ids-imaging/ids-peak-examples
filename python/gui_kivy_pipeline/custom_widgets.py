@@ -17,7 +17,7 @@ from typing import Any, Sequence, cast
 
 from kivy.graphics import Rectangle, Color
 from kivy.metrics import dp
-from kivy.properties import (  # type: ignore
+from kivy.properties import (
     ListProperty,
     BoundedNumericProperty,
     NumericProperty,
@@ -78,7 +78,7 @@ class CustomButton(MDButton):
 
 # Note: Do not inherit from MDToggleButtonBehavior unless running kivymd 2.1 or later,
 # as older versions will not work.
-class ToggleButton(ToggleButtonBehavior, MDButton):  # type: ignore
+class ToggleButton(ToggleButtonBehavior, MDButton):
     """
     A KivyMD 2.0+ Button that toggles between two states and displays
     text based on its state.

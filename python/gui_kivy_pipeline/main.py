@@ -37,7 +37,7 @@ from typing import Any, cast, TypeVar
 import kivy
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.graphics.texture import Texture  # type: ignore
+from kivy.graphics.texture import Texture
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.layout import Layout
 from kivy.uix.widget import Widget

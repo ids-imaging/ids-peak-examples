@@ -352,7 +352,10 @@ class Camera:
 
     @property
     def exposure(self) -> float:
-        return cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("ExposureTime")).Value()
+        value = cast(
+            ids_peak.FloatNode, self.remote_device_nodemap.FindNode("ExposureTime")
+        ).Value()
+        return cast(float, value)
 
     @exposure.setter
     def exposure(self, exposure: float) -> None:
@@ -368,9 +371,10 @@ class Camera:
     def framerate(self) -> float:
         # Reading the frame rate does not guarantee that the device can
         # actually *deliver* this rate; it depends on exposure, ROI, bandwidth, etc.
-        return cast(
+        value = cast(
             ids_peak.FloatNode, self.remote_device_nodemap.FindNode("AcquisitionFrameRate")
         ).Value()
+        return cast(float, value)
 
     @framerate.setter
     def framerate(self, frame_rate: float) -> None:
@@ -390,13 +394,15 @@ class Camera:
         )
         if not node:
             return False
-        return node.IsAvailable()
+        return cast(bool, node.IsAvailable())
 
     @property
     def focus_stepper(self) -> int:
-        return cast(
+        value = cast(
             ids_peak.IntegerNode, self.remote_device_nodemap.FindNode("FocusStepper")
         ).Value()
+
+        return cast(int, value)
 
     @focus_stepper.setter
     def focus_stepper(self, value: int) -> None:
@@ -432,7 +438,8 @@ class Camera:
     @property
     def master_gain(self) -> float:
         self._set_gain_selector("All")
-        return cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        value = cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        return cast(float, value)
 
     @master_gain.setter
     def master_gain(self, value: float) -> None:
@@ -447,7 +454,8 @@ class Camera:
     @property
     def red_gain(self) -> float:
         self._set_gain_selector("Red")
-        return cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        value = cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        return cast(float, value)
 
     @red_gain.setter
     def red_gain(self, value: float) -> None:
@@ -462,7 +470,8 @@ class Camera:
     @property
     def green_gain(self) -> float:
         self._set_gain_selector("Green")
-        return cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        value = cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        return cast(float, value)
 
     @green_gain.setter
     def green_gain(self, value: float) -> None:
@@ -477,7 +486,8 @@ class Camera:
     @property
     def blue_gain(self) -> float:
         self._set_gain_selector("Blue")
-        return cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        value = cast(ids_peak.FloatNode, self.remote_device_nodemap.FindNode("Gain")).Value()
+        return cast(float, value)
 
     @blue_gain.setter
     def blue_gain(self, value: float) -> None:
