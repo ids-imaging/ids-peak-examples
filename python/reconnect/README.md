@@ -49,14 +49,15 @@ network issues, or device reboots.
 
 ## Requirements
 It is designed to work with these `IDS peak` python packages:
-* `ids-peak`
+* `ids-peak >= 1.7.0`
 
 To install all required dependencies, use the provided `requirements.txt`:
 ```
 pip install -r requirements.txt
 ```
 
-In addition, a suitable GenTL must be installed, for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
+In addition, a suitable GenTL (at least IDS peak v2.7) must be installed,
+for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
 ## Running the example
 
