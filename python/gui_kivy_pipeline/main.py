@@ -23,7 +23,7 @@ and interacting directly with the default pipeline.
 ``DefaultPipeline`` provides convenient properties for adjusting pipeline
 settings such as output pixel format, host gain, binning, and more.
 
-Custom widgets used by this sample are defined in custom_widgets.py.
+Custom widgets used by this example are defined in custom_widgets.py.
 """
 
 import threading
@@ -203,7 +203,7 @@ class DefaultPipelineSample(MDApp):
         # Stop the Acquisition and discard all buffers.
         self.camera.stop_acquisition()
 
-        # Reset the image flip. This is needed for applications which may run after this sample.
+        # Reset the image flip. This is needed for applications which may run after this example.
         self.camera.restore_coordinate_flip()
 
         # Close the camera

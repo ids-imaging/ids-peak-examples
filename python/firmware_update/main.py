@@ -232,7 +232,7 @@ class FirmwareUpdateExample:
 
 
 def main() -> None:
-    print("firmware_update Sample")
+    print("firmware_update example")
 
     if len(sys.argv) != 2:
         print("Wrong number of arguments! Usage: firmware_update.py <gufPath>")

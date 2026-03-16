@@ -5,9 +5,9 @@
 
 Demonstrates the new `ids-peak-icv` pixel processing pipeline together with the auto-feature module provided by `ids-peak-afl`.
 
-This sample shows how to acquire images from a camera, process them using the `DefaultPipeline`, and apply a configurable chain of image-processing modules such as pixel format conversion, binning and decimation, gain and color correction, and sharpening. It also illustrates how pipeline settings can be changed at runtime, reset to defaults, and imported or exported using JSON configuration files.
+This example shows how to acquire images from a camera, process them using the `DefaultPipeline`, and apply a configurable chain of image-processing modules such as pixel format conversion, binning and decimation, gain and color correction, and sharpening. It also illustrates how pipeline settings can be changed at runtime, reset to defaults, and imported or exported using JSON configuration files.
 
-In addition, the sample demonstrates how to integrate the `IDS peak AFL` auto-feature module with the pipeline to enable automatic camera controls, including auto brightness (with selectable exposure and gain policies), auto white balance, and auto focus, and how these automatic features interact with manual camera and pipeline parameters during live acquisition.
+In addition, the example demonstrates how to integrate the `IDS peak AFL` auto-feature module with the pipeline to enable automatic camera controls, including auto brightness (with selectable exposure and gain policies), auto white balance, and auto focus, and how these automatic features interact with manual camera and pipeline parameters during live acquisition.
 
 All device-specific behavior, such as setting exposure, framerate, and
 supported pixel formats, is encapsulated in `camera.py`.
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 In addition, a suitable GenTL must be installed, for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
-## Running the sample
+## Running the example
 
 After installing all requirements the demo can be run by executing `main.py` with the Python interpreter
 
@@ -55,7 +55,7 @@ or, if Python files (*.py) are associated with the Python interpreter, by double
 
 * Kivy and OpenGL use a coordinate system that is inverted relative to
   the camera image.
-  To account for this, the sample enables vertical image flipping using
+  To account for this, the example enables vertical image flipping using
   the ReverseY node.
 * The flip state is normally restored when the application exits.
   However, if the program terminates unexpectedly, the state may not
@@ -64,12 +64,12 @@ or, if Python files (*.py) are associated with the Python interpreter, by double
   If this occurs, reload the default user settings in the camera software
   to restore normal behavior.
 * Due to this coordinate inversion, clockwise rotations performed in
-  this sample will appear as counter-clockwise rotations when the same
+  this example will appear as counter-clockwise rotations when the same
   pipeline settings are loaded in other applications.
 
 ### Notes on linux
 
-The plyer file chooser used in this sample requires one of the following command line tools to be installed:
+The plyer file chooser used in this example requires one of the following command line tools to be installed:
 * zenity (GTK)
 * yad (a zenity fork)
 * kdialog (KDE)
