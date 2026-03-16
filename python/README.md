@@ -51,4 +51,5 @@ python3 example_name.py
   allowing, for example, easy transfer of settings to and from the `IDS peak Cockpit`.
 - [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
   and `IDS peak ICV`.
-- [Open Camera](open_camera) Shows to how enumerate devices and access device information.
+- [Open Camera](open_camera) Shows how to enumerate devices and access device information.
+- [Reconnect](reconnect) Shows how to use the automatic device reconnect feature of the IDS peak API and how to react to connection state changes.
