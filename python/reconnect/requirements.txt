@@ -1,1 +1,1 @@
-ids-peak
+ids-peak>=1.7.0
