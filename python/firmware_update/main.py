@@ -16,7 +16,6 @@ This example demonstrates how to programmatically update the firmware of
 connected devices using the IDS peak generic API.
 
 The application:
-- Initializes the IDS peak library
 - Detects available GenTL devices using the DeviceManager
 - Identifies devices compatible with the provided firmware file (GUF)
 - Prompts the user for confirmation before updating

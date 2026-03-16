@@ -4,12 +4,11 @@ This example demonstrates how to programmatically update the firmware of
 connected devices using the IDS peak generic API for Python.
 
 The application:
-1. Initializes the IDS peak library
-2. Detects available GenTL devices using the DeviceManager
-3. Identifies devices compatible with the provided firmware file (GUF)
-4. Prompts the user for confirmation before updating
-5. Executes the firmware update process
-6. Reports update progress via callback functions
+1. Detects available GenTL devices using the DeviceManager
+2. Identifies devices compatible with the provided firmware file (GUF)
+3. Prompts the user for confirmation before updating
+4. Executes the firmware update process
+5. Reports update progress via callback functions
 
 Progress callbacks provide information about update start, progress,
 individual update steps, successful completion, or failure.

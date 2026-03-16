@@ -1,7 +1,7 @@
 # Reconnect Example
 
 This example demonstrates how to use the automatic device reconnect
-feature of the IDS peak API and how to react to connection state changes.
+feature of the IDS peak generic API and how to react to connection state changes.
 
 The application registers callbacks in the DeviceManager to receive
 notifications when the connection state of a device changes. This allows
@@ -31,12 +31,11 @@ Found:
 
 The example performs the following steps:
 
-1. Initializes the IDS peak library
-2. Registers callbacks for device discovery and connection events
-3. Opens the first available device
-4. Enables the reconnect functionality in the transport layer
-5. Allocates acquisition buffers and starts image acquisition
-6. Processes incoming image buffers while monitoring connection events
+1. Registers callbacks for device discovery and connection events
+2. Opens the first available device
+3. Enables the reconnect functionality in the transport layer
+4. Allocates acquisition buffers and starts image acquisition
+5. Processes incoming image buffers while monitoring connection events
 
 If a reconnect occurs, the example verifies whether the device state
 and buffer configuration are still valid. If necessary, it reallocates
@@ -48,7 +47,8 @@ network issues, or device reboots.
 
 
 ## Requirements
-It is designed to work with these `IDS peak` python packages:
+The following IDS peak python packages are required:
+
 * `ids-peak >= 1.7.0`
 
 To install all required dependencies, use the provided `requirements.txt`:

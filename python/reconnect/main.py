@@ -18,7 +18,6 @@ the acquisition after a reconnect if configuration changes
 (such as payload size) require buffer reallocation.
 
 The application:
-- Initializes the IDS peak library
 - Registers callbacks for device connection events
 - Opens a device and starts image acquisition
 - Enables the automatic reconnect feature
