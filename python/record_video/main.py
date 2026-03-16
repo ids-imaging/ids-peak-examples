@@ -76,7 +76,16 @@ class RecordVideoExample:
         if self._framerate is not None:
             self.remote_nodemap.FindNode("AcquisitionFrameRate").SetValue(self._framerate)
         if self._exposure is not None:
-            self.remote_nodemap.FindNode("ExposureTime").SetValue(self._exposure)
+            node = self.remote_nodemap.FindNode("ExposureTime")
+            # For some devices the ExposureTime node may not be writable,
+            # e.g. due to the auto features being active on the camera.
+            if not node.IsWriteable():
+                raise RuntimeError(
+                    "Failed to write requested exposure time, since "
+                    "the 'ExposureTime' node is not writable!"
+                )
+
+            node.SetValue(self._exposure)
         if self._gain is not None:
             gain_selector = self.remote_nodemap.FindNode("GainSelector")
             available_gain_entries = [x.StringValue() for x in gain_selector.AvailableEntries()]
@@ -90,7 +99,16 @@ class RecordVideoExample:
                 gain_selector.SetCurrentEntry(selected_gain)
             else:
                 raise RuntimeError("Can not set gain value: no preferred gain selector available")
-            self.remote_nodemap.FindNode("Gain").SetValue(self._gain)
+            gain_node = self.remote_nodemap.FindNode("Gain")
+            # For some devices the Gain node may not be writable,
+            # e.g. due to the auto features being active on the camera.
+            if not gain_node.IsWriteable():
+                raise RuntimeError(
+                    "Failed to write requested gain factor, since "
+                    "the 'Gain' node is not writable!"
+                )
+
+            gain_node.SetValue(self._gain)
 
     def alloc_buffers(self) -> None:
         if self.remote_nodemap is None or self.data_stream is None:
