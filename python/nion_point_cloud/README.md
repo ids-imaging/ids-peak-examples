@@ -44,7 +44,7 @@ pip install -r requirements.txt
 In addition, a suitable GenTL must be installed, for example via
 the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
-## Running the sample
+## Running the example
 
 After installing all requirements the example can be run by executing `main.py` with the Python interpreter
 

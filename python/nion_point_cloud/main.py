@@ -52,7 +52,7 @@ FILTER_DISTANCE_ENABLED: bool = True
 # Valid Z distance interval in millimeters
 FILTER_DISTANCE_INTERVAL_MM: Interval = Interval(100.0, 1000.0)
 
-# Number of images acquired in this sample
+# Number of images acquired in this example
 IMAGE_ACQUISITION_COUNT: int = 10
 
 # --------------------------------------------------------------------------------------------------

@@ -31,7 +31,7 @@ from ids_peak import ids_peak
 
 
 def main() -> None:
-    print("open_camera Sample")
+    print("open_camera Example")
 
     # The library must be initialized before use.
     # Each `Initialize` call must be matched with a corresponding call
