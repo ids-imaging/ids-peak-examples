@@ -53,3 +53,4 @@ python3 example_name.py
   and `IDS peak ICV`.
 - [Open Camera](open_camera) Shows how to enumerate devices and access device information.
 - [Reconnect](reconnect) Shows how to use the automatic device reconnect feature of the IDS peak API and how to react to connection state changes.
+- [Record Video](record_video) Shows how to use the VideoWriter of the IDS peak IPL to create a video sequence.
