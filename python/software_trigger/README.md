@@ -22,9 +22,7 @@ The following IDS peak python packages are required:
 To install all required dependencies, use the provided `requirements.txt`:
 
 ```
-
 pip install -r requirements.txt
-
 ```
 
 In addition, a suitable GenTL producer must be installed, for example via the
@@ -37,17 +35,13 @@ After installing all requirements the demo can be run by executing `main.py`
 with the Python interpreter:
 
 ```
-
 python main.py output_directory
-
 ```
 
 Example:
 
 ```
-
 python main.py images
-
 ```
 
 After startup, the application enters an interactive console.
@@ -74,9 +68,7 @@ Each trigger saves one image to the output directory.
 The application supports optional camera configuration parameters:
 
 ```
-
 python main.py output_directory --exposure 10000 --gain 2
-
 ```
 
 | Parameter | Description |
@@ -87,7 +79,5 @@ python main.py output_directory --exposure 10000 --gain 2
 Example:
 
 ```
-
 python main.py images --exposure 8000 --gain 1.5
-
 ```
