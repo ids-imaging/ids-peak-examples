@@ -192,7 +192,7 @@ std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
 
     for (size_t i = 0; i < stream->NumBuffersAnnouncedMinRequired(); ++i)
     {
-        stream->QueueBuffer(stream->AllocAndAnnounceBuffer(payloadSize, nullptr));
+        stream->QueueBuffer(stream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr));
     }
 
     nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);

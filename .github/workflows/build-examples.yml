@@ -175,7 +175,7 @@ jobs:
 
       - name: Configure C++ example Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY="clang-tidy"
+        run: cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY="clang-tidy" -DCMAKE_CXX_FLAGS="-Wall -Wextra -Wconversion -Werror"
 
       # Note: the setup normally updates the environment variables but this does not seem to work with GitHub Actions
       - name: Configure C++ example Windows
@@ -187,7 +187,7 @@ jobs:
           $env:ids_peak_afl_DIR="$ids_peak\generic_sdk\afl\lib\x86_64\cmake\"
           $env:ids_peak_ipl_DIR="$ids_peak\generic_sdk\ipl\lib\x86_64\cmake\"
           $env:ids_peak_common_DIR="$ids_peak\common\lib\cmake\"
-          cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/W4 /WX"
         shell: powershell
 
       # - name: Build C example
