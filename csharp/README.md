@@ -77,5 +77,5 @@ dotnet add package IDSImaging.Peak.<PackageName>
 
 ## Included Examples
 
-- [OpenCamera: command-line example demonstrating device enumeration and access](OpenCamera)
-- [Reconnect: command-line example demonstrating robust device reconnect handling](Reconnect)
+- [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
+- [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
