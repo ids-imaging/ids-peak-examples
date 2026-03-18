@@ -49,6 +49,174 @@ constexpr peak::common::IntervalF filterDistanceIntervalMm{ 100.0F, 1000.0F };
 constexpr size_t imageAcquisitionCount = 10;
 
 // ---------------------------------------------------------------------------------------------------------------------
+// UTILITIES
+// ---------------------------------------------------------------------------------------------------------------------
+
+struct DeviceInfo
+{
+    std::shared_ptr<peak::core::Device> device{};
+    std::shared_ptr<peak::core::NodeMap> nodeMap{};
+};
+
+// Structure holding the required multipart buffer parts
+struct MultipartBuffer
+{
+    std::shared_ptr<peak::core::BufferPart> depthMap{};
+    std::shared_ptr<peak::core::BufferPart> intensity{};
+};
+
+// ---------------------------------------------------------------------------------------------------------------------
+// DECLARATIONS
+// ---------------------------------------------------------------------------------------------------------------------
+
+void InitializeLibraries();
+void ExitLibraries();
+DeviceInfo OpenFirstConnectedDevice();
+void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold);
+void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+peak::icv::CalibrationParameters DeviceReadCalibrationParameters(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
+    const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer);
+void DeviceStopAcquisition(
+    const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
+std::string GetOutputFilePath();
+void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
+void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i);
+void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i);
+
+} // namespace
+
+// ---------------------------------------------------------------------------------------------------------------------
+// MAIN
+// ---------------------------------------------------------------------------------------------------------------------
+
+int main()
+{
+    try
+    {
+        InitializeLibraries();
+
+        auto deviceInfo = OpenFirstConnectedDevice();
+        auto nodeMap = deviceInfo.nodeMap;
+        auto device = deviceInfo.device;
+
+        DeviceResetToDefault(nodeMap);
+
+        if (filterDepthMapByConfidenceEnabled)
+        {
+            DeviceSetConfidenceThreshold(nodeMap, confidenceThreshold);
+        }
+
+        DeviceSetExposureTime(nodeMap);
+
+        const auto calibration = DeviceReadCalibrationParameters(nodeMap);
+        const auto minimumValidValue = DeviceGetDepthMinimumValidValue(nodeMap);
+        const auto maximumValidValue = DeviceGetDepthMaximumValidValue(nodeMap);
+        const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
+        const auto metadata = DeviceGetImageMetadata(nodeMap);
+
+        // Undistortion object initialized with factory calibration data
+        peak::icv::Undistortion undistortion(calibration);
+
+        auto stream = DeviceStartAcquisition(device, nodeMap);
+
+        for (size_t i = 0; i < imageAcquisitionCount; ++i)
+        {
+            auto buffer = stream->WaitForFinishedBuffer(PEAK_INFINITE_TIMEOUT);
+
+            if (buffer->IsIncomplete())
+            {
+                std::cout << "Incomplete buffer " << i << ". Skipping." << std::endl;
+                stream->QueueBuffer(buffer);
+                continue;
+            }
+            if (!buffer->HasNewData())
+            {
+                std::cout << "Buffer " << i << " has no new data. Skipping." << std::endl;
+                stream->QueueBuffer(buffer);
+                continue;
+            }
+
+            if (!buffer->HasParts())
+            {
+                throw std::runtime_error("Buffer has no parts. Aborting.");
+            }
+
+            auto parts = ExtractBufferParts(buffer);
+
+            // ---------------------------------------------------------------------------------------------------------
+            // Depth map processing
+            // ---------------------------------------------------------------------------------------------------------
+
+            // Create image from raw depth buffer and attach metadata
+            peak::icv::Image rawDepth(parts.depthMap->ToImageView());
+            rawDepth.SetMetadata(metadata);
+
+            // Convert depth values to floating-point metric coordinates
+            auto depth = rawDepth.ConvertPixelFormatWithFactor(peak::common::PixelFormat::Coord3D_C32f, scaleFactor);
+
+            // Remove invalid depth pixels and get region of only valid pixels
+            peak::icv::ThresholdF validPixelThreshold{ minimumValidValue, maximumValidValue };
+
+            auto validPixelsRegion = validPixelThreshold.Process(depth);
+
+            depth.SetRegion(validPixelsRegion);
+
+            // Undistort the depth map
+            auto undistortedDepth = undistortion.Process(depth);
+
+            // Optional distance-based filtering
+            if (filterDistanceEnabled)
+            {
+                peak::icv::ThresholdF distanceFilter(filterDistanceIntervalMm);
+                undistortedDepth.SetRegion(distanceFilter.Process(undistortedDepth));
+            }
+
+            WriteDepthMapToFile(undistortedDepth, i);
+
+            // ---------------------------------------------------------------------------------------------------------
+            // Intensity image processing
+            // ---------------------------------------------------------------------------------------------------------
+
+            peak::icv::Image intensity(parts.intensity->ToImageView());
+            intensity.SetMetadata(metadata);
+
+            auto undistortedIntensity = undistortion.Process(intensity);
+            WriteIntensityToFile(undistortedIntensity, i);
+
+            // Queue buffer that it can be reused. This can be done after the buffer data is no longer used.
+            stream->QueueBuffer(buffer);
+
+            // ---------------------------------------------------------------------------------------------------------
+            // Point cloud generation
+            // ---------------------------------------------------------------------------------------------------------
+
+            peak::icv::PointCloudXYZI pointCloud(undistortedDepth, undistortedIntensity);
+            WritePointCloudToFile(pointCloud, i);
+        }
+
+        DeviceStopAcquisition(nodeMap, stream);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    ExitLibraries();
+
+    return 0;
+}
+
+namespace
+{
+
+// ---------------------------------------------------------------------------------------------------------------------
 // PEAK LIBRARY LIFECYCLE
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -76,12 +244,6 @@ void ExitLibraries()
 // ---------------------------------------------------------------------------------------------------------------------
 // DEVICE UTILITIES
 // ---------------------------------------------------------------------------------------------------------------------
-
-struct DeviceInfo
-{
-    std::shared_ptr<peak::core::Device> device{};
-    std::shared_ptr<peak::core::NodeMap> nodeMap{};
-};
 
 // Open the first connected IDS Nion device
 DeviceInfo OpenFirstConnectedDevice()
@@ -206,13 +368,6 @@ std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     return stream;
 }
 
-// Structure holding the required multipart buffer parts
-struct MultipartBuffer
-{
-    std::shared_ptr<peak::core::BufferPart> depthMap{};
-    std::shared_ptr<peak::core::BufferPart> intensity{};
-};
-
 // Extract depth and intensity images from a multipart buffer
 MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer)
 {
@@ -303,124 +458,3 @@ void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i
 }
 
 } // namespace
-
-// ---------------------------------------------------------------------------------------------------------------------
-// MAIN
-// ---------------------------------------------------------------------------------------------------------------------
-
-int main()
-{
-    try
-    {
-        InitializeLibraries();
-
-        auto deviceInfo = OpenFirstConnectedDevice();
-        auto nodeMap = deviceInfo.nodeMap;
-        auto device = deviceInfo.device;
-
-        DeviceResetToDefault(nodeMap);
-
-        if (filterDepthMapByConfidenceEnabled)
-        {
-            DeviceSetConfidenceThreshold(nodeMap, confidenceThreshold);
-        }
-
-        DeviceSetExposureTime(nodeMap);
-
-        const auto calibration = DeviceReadCalibrationParameters(nodeMap);
-        const auto minimumValidValue = DeviceGetDepthMinimumValidValue(nodeMap);
-        const auto maximumValidValue = DeviceGetDepthMaximumValidValue(nodeMap);
-        const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
-        const auto metadata = DeviceGetImageMetadata(nodeMap);
-
-        // Undistortion object initialized with factory calibration data
-        peak::icv::Undistortion undistortion(calibration);
-
-        auto stream = DeviceStartAcquisition(device, nodeMap);
-
-        for (size_t i = 0; i < imageAcquisitionCount; ++i)
-        {
-            auto buffer = stream->WaitForFinishedBuffer(PEAK_INFINITE_TIMEOUT);
-
-            if (buffer->IsIncomplete())
-            {
-                std::cout << "Incomplete buffer " << i << ". Skipping." << std::endl;
-                stream->QueueBuffer(buffer);
-                continue;
-            }
-            if (!buffer->HasNewData())
-            {
-                std::cout << "Buffer " << i << " has no new data. Skipping." << std::endl;
-                stream->QueueBuffer(buffer);
-                continue;
-            }
-
-            if (!buffer->HasParts())
-            {
-                throw std::runtime_error("Buffer has no parts. Aborting.");
-            }
-
-            auto parts = ExtractBufferParts(buffer);
-
-            // ---------------------------------------------------------------------------------------------------------
-            // Depth map processing
-            // ---------------------------------------------------------------------------------------------------------
-
-            // Create image from raw depth buffer and attach metadata
-            peak::icv::Image rawDepth(parts.depthMap->ToImageView());
-            rawDepth.SetMetadata(metadata);
-
-            // Convert depth values to floating-point metric coordinates
-            auto depth = rawDepth.ConvertPixelFormatWithFactor(peak::common::PixelFormat::Coord3D_C32f, scaleFactor);
-
-            // Remove invalid depth pixels and get region of only valid pixels
-            peak::icv::ThresholdF validPixelThreshold{ minimumValidValue, maximumValidValue };
-
-            auto validPixelsRegion = validPixelThreshold.Process(depth);
-
-            depth.SetRegion(validPixelsRegion);
-
-            // Undistort the depth map
-            auto undistortedDepth = undistortion.Process(depth);
-
-            // Optional distance-based filtering
-            if (filterDistanceEnabled)
-            {
-                peak::icv::ThresholdF distanceFilter(filterDistanceIntervalMm);
-                undistortedDepth.SetRegion(distanceFilter.Process(undistortedDepth));
-            }
-
-            WriteDepthMapToFile(undistortedDepth, i);
-
-            // ---------------------------------------------------------------------------------------------------------
-            // Intensity image processing
-            // ---------------------------------------------------------------------------------------------------------
-
-            peak::icv::Image intensity(parts.intensity->ToImageView());
-            intensity.SetMetadata(metadata);
-
-            auto undistortedIntensity = undistortion.Process(intensity);
-            WriteIntensityToFile(undistortedIntensity, i);
-
-            // Queue buffer that it can be reused. This can be done after the buffer data is no longer used.
-            stream->QueueBuffer(buffer);
-
-            // ---------------------------------------------------------------------------------------------------------
-            // Point cloud generation
-            // ---------------------------------------------------------------------------------------------------------
-
-            peak::icv::PointCloudXYZI pointCloud(undistortedDepth, undistortedIntensity);
-            WritePointCloudToFile(pointCloud, i);
-        }
-
-        DeviceStopAcquisition(nodeMap, stream);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-
-    ExitLibraries();
-
-    return 0;
-}
