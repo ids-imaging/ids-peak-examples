@@ -173,12 +173,12 @@ jobs:
       # - name: Configure C example
       #  run: cmake -S c -B build-c -G "Ninja" -DCMAKE_BUILD_TYPE=Release
 
-      - name: Configure C++ example Ubuntu
+      - name: Configure C++ examples Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY="clang-tidy" -DCMAKE_CXX_FLAGS="-Wall -Wextra -Wconversion -Werror"
 
       # Note: the setup normally updates the environment variables but this does not seem to work with GitHub Actions
-      - name: Configure C++ example Windows
+      - name: CMake - Configure C++ examples Windows
         if: matrix.os == 'windows-latest'
         run: |
           $ids_peak="C:\Program Files\IDS\ids_peak\"
@@ -193,8 +193,28 @@ jobs:
       # - name: Build C example
       #  run: cmake --build build-c --config Release
 
-      - name: Build C++ example
+      - name: CMake - Build C++ examples
         run: cmake --build build-cpp --config Release
+
+      - name: CMake - Run C++ examples that do not need a camera
+        if: matrix.os == 'ubuntu-latest'
+        run: .github/scripts/execute_samples.sh build-cpp
+        shell: bash
+
+      - name: CMake - Run C++ examples that do not need a camera
+        if: matrix.os == 'windows-latest'
+        run: .github/scripts/execute_samples.ps1 build-cpp
+        shell: powershell
+
+      - name: VS - Build C++ example
+        if: matrix.os == 'windows-latest'
+        run: .github/scripts/build_vs_samples.ps1 cpp
+        shell: powershell
+
+      - name: VS - Run C++ examples that do not need a camera
+        if: matrix.os == 'windows-latest'
+        run: .github/scripts/execute_samples.ps1 cpp
+        shell: powershell
 
       #################################################################
       # Cache NuGet packages (C#)
@@ -205,13 +225,13 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
 
-      - name: Build Windows C# example
+      - name: Build Windows C# examples
         if: matrix.os == 'windows-latest'
         run: |
           dotnet build csharp/PeakExamples.sln -c Release -p:Platform=x64
           dotnet build csharp/PeakExamplesFramework.sln -c Release -p:Platform=x64
 
-      - name: Build Linux C# example
+      - name: Build Linux C# examples
         # only build C# examples once on Linux
         if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
         run: dotnet build csharp/PeakExamples.sln -c Release -p:Platform=x64
