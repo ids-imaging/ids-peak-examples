@@ -49,25 +49,20 @@ This example requires:
 > to provide the drivers and GenTL libraries for device access.
 
 
-Here is a **much more concise, example-specific version** that keeps the same meaning but strips everything down to what users actually need to know and type:
-
 ## Build Instructions
-
-The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
-the `Platform` parameter** when building.
 
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build -p:Platform=x64 SystemTimestamp.csproj
-dotnet run   -p:Platform=x64 --project SystemTimestamp.csproj
+dotnet build SystemTimestamp.csproj
+dotnet run   --project SystemTimestamp.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 -p:Platform=x64 SystemTimestamp.csproj
-> dotnet run   -r win-x64 -p:Platform=x64 --project SystemTimestamp.csproj
+> dotnet build -r win-x64 SystemTimestamp.csproj
+> dotnet run   -r win-x64 --project SystemTimestamp.csproj
 > ```
 
 ### .NET Framework (classic)
@@ -78,3 +73,6 @@ Use Visual Studio **or**:
 msbuild SystemTimestampFramework.csproj /t:Restore
 msbuild SystemTimestampFramework.csproj /p:Platform=x64
 ```
+
+> Note: The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
+> the `Platform` parameter** when building.

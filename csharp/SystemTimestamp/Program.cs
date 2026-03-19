@@ -1,31 +1,18 @@
-/// <summary>
-/// This example demonstrates how to use the IDS peak DeviceManager to discover,
-/// select, and open a camera that supports system timestamp synchronization.
-/// The device is configured for freerun acquisition, image buffers are acquired,
-/// and buffer system timestamps (nanoseconds since Unix epoch) are retrieved
-/// and converted into structured local and UTC time representations.
-///
-/// In addition, if supported by the device, remote ExposureStart events are
-/// enabled. The example shows how to correlate remote device timestamps with
-/// the host system timestamp domain using the synchronization latch mechanism,
-/// allowing event timestamps to be translated into system time.
-/// </summary>
-/// <license>
-/// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
-///
-/// Permission to use, copy, modify, and/or distribute this software for
-/// any purpose with or without fee is hereby granted.
-///
-/// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
-/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
-/// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
-/// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
-/// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
-/// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-/// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-/// </license>
+// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
+//
+// Permission to use, copy, modify, and/or distribute this software for
+// any purpose with or without fee is hereby granted.
+//
+// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
@@ -33,16 +20,30 @@ using IDSImaging.Peak.API.Core.Nodes;
 
 namespace IDSImaging.Peak.Samples.SystemTimestamp
 {
-    internal class Program
+    /// <summary>
+    /// This example demonstrates how to use the IDS peak DeviceManager to discover,
+    /// select, and open a camera that supports system timestamp synchronization.
+    /// The device is configured for freerun acquisition, image buffers are acquired,
+    /// and buffer system timestamps (nanoseconds since Unix epoch) are retrieved
+    /// and converted into structured local and UTC time representations.
+    ///
+    /// In addition, if supported by the device, remote ExposureStart events are
+    /// enabled. The example shows how to correlate remote device timestamps with
+    /// the host system timestamp domain using the synchronization latch mechanism,
+    /// allowing event timestamps to be translated into system time.
+    /// </summary>
+    internal static class Program
     {
         private const int IMAGE_COUNT_MAX = 10;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
+            // The library must be initialized before use.
+            // Each call to `Initialize` must be matched with a corresponding call to `Close`.
+            Library.Initialize();
+
             try
             {
-                Library.Initialize();
-
                 using var device = GetFirstDeviceWithSystemTimestampSupport();
                 if (device == null)
                 {
@@ -86,20 +87,22 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
 
                 // Stop acquisition and release resources
                 StopAcquisition(dataStream);
-
-                Library.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine("EXCEPTION: " + e.Message);
-                try { Library.Close(); } catch { }
+            }
+            finally
+            {
+                // One call to `Close` is required for each call to `Initialize`.
+                Library.Close();
             }
         }
 
         /// <summary>
         /// Select the first connected device that supports system timestamps.
         /// </summary>
-        static Device GetFirstDeviceWithSystemTimestampSupport()
+        private static Device GetFirstDeviceWithSystemTimestampSupport()
         {
             var deviceManager = DeviceManager.Instance();
             deviceManager.Update();
@@ -128,7 +131,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         /// <summary>
         /// Returns true if the device implements all nodes required for system timestamp support.
         /// </summary>
-        static bool IsSystemTimestampSupported(Device device)
+        private static bool IsSystemTimestampSupported(Device device)
         {
             var nodeMap = device.NodeMaps()[0];
 
@@ -147,10 +150,41 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         }
 
         /// <summary>
+        /// Disables device trigger if available
+        /// </summary>
+        private static void DisableDeviceTrigger(NodeMap nodeMapRemoteDevice)
+        {
+            var requiredNodes = new List<string> { "TriggerSelector", "TriggerMode" };
+
+            foreach (var node in requiredNodes)
+            {
+                if (!nodeMapRemoteDevice.HasNode(node))
+                {
+                    return;
+                }
+            }
+
+            var nodeTriggerSelector = nodeMapRemoteDevice.FindNode<EnumerationNode>("TriggerSelector");
+            var nodeTriggerMode = nodeMapRemoteDevice.FindNode<EnumerationNode>("TriggerMode");
+
+            var triggerSelectorDisablePreference = new List<string> { "ExposureStart", "FrameStart" };
+
+            foreach (var selectorValue in triggerSelectorDisablePreference)
+            {
+                if (nodeTriggerSelector.HasEntry(selectorValue))
+                {
+                    nodeTriggerSelector.SetCurrentEntry(selectorValue);
+                    nodeTriggerMode.SetCurrentEntry("Off");
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Configure the device for freerun acquisition.
         /// Triggers are disabled if loading default UserSet fails.
         /// </summary>
-        static void Configure(Device device)
+        private static void Configure(Device device)
         {
             var nodeMapRemote = device.RemoteDevice().NodeMaps()[0];
 
@@ -164,20 +198,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
             {
                 Console.WriteLine("Failed to load UserSet Default. Manual freerun configuration.");
 
-                try
-                {
-                    nodeMapRemote.FindNode<EnumerationNode>("TriggerSelector").SetCurrentEntry("ExposureStart");
-                    nodeMapRemote.FindNode<EnumerationNode>("TriggerMode").SetCurrentEntry("Off");
-                }
-                catch
-                {
-                    try
-                    {
-                        nodeMapRemote.FindNode<EnumerationNode>("TriggerSelector").SetCurrentEntry("FrameStart");
-                        nodeMapRemote.FindNode<EnumerationNode>("TriggerMode").SetCurrentEntry("Off");
-                    }
-                    catch { }
-                }
+                DisableDeviceTrigger(nodeMapRemote);
             }
         }
 
@@ -185,7 +206,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         /// Prepare and start data stream acquisition.
         /// Allocates buffers and locks critical parameters.
         /// </summary>
-        static DataStream PrepareAndStartAcquisition(Device device)
+        private static DataStream PrepareAndStartAcquisition(Device device)
         {
             var dataStream = device.DataStreams()[0].OpenDataStream();
             var nodeMapRemote = device.RemoteDevice().NodeMaps()[0];
@@ -195,7 +216,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
 
             for (ulong i = 0; i < minBuffers; i++)
             {
-                var buffer = dataStream.AllocAndAnnounceBuffer((uint)payloadSize, IntPtr.Zero);
+                var buffer = dataStream.AllocAndAnnounceBuffer((uint) payloadSize, IntPtr.Zero);
                 dataStream.QueueBuffer(buffer);
             }
 
@@ -210,7 +231,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         /// <summary>
         /// Enable remote device events if supported.
         /// </summary>
-        static EventController EnableRemoteDeviceEventsIfPossible(Device device)
+        private static EventController EnableRemoteDeviceEventsIfPossible(Device device)
         {
             try
             {
@@ -229,37 +250,37 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         /// <summary>
         /// Calculate and print system timestamp of a remote device event.
         /// </summary>
-        static void CalculateAndPrintRemoteDeviceEventSystemTimestamp(Device device, EventController eventController)
+        private static void CalculateAndPrintRemoteDeviceEventSystemTimestamp(Device device, EventController eventController)
         {
             var nodeMapRemote = device.RemoteDevice().NodeMaps()[0];
 
             var ev = eventController.WaitForEvent(5000);
             nodeMapRemote.UpdateEventNodes(ev);
 
-            long eventTimestampNs = nodeMapRemote.FindNode<IntegerNode>("EventExposureStartTimestamp").Value();
+            var eventTimestampNs = (ulong) nodeMapRemote.FindNode<IntegerNode>("EventExposureStartTimestamp").Value();
             var nodeMapDevice = device.NodeMaps()[0];
 
             var latch = nodeMapDevice.FindNode<CommandNode>("SynchronizationTimestampLatch");
             latch.Execute();
             latch.WaitUntilDone();
 
-            long systemTimestampNs = nodeMapDevice.FindNode<IntegerNode>("SynchronizationTimestampSystem").Value();
-            long deviceTimestampNs = nodeMapDevice.FindNode<IntegerNode>("SynchronizationTimestampDevice").Value();
-            long eventSystemTimestampNs = systemTimestampNs + (eventTimestampNs - deviceTimestampNs);
+            var systemTimestampNs = (ulong) nodeMapDevice.FindNode<IntegerNode>("SynchronizationTimestampSystem").Value();
+            var deviceTimestampNs = (ulong) nodeMapDevice.FindNode<IntegerNode>("SynchronizationTimestampDevice").Value();
+            var eventSystemTimestampNs = systemTimestampNs + (eventTimestampNs - deviceTimestampNs);
 
             Console.WriteLine("--ExposureStartEvent--");
             Console.WriteLine($"Timestamp [ns]: {eventTimestampNs}");
             Console.WriteLine($"System timestamp [ns since epoch]: {eventSystemTimestampNs}");
 
-            PrintStructuredTimestamp((ulong)eventSystemTimestampNs, Time.Local);
-            PrintStructuredTimestamp((ulong)eventSystemTimestampNs, Time.Utc);
+            PrintStructuredTimestamp(eventSystemTimestampNs, Time.Local);
+            PrintStructuredTimestamp(eventSystemTimestampNs, Time.Utc);
         }
 
         /// <summary>
         /// Stop acquisition and release all buffers.
         /// Unlock previously locked parameters.
         /// </summary>
-        static void StopAcquisition(DataStream dataStream)
+        private static void StopAcquisition(DataStream dataStream)
         {
             var nodeMapRemote = dataStream.ParentDevice().RemoteDevice().NodeMaps()[0];
 
@@ -275,7 +296,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
             }
         }
 
-        enum Time
+        private enum Time
         {
             Local,
             Utc
@@ -285,7 +306,7 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
         /// Print structured timestamp in human-readable form.
         /// Accepts timestamps in nanoseconds since Unix epoch.
         /// </summary>
-        static void PrintStructuredTimestamp(ulong timestampNs, Time time)
+        private static void PrintStructuredTimestamp(ulong timestampNs, Time time)
         {
             ulong seconds = timestampNs / 1_000_000_000;
             ulong nanosecondsAfterSeconds = timestampNs % 1_000_000_000;
@@ -297,8 +318,8 @@ namespace IDSImaging.Peak.Samples.SystemTimestamp
             bool useUtc = (time == Time.Utc);
 
             DateTime dt = useUtc
-                ? DateTimeOffset.FromUnixTimeSeconds((long)seconds).UtcDateTime
-                : DateTimeOffset.FromUnixTimeSeconds((long)seconds).LocalDateTime;
+                ? DateTimeOffset.FromUnixTimeSeconds((long) seconds).UtcDateTime
+                : DateTimeOffset.FromUnixTimeSeconds((long) seconds).LocalDateTime;
 
             string label = useUtc ? "[UTC]" : "[Local]";
             Console.WriteLine(

@@ -15,7 +15,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from ids_peak import ids_peak
 import datetime
-from typing import Optional
+from typing import Optional, cast
 
 
 IMAGE_COUNT_MAX = 10
@@ -75,6 +75,27 @@ def get_first_device_with_system_timestamp_support() -> Optional[ids_peak.Device
     return None
 
 
+def disable_device_trigger(node_map_remote_device: ids_peak.NodeMap) -> None:
+    required_nodes = ["TriggerSelector", "TriggerMode"]
+
+    for node in required_nodes:
+        if not node_map_remote_device.HasNode(node):
+            return
+
+    node_trigger_selector = cast(ids_peak.EnumerationNode,
+                                 node_map_remote_device.FindNode("TriggerSelector"))
+    node_trigger_mode = cast(ids_peak.EnumerationNode,
+                             node_map_remote_device.FindNode("TriggerMode"))
+
+    trigger_selector_disable_preference = ["ExposureStart", "FrameStart"]
+
+    for selector_value in trigger_selector_disable_preference:
+        if node_trigger_selector.HasEntry(selector_value):
+            node_trigger_selector.SetCurrentEntry(selector_value)
+            node_trigger_mode.SetCurrentEntry("Off")
+            break
+
+
 def configure(device: ids_peak.Device) -> None:
     """
     Configure the device for freerun acquisition.
@@ -90,23 +111,16 @@ def configure(device: ids_peak.Device) -> None:
     # General preparations for untriggered continuous image acquisition
     try:
         # Load the default user set to reset device parameters
-        node_map_remote.FindNode("UserSetSelector").SetCurrentEntry("Default")
-        node_map_remote.FindNode("UserSetLoad").Execute()
-        node_map_remote.FindNode("UserSetLoad").WaitUntilDone()
+        cast(ids_peak.EnumerationNode, node_map_remote.FindNode("UserSetSelector")).SetCurrentEntry(
+            "Default"
+        )
+        node_userset_load = cast(ids_peak.CommandNode, node_map_remote.FindNode("UserSetLoad"))
+        node_userset_load.Execute()
+        node_userset_load.WaitUntilDone()
     except Exception:
         # UserSet is not available, try manual freerun configuration
         print("Failed to load UserSet Default. Manual freerun configuration.")
-
-        try:
-            node_map_remote.FindNode("TriggerSelector").SetCurrentEntry("ExposureStart")
-            node_map_remote.FindNode("TriggerMode").SetCurrentEntry("Off")
-        except Exception:
-            try:
-                node_map_remote.FindNode("TriggerSelector").SetCurrentEntry("FrameStart")
-                node_map_remote.FindNode("TriggerMode").SetCurrentEntry("Off")
-            except Exception:
-                # No known trigger available
-                pass
+        disable_device_trigger(node_map_remote)
 
 
 def prepare_and_start_acquisition(
@@ -128,7 +142,9 @@ def prepare_and_start_acquisition(
     node_map_remote_device = device.RemoteDevice().NodeMaps()[0]
 
     # Allocate and announce image buffers
-    payload_size = node_map_remote_device.FindNode("PayloadSize").Value()
+    payload_size = cast(
+        ids_peak.IntegerNode, node_map_remote_device.FindNode("PayloadSize")
+    ).Value()
     num_buffers_min = data_stream.NumBuffersAnnouncedMinRequired()
 
     for _ in range(num_buffers_min):
@@ -136,11 +152,11 @@ def prepare_and_start_acquisition(
         data_stream.QueueBuffer(buffer)
 
     # Lock critical features during acquisition
-    node_map_remote_device.FindNode("TLParamsLocked").SetValue(1)
+    cast(ids_peak.IntegerNode, node_map_remote_device.FindNode("TLParamsLocked")).SetValue(1)
 
     # Start acquisition
     data_stream.StartAcquisition()
-    node_map_remote_device.FindNode("AcquisitionStart").Execute()
+    cast(ids_peak.CommandNode, node_map_remote_device.FindNode("AcquisitionStart")).Execute()
 
     return data_stream
 
@@ -161,10 +177,14 @@ def enable_remote_device_events_if_possible(
     """
     try:
         node_map_remote = device.RemoteDevice().NodeMaps()[0]
-        node_map_remote.FindNode("EventSelector").SetCurrentEntry("ExposureStart")
-        node_map_remote.FindNode("EventNotification").SetCurrentEntry("On")
+        cast(ids_peak.EnumerationNode, node_map_remote.FindNode("EventSelector")).SetCurrentEntry(
+            "ExposureStart"
+        )
+        cast(
+            ids_peak.EnumerationNode, node_map_remote.FindNode("EventNotification")
+        ).SetCurrentEntry("On")
 
-        return device.EnableEvents(ids_peak.EventType_RemoteDevice)
+        return cast(ids_peak.EventController, device.EnableEvents(ids_peak.EventType_RemoteDevice))
     except Exception:
         return None
 
@@ -187,22 +207,30 @@ def calculate_and_print_system_timestamp(
     node_map_remote = device.RemoteDevice().NodeMaps()[0]
 
     # Wait for event
-    event = event_controller.WaitForEvent(5000)
+    event = event_controller.WaitForEvent(ids_peak.Timeout(5000))
     node_map_remote.UpdateEventNodes(event)
 
     # Device-specific timestamp (NOT system timestamp)
-    event_timestamp_ns = node_map_remote.FindNode("EventExposureStartTimestamp").Value()
+    event_timestamp_ns = cast(
+        ids_peak.IntegerNode, node_map_remote.FindNode("EventExposureStartTimestamp")
+    ).Value()
 
     node_map_device = device.NodeMaps()[0]
 
     # Execute latch to avoid race conditions
-    latch_node = node_map_device.FindNode("SynchronizationTimestampLatch")
+    latch_node = cast(
+        ids_peak.CommandNode, node_map_device.FindNode("SynchronizationTimestampLatch")
+    )
     latch_node.Execute()
     latch_node.WaitUntilDone()
 
-    system_timestamp_ns = node_map_device.FindNode("SynchronizationTimestampSystem").Value()
+    system_timestamp_ns = cast(
+        ids_peak.IntegerNode, node_map_device.FindNode("SynchronizationTimestampSystem")
+    ).Value()
 
-    device_timestamp_ns = node_map_device.FindNode("SynchronizationTimestampDevice").Value()
+    device_timestamp_ns = cast(
+        ids_peak.IntegerNode, node_map_device.FindNode("SynchronizationTimestampDevice")
+    ).Value()
 
     event_system_timestamp_ns = system_timestamp_ns + (event_timestamp_ns - device_timestamp_ns)
 
@@ -226,10 +254,10 @@ def stop_acquisition(data_stream: ids_peak.DataStream) -> None:
     node_map_remote = data_stream.ParentDevice().RemoteDevice().NodeMaps()[0]
 
     data_stream.StopAcquisition()
-    node_map_remote.FindNode("AcquisitionStop").Execute()
+    cast(ids_peak.CommandNode, node_map_remote.FindNode("AcquisitionStop")).Execute()
 
     # Unlock parameters
-    node_map_remote.FindNode("TLParamsLocked").SetValue(0)
+    cast(ids_peak.IntegerNode, node_map_remote.FindNode("TLParamsLocked")).SetValue(0)
 
     # Flush and revoke all buffers
     data_stream.Flush(ids_peak.DataStreamFlushMode_DiscardAll)
@@ -292,7 +320,7 @@ def main() -> None:
 
         while image_count < IMAGE_COUNT_MAX:
             # Wait for a finished buffer
-            buffer = data_stream.WaitForFinishedBuffer(5000)
+            buffer = data_stream.WaitForFinishedBuffer(ids_peak.Timeout(5000))
 
             # Retrieve buffer system timestamp (ns since Unix epoch)
             system_timestamp_ns = buffer.SystemTimestamp_ns()
