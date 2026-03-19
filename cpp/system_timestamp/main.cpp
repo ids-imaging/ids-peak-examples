@@ -25,6 +25,8 @@
 
 std::shared_ptr<peak::core::Device> GetFirstDeviceWithSystemTimestampSupport();
 
+void DisableDeviceTrigger(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice);
+
 void Configure(const std::shared_ptr<peak::core::Device>& device);
 
 std::shared_ptr<peak::core::DataStream> PrepareAndStartAcquisition(const std::shared_ptr<peak::core::Device>& device);
@@ -62,7 +64,7 @@ int main()
         // Configure device for freerun acquisition (disables triggers if needed)
         Configure(device);
 
-        // Allocate buffers, start the acquitision on the datastream and remote device
+        // Allocate buffers, start the acquisition on the data stream and remote device
         const auto dataStream = PrepareAndStartAcquisition(device);
 
         // The following code is not related to buffer system timestamp functionality. We just enable remote device
@@ -116,7 +118,9 @@ int main()
             peak::Library::Close();
         }
         catch (const std::exception&)
-        {}
+        {
+            std::cout << "EXCEPTION: Unable to close library." << std::endl;
+        }
 
         return EXIT_FAILURE;
     }
@@ -131,7 +135,7 @@ std::shared_ptr<peak::core::Device> GetFirstDeviceWithSystemTimestampSupport()
     // create a camera manager object
     auto& deviceManager = peak::DeviceManager::Instance();
 
-    // update the cameraManager
+    // update the device manager
     deviceManager.Update();
 
     // exit program if no camera was found
@@ -151,6 +155,34 @@ std::shared_ptr<peak::core::Device> GetFirstDeviceWithSystemTimestampSupport()
     }
 
     return nullptr;
+}
+
+void DisableDeviceTrigger(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice)
+{
+    const std::vector<std::string> requiredNodes = { "TriggerSelector", "TriggerMode" };
+    for (const auto& node : requiredNodes)
+    {
+        if (!nodeMapRemoteDevice->HasNode(node))
+        {
+            return;
+        }
+    }
+
+    const auto nodeTriggerSelector = nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>(
+        "TriggerSelector");
+    const auto nodeTriggerMode = nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("TriggerMode");
+
+    const std::vector<std::string> triggerSelectorDisablePreference = { "ExposureStart", "FrameStart" };
+
+    for (const auto& selectorValue : triggerSelectorDisablePreference)
+    {
+        if (nodeTriggerSelector->HasEntry(selectorValue))
+        {
+            nodeTriggerSelector->SetCurrentEntry(selectorValue);
+            nodeTriggerMode->SetCurrentEntry("Off");
+            break;
+        }
+    }
 }
 
 /*
@@ -177,26 +209,7 @@ void Configure(const std::shared_ptr<peak::core::Device>& device)
         // UserSet is not available, try to disable ExposureStart or FrameStart trigger manually
         std::cout << "Failed to load UserSet Default. Manual freerun configuration." << std::endl;
 
-        try
-        {
-            nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("TriggerSelector")
-                ->SetCurrentEntry("ExposureStart");
-            nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("TriggerMode")->SetCurrentEntry("Off");
-        }
-        catch (const std::exception&)
-        {
-            try
-            {
-                nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("TriggerSelector")
-                    ->SetCurrentEntry("FrameStart");
-                nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("TriggerMode")
-                    ->SetCurrentEntry("Off");
-            }
-            catch (const std::exception&)
-            {
-                // There is no known trigger available, continue anyway.
-            }
-        }
+        DisableDeviceTrigger(nodeMapRemoteDevice);
     }
 }
 
@@ -247,7 +260,9 @@ std::unique_ptr<peak::core::EventController> EnableRemoteDeviceEventsIfPossible(
         return device->EnableEvents(peak::core::EventType::RemoteDevice);
     }
     catch (const std::exception&)
-    {}
+    {
+        std::cout << "Could not enable remote device events. Event timestamps will not be shown." << std::endl;
+    }
 
     return {};
 }
@@ -273,7 +288,7 @@ void CalculateAndPrintRemoteDeviceEventSystemTimestamp(const std::shared_ptr<pea
     // following code in this function.
     const auto eventExposureStartTimestampNode = nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>(
         "EventExposureStartTimestamp");
-    const auto eventExposureStartTimestampNs = eventExposureStartTimestampNode->Value();
+    const auto eventExposureStartTimestampNs = static_cast<std::uint64_t>(eventExposureStartTimestampNode->Value());
 
     const auto nodeMapDevice = device->NodeMaps().at(0);
 
@@ -285,10 +300,10 @@ void CalculateAndPrintRemoteDeviceEventSystemTimestamp(const std::shared_ptr<pea
     timestampLatchNode->Execute();
     timestampLatchNode->WaitUntilDone();
 
-    const auto systemTimestampNs =
-        nodeMapDevice->FindNode<peak::core::nodes::IntegerNode>("SynchronizationTimestampSystem")->Value();
-    const auto deviceTimestampNs =
-        nodeMapDevice->FindNode<peak::core::nodes::IntegerNode>("SynchronizationTimestampDevice")->Value();
+    const auto systemTimestampNs = static_cast<std::uint64_t>(
+        nodeMapDevice->FindNode<peak::core::nodes::IntegerNode>("SynchronizationTimestampSystem")->Value());
+    const auto deviceTimestampNs = static_cast<std::uint64_t>(
+        nodeMapDevice->FindNode<peak::core::nodes::IntegerNode>("SynchronizationTimestampDevice")->Value());
     const auto eventSystemTimestampNs = systemTimestampNs + (eventExposureStartTimestampNs - deviceTimestampNs);
 
     std::cout << "--ExposureStartEvent--" << '\n';
@@ -348,7 +363,8 @@ bool IsSystemTimestampSupported(const std::shared_ptr<peak::core::Device>& devic
  */
 void PrintStructuredTimestamp(std::uint64_t timestampTimeSinceEpochNs, Time time)
 {
-    const auto seconds = static_cast<std::time_t>(timestampTimeSinceEpochNs / 1'000'000'000);
+    const auto seconds64 = timestampTimeSinceEpochNs / 1'000'000'000;
+    auto seconds = static_cast<std::time_t>(seconds64);
 
     auto tm = std::tm{};
     switch (time)

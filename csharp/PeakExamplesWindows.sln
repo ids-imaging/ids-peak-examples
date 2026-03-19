@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipeline", "Pipeline\Pipeli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLiveWindowsForms", "SimpleLiveWindowsForms\SimpleLiveWindowsForms.csproj", "{200BE118-D69B-E652-2B8E-8AE392D7F318}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTimestamp", "SystemTimestamp\SystemTimestamp.csproj", "{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,26 @@ Global
 		{200BE118-D69B-E652-2B8E-8AE392D7F318}.Release|x64.Build.0 = Release|Any CPU
 		{200BE118-D69B-E652-2B8E-8AE392D7F318}.Release|x86.ActiveCfg = Release|Any CPU
 		{200BE118-D69B-E652-2B8E-8AE392D7F318}.Release|x86.Build.0 = Release|Any CPU
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|ARM32.ActiveCfg = Debug|ARM32
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|ARM32.Build.0 = Debug|ARM32
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|ARM64.Build.0 = Debug|ARM64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|x64.ActiveCfg = Debug|x64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|x64.Build.0 = Debug|x64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|x86.ActiveCfg = Debug|x86
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Debug|x86.Build.0 = Debug|x86
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|ARM32.ActiveCfg = Release|ARM32
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|ARM32.Build.0 = Release|ARM32
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|ARM64.ActiveCfg = Release|ARM64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|ARM64.Build.0 = Release|ARM64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|x64.ActiveCfg = Release|x64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|x64.Build.0 = Release|x64
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|x86.ActiveCfg = Release|x86
+		{63CD24AC-7ADA-5FC8-B07C-D7AE5A9DEE41}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

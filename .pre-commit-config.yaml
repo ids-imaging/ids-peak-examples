@@ -26,7 +26,7 @@ repos:
             ids-peak-common,
             ids-peak-ipl,
             ids-peak-icv,
-            ids-peak,
+            ids-peak>=1.15,
             ids-peak-afl
           ]
 
