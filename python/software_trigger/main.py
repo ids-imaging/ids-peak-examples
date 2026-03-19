@@ -35,7 +35,7 @@ from ids_peak import ids_peak
 from ids_peak_icv.pipeline import DefaultPipeline
 from ids_peak_common import PixelFormat
 
-from typing import Optional, Type
+from typing import Optional, Type, cast
 from types import TracebackType
 
 
@@ -77,16 +77,18 @@ class SoftwareTriggerExample:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
-        self.remote_nodemap.FindNode("UserSetSelector").SetCurrentEntry("Default")
-        self.remote_nodemap.FindNode("UserSetLoad").Execute()
-        self.remote_nodemap.FindNode("UserSetLoad").WaitUntilDone()
+        cast(ids_peak.EnumerationNode,
+             self.remote_nodemap.FindNode("UserSetSelector")).SetCurrentEntry("Default")
+        user_set_load_node = cast(ids_peak.CommandNode, self.remote_nodemap.FindNode("UserSetLoad"))
+        user_set_load_node.Execute()
+        user_set_load_node.WaitUntilDone()
 
     def apply_camera_configuration(self) -> None:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
         if self._exposure is not None:
-            node = self.remote_nodemap.FindNode("ExposureTime")
+            node = cast(ids_peak.FloatNode, self.remote_nodemap.FindNode("ExposureTime"))
             # For some devices the ExposureTime node may not be writable,
             # e.g. due to the auto features being active on the camera.
             if not node.IsWriteable():
@@ -97,7 +99,8 @@ class SoftwareTriggerExample:
 
             node.SetValue(self._exposure)
         if self._gain is not None:
-            gain_selector = self.remote_nodemap.FindNode("GainSelector")
+            gain_selector = cast(ids_peak.EnumerationNode,
+                                 self.remote_nodemap.FindNode("GainSelector"))
             available_gain_entries = [x.StringValue() for x in gain_selector.AvailableEntries()]
 
             preferred_entries = ["AnalogAll", "DigitalAll", "All"]
@@ -109,7 +112,7 @@ class SoftwareTriggerExample:
                 gain_selector.SetCurrentEntry(selected_gain)
             else:
                 raise RuntimeError("Can not set gain value: no preferred gain selector available")
-            gain_node = self.remote_nodemap.FindNode("Gain")
+            gain_node = cast(ids_peak.FloatNode, self.remote_nodemap.FindNode("Gain"))
             # For some devices the Gain node may not be writable,
             # e.g. due to the auto features being active on the camera.
             if not gain_node.IsWriteable():
@@ -124,7 +127,8 @@ class SoftwareTriggerExample:
             raise RuntimeError("Device is not opened!")
 
         # Buffer size
-        payload_size = self.remote_nodemap.FindNode("PayloadSize").Value()
+        payload_size = cast(ids_peak.IntegerNode,
+                            self.remote_nodemap.FindNode("PayloadSize")).Value()
 
         # Minimum number of required buffers
         buffer_count_max = self.data_stream.NumBuffersAnnouncedMinRequired()
@@ -151,6 +155,9 @@ class SoftwareTriggerExample:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
+        trigger_selector_node = cast(ids_peak.EnumerationNode,
+                                     self.remote_nodemap.FindNode("TriggerSelector"))
+
         # In GenICam, enumeration nodes can contain multiple possible entries
         # (enum values), but not all entries are guaranteed to be available or
         # implemented on every device or in every state. According to the
@@ -158,7 +165,7 @@ class SoftwareTriggerExample:
         # 'NotAvailable' or 'NotImplemented') can be selected.
         # This ensures that only legal, supported values are used
         # when configuring the device.
-        all_entries = self.remote_nodemap.FindNode("TriggerSelector").Entries()
+        all_entries = trigger_selector_node.Entries()
         available_entries = []
         for entry in all_entries:
             if (
@@ -168,19 +175,21 @@ class SoftwareTriggerExample:
                 available_entries.append(entry.SymbolicValue())
 
         if "ExposureStart" in available_entries:
-            self.remote_nodemap.FindNode("TriggerSelector").SetCurrentEntry("ExposureStart")
+            trigger_selector_node.SetCurrentEntry("ExposureStart")
         elif "FrameStart" in available_entries:
-            self.remote_nodemap.FindNode("TriggerSelector").SetCurrentEntry("FrameStart")
+            trigger_selector_node.SetCurrentEntry("FrameStart")
         elif "ReadOutStart" in available_entries:
-            self.remote_nodemap.FindNode("TriggerSelector").SetCurrentEntry("ReadOutStart")
+            trigger_selector_node.SetCurrentEntry("ReadOutStart")
         else:
             raise RuntimeError(
                 "Software Trigger not supported: Expected one of the "
                 "'ExposureStart', 'FrameStart' or 'ReadOutStart' trigger selectors."
             )
 
-        self.remote_nodemap.FindNode("TriggerMode").SetCurrentEntry("On")
-        self.remote_nodemap.FindNode("TriggerSource").SetCurrentEntry("Software")
+        cast(ids_peak.EnumerationNode,
+             self.remote_nodemap.FindNode("TriggerMode")).SetCurrentEntry("On")
+        cast(ids_peak.EnumerationNode,
+             self.remote_nodemap.FindNode("TriggerSource")).SetCurrentEntry("Software")
 
     @staticmethod
     def _confirm_question(msg: str) -> bool:
@@ -202,12 +211,14 @@ class SoftwareTriggerExample:
 
         # Lock writable nodes, which could influence the payload size or
         # similar information during acquisition.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(1)
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         # Start acquisition both locally and on device.
         self.data_stream.StartAcquisition()
-        self.remote_nodemap.FindNode("AcquisitionStart").Execute()
-        self.remote_nodemap.FindNode("AcquisitionStart").WaitUntilDone()
+        acquisition_start_node = cast(ids_peak.CommandNode,
+                                      self.remote_nodemap.FindNode("AcquisitionStart"))
+        acquisition_start_node.Execute()
+        acquisition_start_node.WaitUntilDone()
 
         print("Starting acquisition...")
 
@@ -215,7 +226,7 @@ class SoftwareTriggerExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
-        self.remote_nodemap.FindNode("AcquisitionStop").Execute()
+        cast(ids_peak.CommandNode, self.remote_nodemap.FindNode("AcquisitionStop")).Execute()
 
         # Stop and flush the `DataStream`.
         # `KillWait` will cancel pending `WaitForFinishedBuffer` calls.
@@ -228,15 +239,17 @@ class SoftwareTriggerExample:
         self.data_stream.Flush(ids_peak.DataStreamFlushMode_DiscardAll)
 
         # Unlock writable nodes again. See `Lock writable nodes`.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(0)
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
     def software_trigger(self) -> None:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
         print("Executing software trigger...")
-        self.remote_nodemap.FindNode("TriggerSoftware").Execute()
-        self.remote_nodemap.FindNode("TriggerSoftware").WaitUntilDone()
+        trigger_software_node = cast(ids_peak.CommandNode,
+                                     self.remote_nodemap.FindNode("TriggerSoftware"))
+        trigger_software_node.Execute()
+        trigger_software_node.WaitUntilDone()
         print("Finished.")
 
     def get_next_image(self) -> None:

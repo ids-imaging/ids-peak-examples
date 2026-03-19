@@ -19,7 +19,7 @@ are not in the same subnet as the host system.
 
 from ids_peak import ids_peak
 
-from typing import Sequence
+from typing import Sequence, cast
 import ipaddress
 
 producers = []
@@ -50,8 +50,8 @@ def configure_interface(
     # Configure Unicast addresses, if supported by the transport layer (TL)
     if node_ip_to_add and node_ip_add_cmd:
         for ip in ip_addresses:
-            node_ip_to_add.SetValue(int(ip))
-            node_ip_add_cmd.Execute()
+            cast(ids_peak.IntegerNode, node_ip_to_add).SetValue(int(ip))
+            cast(ids_peak.CommandNode, node_ip_add_cmd).Execute()
     else:
         print(
             f'WARNING: Interface "{interface.DisplayName()} -> '
@@ -60,8 +60,8 @@ def configure_interface(
 
     # Configure whether broadcast is allowed, if supported by the TL
     if node_cmd_broadcast and node_ack_broadcast:
-        node_cmd_broadcast.SetValue(allow_broadcast)
-        node_ack_broadcast.SetValue(allow_broadcast)
+        cast(ids_peak.BooleanNode, node_cmd_broadcast).SetValue(allow_broadcast)
+        cast(ids_peak.BooleanNode, node_ack_broadcast).SetValue(allow_broadcast)
     else:
         print(
             f'WARNING: Interface "{interface.DisplayName()} -> '
@@ -86,7 +86,8 @@ def filter_interfaces(
     for descriptor in interface_descriptors:
         interface = descriptor.OpenInterface()
         node_map = interface.NodeMaps()[0]
-        interface_type = node_map.FindNode("InterfaceType").CurrentEntry().StringValue()
+        interface_type = cast(ids_peak.EnumerationNode, node_map.FindNode(
+            "InterfaceType")).CurrentEntry().StringValue()
 
         if interface_type != "GigEVision":
             continue
@@ -220,7 +221,7 @@ def find_devices_via_unicast(
     configure_interface(interface, allow_broadcast=False, ip_addresses=ip_addresses)
 
     # Send device discoveries and listen for replies
-    interface.UpdateDevices(1000)
+    interface.UpdateDevices(ids_peak.Timeout(1000))
 
     devices = interface.Devices()
     return list(devices)
