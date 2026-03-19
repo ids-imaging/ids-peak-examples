@@ -21,6 +21,15 @@ repos:
     hooks:
       - id: mypy
         args: [--ignore-missing-imports, --explicit-package-bases, --config-file, python/mypy.ini]
+        additional_dependencies:
+          [
+            ids-peak-common,
+            ids-peak-ipl,
+            ids-peak-icv,
+            ids-peak,
+            ids-peak-afl
+          ]
+
 
   # C/C++ clang-format
   - repo: https://github.com/pre-commit/mirrors-clang-format

@@ -26,6 +26,7 @@ The application:
 The example focuses on device discovery and feature access and does
 not perform image acquisition.
 """
+from typing import cast
 
 from ids_peak import ids_peak
 
@@ -51,24 +52,24 @@ def main() -> None:
         device_manager.Update()
 
         # Exit program if no device was found.
-        if device_manager.Devices().empty():
+        if len(device_manager.Devices()) == 0:
             print("No device found. Exiting Program.")
             return
 
         # List all available devices.
-        for i, device in enumerate(device_manager.Devices()):
+        for i, dev in enumerate(device_manager.Devices()):
             print(
-                    str(i)
-                    + ": "
-                    + device.ModelName()
-                    + " ("
-                    + device.ParentInterface().DisplayName()
-                    + "; "
-                    + device.ParentInterface().ParentSystem().DisplayName()
-                    + "v."
-                    + device.ParentInterface().ParentSystem().Version()
-                    + ")"
-                    )
+                str(i)
+                + ": "
+                + dev.ModelName()
+                + " ("
+                + dev.ParentInterface().DisplayName()
+                + "; "
+                + dev.ParentInterface().ParentSystem().DisplayName()
+                + "v."
+                + dev.ParentInterface().ParentSystem().Version()
+                + ")"
+            )
 
         # Select a device to open.
         selected_device = None
@@ -86,8 +87,8 @@ def main() -> None:
         # Open the selected device with control access.
         # The access types correspond to the GenTL `DEVICE_ACCESS_FLAGS`.
         device = device_manager.Devices()[selected_device].OpenDevice(
-                ids_peak.DeviceAccessType_Control
-                )
+            ids_peak.DeviceAccessType_Control
+        )
 
         # Retrieve the remote device's primary node map, which in GenICam represents
         # a hierarchical set of device parameters (features) such as exposure, gain,
@@ -98,26 +99,34 @@ def main() -> None:
         nodemap_remote_device = device.RemoteDevice().NodeMaps()[0]
 
         # Print model name and user ID
-        print("Model Name: " + nodemap_remote_device.FindNode("DeviceModelName").Value())
+        print("Model Name: " + cast(
+            ids_peak.StringNode,
+            nodemap_remote_device.FindNode("DeviceModelName")).Value())
         try:
-            print("User ID: " + nodemap_remote_device.FindNode("DeviceUserID").Value())
+            print("User ID: " + cast(
+                ids_peak.StringNode,
+                nodemap_remote_device.FindNode("DeviceUserID")).Value())
         except ids_peak.Exception:
             print("User ID: (unknown)")
 
         # Print sensor information, not knowing if device has the node "SensorName"
         try:
-            print("Sensor Name: " + nodemap_remote_device.FindNode("SensorName").Value())
+            print("Sensor Name: " + cast(
+                ids_peak.StringNode,
+                nodemap_remote_device.FindNode("SensorName")).Value())
         except ids_peak.Exception:
             print("Sensor Name: " + "(unknown)")
 
         # Print resolution
         try:
             print(
-                    "Max. resolution (w x h): "
-                    + str(nodemap_remote_device.FindNode("WidthMax").Value())
-                    + " x "
-                    + str(nodemap_remote_device.FindNode("HeightMax").Value())
-                    )
+                "Max. resolution (w x h): "
+                + str(cast(ids_peak.IntegerNode,
+                           nodemap_remote_device.FindNode("WidthMax")).Value())
+                + " x "
+                + str(cast(ids_peak.IntegerNode,
+                           nodemap_remote_device.FindNode("HeightMax")).Value())
+            )
         except ids_peak.Exception:
             print("Max. resolution (w x h): (unknown)")
 

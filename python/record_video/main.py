@@ -31,7 +31,7 @@ from ids_peak_ipl import ids_peak_ipl
 from ids_peak_icv.pipeline import DefaultPipeline
 from ids_peak_common import PixelFormat
 
-from typing import Optional
+from typing import Optional, cast
 
 
 class RecordVideoExample:
@@ -65,18 +65,21 @@ class RecordVideoExample:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
-        self.remote_nodemap.FindNode("UserSetSelector").SetCurrentEntry("Default")
-        self.remote_nodemap.FindNode("UserSetLoad").Execute()
-        self.remote_nodemap.FindNode("UserSetLoad").WaitUntilDone()
+        cast(ids_peak.EnumerationNode,
+             self.remote_nodemap.FindNode("UserSetSelector")).SetCurrentEntry("Default")
+        user_set_load_node = cast(ids_peak.CommandNode, self.remote_nodemap.FindNode("UserSetLoad"))
+        user_set_load_node.Execute()
+        user_set_load_node.WaitUntilDone()
 
     def apply_camera_configuration(self) -> None:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
         if self._framerate is not None:
-            self.remote_nodemap.FindNode("AcquisitionFrameRate").SetValue(self._framerate)
+            cast(ids_peak.FloatNode,
+                 self.remote_nodemap.FindNode("AcquisitionFrameRate")).SetValue(self._framerate)
         if self._exposure is not None:
-            node = self.remote_nodemap.FindNode("ExposureTime")
+            node = cast(ids_peak.FloatNode, self.remote_nodemap.FindNode("ExposureTime"))
             # For some devices the ExposureTime node may not be writable,
             # e.g. due to the auto features being active on the camera.
             if not node.IsWriteable():
@@ -87,7 +90,8 @@ class RecordVideoExample:
 
             node.SetValue(self._exposure)
         if self._gain is not None:
-            gain_selector = self.remote_nodemap.FindNode("GainSelector")
+            gain_selector = cast(ids_peak.EnumerationNode,
+                                 self.remote_nodemap.FindNode("GainSelector"))
             available_gain_entries = [x.StringValue() for x in gain_selector.AvailableEntries()]
 
             preferred_entries = ["AnalogAll", "DigitalAll", "All"]
@@ -99,7 +103,7 @@ class RecordVideoExample:
                 gain_selector.SetCurrentEntry(selected_gain)
             else:
                 raise RuntimeError("Can not set gain value: no preferred gain selector available")
-            gain_node = self.remote_nodemap.FindNode("Gain")
+            gain_node = cast(ids_peak.FloatNode, self.remote_nodemap.FindNode("Gain"))
             # For some devices the Gain node may not be writable,
             # e.g. due to the auto features being active on the camera.
             if not gain_node.IsWriteable():
@@ -115,7 +119,8 @@ class RecordVideoExample:
             raise RuntimeError("Device is not opened!")
 
         # Buffer size
-        payload_size = self.remote_nodemap.FindNode("PayloadSize").Value()
+        payload_size = cast(ids_peak.IntegerNode,
+                            self.remote_nodemap.FindNode("PayloadSize")).Value()
 
         # Minimum number of required buffers
         buffer_count_max = self.data_stream.NumBuffersAnnouncedMinRequired()
@@ -160,7 +165,8 @@ class RecordVideoExample:
             raise RuntimeError("Device is not opened!")
 
         # Get acquisition frame rate
-        frame_rate = self.remote_nodemap.FindNode("AcquisitionFrameRate").Value()
+        frame_rate = cast(ids_peak.FloatNode,
+                          self.remote_nodemap.FindNode("AcquisitionFrameRate")).Value()
 
         # Create peak IPL video writer
         video_writer = ids_peak_ipl.VideoWriter()
@@ -173,15 +179,17 @@ class RecordVideoExample:
             else:
                 sys.exit(-1)
         video_writer.Open(self._out_file)
-        video_writer.Container().SetFramerate(frame_rate)
+        cast(ids_peak_ipl.AVIContainer, video_writer.Container()).SetFramerate(frame_rate)
 
         # Lock writable nodes, which could influence the payload size or
         # similar information during acquisition.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(1)
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         self.data_stream.StartAcquisition()
-        self.remote_nodemap.FindNode("AcquisitionStart").Execute()
-        self.remote_nodemap.FindNode("AcquisitionStart").WaitUntilDone()
+        acquisition_start_node = cast(ids_peak.CommandNode,
+                                      self.remote_nodemap.FindNode("AcquisitionStart"))
+        acquisition_start_node.Execute()
+        acquisition_start_node.WaitUntilDone()
 
         print("Starting acquisition...")
         print("You can stop recording when pressing Ctrl+C!")
@@ -210,7 +218,7 @@ class RecordVideoExample:
                 video_writer.Append(
                     ids_peak_ipl.Image.CreateFromSizeAndPythonBuffer(
                         converted_image.pixel_format.value,
-                        data,
+                        bytes(data),
                         converted_image.width,
                         converted_image.height,
                     )
@@ -227,17 +235,20 @@ class RecordVideoExample:
         video_duration = time.time() - time_start
 
         print("Stopping acquisition...")
-        self.remote_nodemap.FindNode("AcquisitionStop").Execute()
-        self.remote_nodemap.FindNode("AcquisitionStop").WaitUntilDone()
+        acquisition_stop_node = cast(ids_peak.CommandNode,
+                                     self.remote_nodemap.FindNode("AcquisitionStop"))
+        acquisition_stop_node.Execute()
+        acquisition_stop_node.WaitUntilDone()
         self.data_stream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
 
         # Unlock writable nodes again. See `Lock writable nodes`.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(0)
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
         # AVI framerate sets the playback speed.
         # You can calculate that with the amount of frames captured in the
         # time duration the video was recorded
-        video_writer.Container().SetFramerate(num_frames_recorded / video_duration)
+        cast(ids_peak_ipl.AVIContainer,
+             video_writer.Container()).SetFramerate(num_frames_recorded / video_duration)
         # Wait until all frames are written to the file
         video_writer.WaitUntilFrameDone(10000)
         video_writer.Close()

@@ -42,7 +42,7 @@ Found:
 """
 
 import sys
-from typing import Optional
+from typing import Optional, cast
 
 from ids_peak import ids_peak
 
@@ -81,7 +81,7 @@ class ReconnectExample:
 
     def ensure_compatible_buffers_and_restart_acquisition(
             self, reconnect_information: ids_peak.DeviceReconnectInformation
-            ) -> None:
+    ) -> None:
         """
         After a reconnect the PayloadSize might have changed, e.g. due to
         a reboot and the last parameter state not being saved in the
@@ -93,9 +93,12 @@ class ReconnectExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
-        payload_size = self.remote_nodemap.FindNode("PayloadSize").Value()
+        payload_size = cast(ids_peak.IntegerNode,
+                            self.remote_nodemap.FindNode("PayloadSize")).Value()
 
-        has_payload_size_mismatch = payload_size != self.data_stream.AnnouncedBuffers()[0].Size()
+        has_payload_size_mismatch = payload_size != \
+                                    self.data_stream.AnnouncedBuffers()[
+                                        0].Size()
 
         # The payload size might have changed. In this case it's required to reallocate the buffers.
         if has_payload_size_mismatch:
@@ -114,10 +117,12 @@ class ReconnectExample:
                 self.data_stream.StartAcquisition()
 
         if not reconnect_information.IsRemoteDeviceAcquisitionRunning():
-            self.remote_nodemap.FindNode("AcquisitionStart").Execute()
+            cast(ids_peak.CommandNode,
+                 self.remote_nodemap.FindNode("AcquisitionStart")).Execute()
 
     def device_reconnected(
-        self, device: ids_peak.Device, reconnect_information: ids_peak.DeviceReconnectInformation
+            self, device: ids_peak.Device,
+            reconnect_information: ids_peak.DeviceReconnectInformation
     ) -> None:
         """
         When a device that was opened by the same application instance regains connection
@@ -144,7 +149,8 @@ class ReconnectExample:
             # Device was reconnected successfully, nothing to do.
             return
 
-        self.ensure_compatible_buffers_and_restart_acquisition(reconnect_information)
+        self.ensure_compatible_buffers_and_restart_acquisition(
+            reconnect_information)
 
     @staticmethod
     def device_disconnected(device: ids_peak.DeviceDescriptor) -> None:
@@ -163,45 +169,49 @@ class ReconnectExample:
         """
         # ids_peak provides several events that you can subscribe to in order
         # to be notified when the connection status of a device changes.
-        self.device_found_callback = self.device_manager.DeviceFoundCallback(self.device_found)
+        self.device_found_callback = self.device_manager.DeviceFoundCallback(
+            self.device_found)
         self.device_found_callback_handle = self.device_manager.RegisterDeviceFoundCallback(
-                self.device_found_callback
-                )
+            self.device_found_callback
+        )
 
-        self.device_lost_callback = self.device_manager.DeviceLostCallback(self.device_lost)
+        self.device_lost_callback = self.device_manager.DeviceLostCallback(
+            self.device_lost)
         self.device_lost_callback_handle = self.device_manager.RegisterDeviceLostCallback(
-                self.device_lost_callback
-                )
+            self.device_lost_callback
+        )
 
         self.device_reconnected_callback = self.device_manager.DeviceReconnectedCallback(
-                self.device_reconnected
-                )
+            self.device_reconnected
+        )
         self.device_reconnected_callback_handle = (
-                self.device_manager.RegisterDeviceReconnectedCallback(
-                    self.device_reconnected_callback)
-                )
+            self.device_manager.RegisterDeviceReconnectedCallback(
+                self.device_reconnected_callback)
+        )
 
         self.device_disconnected_callback = self.device_manager.DeviceDisconnectedCallback(
-                self.device_disconnected
-                )
+            self.device_disconnected
+        )
         self.device_disconnected_callback_handle = (
-                self.device_manager.RegisterDeviceDisconnectedCallback(
-                    self.device_disconnected_callback
-                    )
-                )
+            self.device_manager.RegisterDeviceDisconnectedCallback(
+                self.device_disconnected_callback
+            )
+        )
 
     def unregister_callbacks(self) -> None:
         """
         Unregister the registered callbacks inside the Devicemanager
         """
-        self.device_manager.UnregisterDeviceFoundCallback(self.device_found_callback_handle)
-        self.device_manager.UnregisterDeviceLostCallback(self.device_lost_callback_handle)
+        self.device_manager.UnregisterDeviceFoundCallback(
+            self.device_found_callback_handle)
+        self.device_manager.UnregisterDeviceLostCallback(
+            self.device_lost_callback_handle)
         self.device_manager.UnregisterDeviceReconnectedCallback(
-                self.device_reconnected_callback_handle
-                )
+            self.device_reconnected_callback_handle
+        )
         self.device_manager.UnregisterDeviceDisconnectedCallback(
-                self.device_disconnected_callback_handle
-                )
+            self.device_disconnected_callback_handle
+        )
 
     def run_acquisition_loop(self) -> None:
         """
@@ -213,19 +223,25 @@ class ReconnectExample:
 
         # Lock writable nodes, which could influence the payload size or
         # similar information during acquisition.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(1)
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         self.data_stream.StartAcquisition()
-        self.remote_nodemap.FindNode("AcquisitionStart").Execute()
-        self.remote_nodemap.FindNode("AcquisitionStart").WaitUntilDone()
+        acquisition_start_node = cast(
+            ids_peak.CommandNode,
+            self.remote_nodemap.FindNode("AcquisitionStart"))
+        acquisition_start_node.Execute()
+        acquisition_start_node.WaitUntilDone()
 
         self.acquisition_running = True
         print("Starting acquisition...")
-        print("Now you can disconnect or reboot the device to trigger a reconnect!")
+        print(
+            "Now you can disconnect or reboot the device to trigger a reconnect!")
         while self.acquisition_running:
             try:
                 # Wait for the finished/filled buffer event.
-                buffer = self.data_stream.WaitForFinishedBuffer(ids_peak.Timeout.INFINITE_TIMEOUT)
+                buffer = self.data_stream.WaitForFinishedBuffer(
+                    ids_peak.Timeout.INFINITE_TIMEOUT)
                 print(f"Received FrameID: {buffer.FrameID()}")
                 # Put the buffer back in the pool, so it can be filled again.
                 self.data_stream.QueueBuffer(buffer)
@@ -236,12 +252,16 @@ class ReconnectExample:
                 print(f"Exception: {e}")
 
         print("Stopping acquisition...")
-        self.remote_nodemap.FindNode("AcquisitionStop").Execute()
-        self.remote_nodemap.FindNode("AcquisitionStop").WaitUntilDone()
+        acquisition_stop_node = cast(
+            ids_peak.CommandNode,
+            self.remote_nodemap.FindNode("AcquisitionStop"))
+        acquisition_stop_node.Execute()
+        acquisition_stop_node.WaitUntilDone()
         self.data_stream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
 
         # Unlock writable nodes again. See `Lock writable nodes`.
-        self.remote_nodemap.FindNode("TLParamsLocked").SetValue(0)
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
     def open_device(self) -> None:
         # Open the first openable device.
@@ -274,12 +294,14 @@ class ReconnectExample:
         if self.device is None:
             raise RuntimeError("Device is not opened!")
 
-        system_node_map = self.device.ParentInterface().ParentSystem().NodeMaps()[0]
+        system_node_map = \
+            self.device.ParentInterface().ParentSystem().NodeMaps()[0]
 
         if not system_node_map.HasNode("ReconnectEnable"):
             raise RuntimeError("No ReconnectEnable Node found!")
 
-        reconnect_enable_node = system_node_map.FindNode("ReconnectEnable")
+        reconnect_enable_node = cast(
+            ids_peak.BooleanNode, system_node_map.FindNode("ReconnectEnable"))
         reconnect_enable_access_status = reconnect_enable_node.AccessStatus()
 
         if reconnect_enable_access_status == ids_peak.NodeAccessStatus_ReadWrite:
@@ -297,16 +319,22 @@ class ReconnectExample:
         if self.remote_nodemap is None:
             raise RuntimeError("Device is not opened!")
 
-        self.remote_nodemap.FindNode("UserSetSelector").SetCurrentEntry("Default")
-        self.remote_nodemap.FindNode("UserSetLoad").Execute()
-        self.remote_nodemap.FindNode("UserSetLoad").WaitUntilDone()
+        cast(ids_peak.EnumerationNode,
+             self.remote_nodemap.FindNode("UserSetSelector")).SetCurrentEntry(
+            "Default")
+        user_set_load_node = cast(
+            ids_peak.CommandNode, self.remote_nodemap.FindNode("UserSetLoad"))
+        user_set_load_node.Execute()
+        user_set_load_node.WaitUntilDone()
 
     def alloc_buffers(self) -> None:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
         # Buffer size
-        payload_size = self.remote_nodemap.FindNode("PayloadSize").Value()
+        payload_size = cast(
+            ids_peak.IntegerNode,
+            self.remote_nodemap.FindNode("PayloadSize")).Value()
 
         # Minimum number of required buffers
         buffer_count_max = self.data_stream.NumBuffersAnnouncedMinRequired()
@@ -335,8 +363,10 @@ class ReconnectExample:
 
         # In order to restart the acquistion additonal steps are required:
         # see "The payload size might have changed." above.
-        self.remote_nodemap.FindNode("Height").SetValue(512)
-        self.remote_nodemap.FindNode("Width").SetValue(512)
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("Height")).SetValue(512)
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("Width")).SetValue(512)
 
     def run(self) -> None:
         try:

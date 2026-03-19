@@ -33,7 +33,7 @@ Example:
 """
 
 import sys
-from typing import cast
+from typing import cast, Any
 
 from ids_peak import ids_peak
 
@@ -51,16 +51,26 @@ class FirmwareUpdateExample:
     def __init__(self) -> None:
         self.device_manager = ids_peak.DeviceManager.Instance()
 
-        self.update_started_callback = None
-        self.update_started_callback_handle = None
-        self.update_finished_callback = None
-        self.update_finished_callback_handle = None
-        self.update_failed_callback = None
-        self.update_failed_callback_handle = None
-        self.update_step_started_callback = None
-        self.update_step_started_callback_handle = None
-        self.update_step_progress_callback = None
-        self.update_step_progress_callback_handle = None
+        self.update_started_callback: (
+                ids_peak.FirmwareUpdateProgressObserver.UpdateStartedCallback
+                | None) = None
+        self.update_started_callback_handle: Any = None
+        self.update_finished_callback: (
+                ids_peak.FirmwareUpdateProgressObserver.UpdateFinishedCallback
+                | None) = None
+        self.update_finished_callback_handle: Any = None
+        self.update_failed_callback: (
+                ids_peak.FirmwareUpdateProgressObserver.UpdateFailedCallback
+                | None) = None
+        self.update_failed_callback_handle: Any = None
+        self.update_step_started_callback: (
+                ids_peak.FirmwareUpdateProgressObserver.UpdateStepStartedCallback
+                | None) = None
+        self.update_step_started_callback_handle: Any = None
+        self.update_step_progress_callback: (
+                ids_peak.FirmwareUpdateProgressObserver.UpdateStepProgressChangedCallback
+                | None) = None
+        self.update_step_progress_callback_handle: Any = None
 
     def run_updates(self, guf_path: str) -> None:
         """
@@ -109,7 +119,7 @@ class FirmwareUpdateExample:
             updater.UpdateDevice(device, update_information, observer)
 
     def register_callbacks(
-        self, device: ids_peak.Device, observer: ids_peak.FirmwareUpdateProgressObserver
+        self, device: ids_peak.DeviceDescriptor, observer: ids_peak.FirmwareUpdateProgressObserver
     ) -> None:
         """
         Register callback functions to receive firmware update progress for a device.

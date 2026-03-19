@@ -14,10 +14,11 @@
 from __future__ import annotations
 
 import sys
-from typing import Optional
+from typing import Optional, cast
 import threading
 
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QMainWindow, QMessageBox, QWidget
+from PySide6.QtWidgets import (QHBoxLayout, QVBoxLayout, QLabel, QMainWindow,
+                               QMessageBox, QWidget)
 from PySide6.QtGui import QImage, QCloseEvent
 from PySide6.QtCore import Qt, Slot, Signal
 
@@ -27,7 +28,6 @@ import ids_peak_icv
 from ids_peak_icv.pipeline import DefaultPipeline
 
 from display import Display
-
 
 TARGET_PIXEL_FORMAT = PixelFormat.BGRA_8
 
@@ -77,10 +77,12 @@ class MainWindow(QMainWindow):
                 self._layout.addWidget(self._display)
                 if not self._start_acquisition():
                     QMessageBox.critical(
-                        self, "Error", "Unable to start acquisition!", QMessageBox.StandardButton.Ok
+                        self, "Error", "Unable to start acquisition!",
+                        QMessageBox.StandardButton.Ok
                     )
             except Exception as e:
-                QMessageBox.critical(self, "Exception", str(e), QMessageBox.StandardButton.Ok)
+                QMessageBox.critical(self, "Exception", str(e),
+                                     QMessageBox.StandardButton.Ok)
 
         else:
             self._destroy_all()
@@ -129,30 +131,34 @@ class MainWindow(QMainWindow):
             device_manager.Update()
 
             # Return if no device was found.
-            if device_manager.Devices().empty():
+            if len(device_manager.Devices()) == 0:
                 QMessageBox.critical(
-                    self, "Error", "No device found!", QMessageBox.StandardButton.Ok
+                    self, "Error", "No device found!",
+                    QMessageBox.StandardButton.Ok
                 )
                 return False
 
             # Open the first openable device in the managers device list.
             for device in device_manager.Devices():
                 if device.IsOpenable():
-                    self._device = device.OpenDevice(ids_peak.DeviceAccessType_Control)
+                    self._device = device.OpenDevice(
+                        ids_peak.DeviceAccessType_Control)
                     break
 
             # Return if no device could be opened.
             if self._device is None:
                 QMessageBox.critical(
-                    self, "Error", "Device could not be opened!", QMessageBox.StandardButton.Ok
+                    self, "Error", "Device could not be opened!",
+                    QMessageBox.StandardButton.Ok
                 )
                 return False
 
             # Open standard data stream
             datastreams = self._device.DataStreams()
-            if datastreams.empty():
+            if len(datastreams) == 0:
                 QMessageBox.critical(
-                    self, "Error", "Device has no DataStream!", QMessageBox.StandardButton.Ok
+                    self, "Error", "Device has no DataStream!",
+                    QMessageBox.StandardButton.Ok
                 )
                 self._device = None
                 return False
@@ -165,20 +171,28 @@ class MainWindow(QMainWindow):
             # on the device itself, primarily following the GenICam Standard Feature
             # Naming Convention (SFNC), while also supporting custom nodes to accommodate
             # device-specific features.
-            self._nodemap_remote_device = self._device.RemoteDevice().NodeMaps()[0]
+            self._nodemap_remote_device = \
+                self._device.RemoteDevice().NodeMaps()[0]
 
             # To prepare for untriggered continuous image acquisition, load the default
             # user set if available and wait until execution is finished
             try:
-                self._nodemap_remote_device.FindNode("UserSetSelector").SetCurrentEntry("Default")
-                self._nodemap_remote_device.FindNode("UserSetLoad").Execute()
-                self._nodemap_remote_device.FindNode("UserSetLoad").WaitUntilDone()
+                cast(ids_peak.EnumerationNode,
+                     self._nodemap_remote_device.FindNode(
+                         "UserSetSelector")).SetCurrentEntry("Default")
+                user_set_load_node = cast(
+                    ids_peak.CommandNode,
+                    self._nodemap_remote_device.FindNode("UserSetLoad"))
+                user_set_load_node.Execute()
+                user_set_load_node.WaitUntilDone()
             except ids_peak.Exception:
                 # Userset is not available
                 pass
 
             # Get the payload size for correct buffer allocation
-            payload_size = self._nodemap_remote_device.FindNode("PayloadSize").Value()
+            payload_size = cast(
+                ids_peak.IntegerNode,
+                self._nodemap_remote_device.FindNode("PayloadSize")).Value()
 
             # Get minimum number of buffers that must be announced
             buffer_count_max = self._datastream.NumBuffersAnnouncedMinRequired()
@@ -192,7 +206,8 @@ class MainWindow(QMainWindow):
 
             return True
         except ids_peak.Exception as e:
-            QMessageBox.critical(self, "Exception", str(e), QMessageBox.StandardButton.Ok)
+            QMessageBox.critical(self, "Exception", str(e),
+                                 QMessageBox.StandardButton.Ok)
 
         return False
 
@@ -209,7 +224,8 @@ class MainWindow(QMainWindow):
                 for buffer in self._datastream.AnnouncedBuffers():
                     self._datastream.RevokeBuffer(buffer)
             except Exception as e:
-                QMessageBox.information(self, "Exception", str(e), QMessageBox.StandardButton.Ok)
+                QMessageBox.information(self, "Exception", str(e),
+                                        QMessageBox.StandardButton.Ok)
 
     def _start_acquisition(self) -> bool:
         """
@@ -224,11 +240,14 @@ class MainWindow(QMainWindow):
             return True
 
         # Sets the target frame rate or maximum if target frame rate is to high
-        target_fps = 30
+        target_fps = 30.0
         try:
-            max_fps = self._nodemap_remote_device.FindNode("AcquisitionFrameRate").Maximum()
+            frame_rate_node = cast(
+                ids_peak.FloatNode,
+                self._nodemap_remote_device.FindNode("AcquisitionFrameRate"))
+            max_fps = frame_rate_node.Maximum()
             target_fps = min(max_fps, target_fps)
-            self._nodemap_remote_device.FindNode("AcquisitionFrameRate").SetValue(target_fps)
+            frame_rate_node.SetValue(target_fps)
         except ids_peak.Exception:
             # `AcquisitionFrameRate` is not available. Unable to limit fps.
             # Print warning and continue.
@@ -243,18 +262,23 @@ class MainWindow(QMainWindow):
         try:
             # Lock writable nodes, which could influence the payload size or
             # similar information during acquisition.
-            self._nodemap_remote_device.FindNode("TLParamsLocked").SetValue(1)
+            cast(ids_peak.IntegerNode, self._nodemap_remote_device.FindNode(
+                "TLParamsLocked")).SetValue(1)
 
             # Start acquisition both locally and on device.
             self._datastream.StartAcquisition()
-            self._nodemap_remote_device.FindNode("AcquisitionStart").Execute()
-            self._nodemap_remote_device.FindNode("AcquisitionStart").WaitUntilDone()
+            acquisition_start_node = cast(
+                ids_peak.CommandNode,
+                self._nodemap_remote_device.FindNode("AcquisitionStart"))
+            acquisition_start_node.Execute()
+            acquisition_start_node.WaitUntilDone()
         except Exception as e:
             print("Exception: " + str(e))
             return False
 
         # Start the acquisition worker
-        self._worker_thread = threading.Thread(target=self._acquisition_worker, daemon=True)
+        self._worker_thread = threading.Thread(target=self._acquisition_worker,
+                                               daemon=True)
         self._worker_thread.start()
 
         self._acquisition_running = True
@@ -267,24 +291,26 @@ class MainWindow(QMainWindow):
         """
         # Check that a device is opened and that the acquisition is running. If not, return.
         if (
-            self._device is None
-            or self._nodemap_remote_device is None
-            or self._datastream is None
-            or self._worker_thread is None
-            or not self._acquisition_running
+                self._device is None
+                or self._nodemap_remote_device is None
+                or self._datastream is None
+                or self._worker_thread is None
+                or not self._acquisition_running
         ):
             return
 
         # Otherwise try to stop acquisition
         try:
-            self._nodemap_remote_device.FindNode("AcquisitionStop").Execute()
+            cast(ids_peak.CommandNode, self._nodemap_remote_device.FindNode(
+                "AcquisitionStop")).Execute()
 
             # Stop and flush the `DataStream`.
             # `KillWait` will cancel pending `WaitForFinishedBuffer` calls.
             # NOTE: One call to `KillWait` will cancel one pending `WaitForFinishedBuffer`.
             #       For more information, refer to the documentation of `KillWait`.
             self._datastream.KillWait()
-            self._datastream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
+            self._datastream.StopAcquisition(
+                ids_peak.AcquisitionStopMode_Default)
 
             # Wait for the acquisition worker thread to finish
             self._worker_thread.join()
@@ -296,7 +322,9 @@ class MainWindow(QMainWindow):
             # Unlock parameters after acquisition stop
             if self._nodemap_remote_device is not None:
                 try:
-                    self._nodemap_remote_device.FindNode("TLParamsLocked").SetValue(0)
+                    cast(ids_peak.IntegerNode,
+                         self._nodemap_remote_device.FindNode(
+                             "TLParamsLocked")).SetValue(0)
                 except Exception as e:
                     QMessageBox.information(
                         self, "Exception", str(e), QMessageBox.StandardButton.Ok
@@ -304,7 +332,8 @@ class MainWindow(QMainWindow):
             self._acquisition_running = False
 
         except Exception as e:
-            QMessageBox.information(self, "Exception", str(e), QMessageBox.StandardButton.Ok)
+            QMessageBox.information(self, "Exception", str(e),
+                                    QMessageBox.StandardButton.Ok)
 
     def _create_statusbar(self) -> None:
         status_bar = QWidget(self.centralWidget())
@@ -320,7 +349,8 @@ class MainWindow(QMainWindow):
         self._label_aboutqt.setObjectName("aboutQt")
         self._label_aboutqt.setText("<a href='#aboutQt'>About Qt</a>")
         self._label_aboutqt.setAlignment(Qt.AlignmentFlag.AlignRight)
-        self._label_aboutqt.linkActivated.connect(self._on_aboutqt_link_activated)
+        self._label_aboutqt.linkActivated.connect(
+            self._on_aboutqt_link_activated)
         status_bar_layout.addWidget(self._label_aboutqt)
         status_bar.setLayout(status_bar_layout)
 
@@ -332,7 +362,8 @@ class MainWindow(QMainWindow):
         """
         if self._label_infos:
             self._label_infos.setText(
-                "Acquired: " + str(self._frame_counter) + ", Errors: " + str(self._error_counter)
+                "Acquired: " + str(self._frame_counter) + ", Errors: " + str(
+                    self._error_counter)
             )
 
     def _acquisition_worker(self) -> None:
@@ -347,7 +378,8 @@ class MainWindow(QMainWindow):
         while True:
             try:
                 # Get buffer from device's datastream
-                buffer = self._datastream.WaitForFinishedBuffer(ids_peak.Timeout(5000))
+                buffer = self._datastream.WaitForFinishedBuffer(
+                    ids_peak.Timeout(5000))
 
                 # Convert the acquired buffer to an image view.
                 # The ImageView defines a standard way to access image properties and raw pixel
@@ -366,7 +398,8 @@ class MainWindow(QMainWindow):
                 # Get raw image data from converted image and construct a QImage from it.
                 data = converted_image.to_numpy_array().data
                 image = QImage(
-                    data, converted_image.width, converted_image.height, QImage.Format.Format_RGB32
+                    data, converted_image.width, converted_image.height,
+                    QImage.Format.Format_RGB32
                 )
 
                 # Make an explicit copy of the QImage to ensure the underlying
