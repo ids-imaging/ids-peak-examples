@@ -3,9 +3,32 @@
 import re
 import sys
 from pathlib import Path
+import fnmatch
 
 TARGET_DIRS = ["python", "cpp", "csharp"]
 HEADER = "## Included Examples"
+
+SCRIPT_DIR = Path(__file__).parent
+IGNORE_FILE = SCRIPT_DIR / ".check_readme_examples_ignore"
+
+
+def load_ignore_patterns() -> list[str]:
+    if not IGNORE_FILE.exists():
+        return []
+    return [
+        line.strip()
+        for line in IGNORE_FILE.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+
+
+def filter_ignored(folders: set[str], patterns: list[str]) -> set[str]:
+    result = set()
+    for f in folders:
+        if any(fnmatch.fnmatch(f, pat) for pat in patterns):
+            continue
+        result.add(f)
+    return result
 
 
 def get_section(text: str) -> str:
@@ -41,6 +64,11 @@ def check_directory(base: Path) -> bool:
 
     readme_entries = parse_entries(section)
     actual_folders = get_subfolders(base)
+
+    # Apply ignore patterns
+    ignore_patterns = load_ignore_patterns()
+    actual_folders = filter_ignored(actual_folders, ignore_patterns)
+    readme_entries = filter_ignored(readme_entries, ignore_patterns)
 
     missing_in_readme = actual_folders - readme_entries
     missing_folders = readme_entries - actual_folders
