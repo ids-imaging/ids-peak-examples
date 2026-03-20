@@ -45,11 +45,14 @@ python3 example_name.py
 
 ## Included Examples
 
-- [Firmware Update](firmware_update) Shows how to programatically update the firmware of a device.
-- [DefaultPipeline (Gui: Kivy)](gui_kivy_pipeline)
+### GUI examples
+- [Pipeline (Kivy)](gui_kivy_pipeline)
   Shows how the image pipeline can be applied to process camera images. Pipeline settings can be saved and loaded,
   allowing, for example, easy transfer of settings to and from the `IDS peak Cockpit`.
-- [Simple Live (Gui: QtWidgets)](gui_qtwidgets_simple_live) This example shows how to use QtWidgets to display a live image.
+- [Simple Live (QtWidgets)](gui_qtwidgets_simple_live) This example shows how to use QtWidgets to display a live image.
+
+### CLI examples
+- [Firmware Update](firmware_update) Shows how to programatically update the firmware of a device.
 - [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
   and `IDS peak ICV`.
 - [Open Camera](open_camera) Shows how to enumerate devices and access device information.
