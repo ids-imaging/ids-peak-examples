@@ -36,8 +36,6 @@ This example requires:
 > to provide the drivers and GenTL libraries for device access.
 
 
-Here is a **much more concise, example-specific version** that keeps the same meaning but strips everything down to what users actually need to know and type:
-
 ## Build Instructions
 
 The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
