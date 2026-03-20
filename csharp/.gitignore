@@ -47,3 +47,7 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# IDE settings
+*.idea/
+*.user
