@@ -1,37 +1,32 @@
-/// <summary>
-/// This sample demonstrates how to use the IDS peak DeviceManager to discover,
-/// select, and open a camera. After opening the device with control access,
-/// basic device information is retrieved from the remote GenICam node map.
-/// </summary>
-/// <license>
-/// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
-///
-/// Permission to use, copy, modify, and/or distribute this software for
-/// any purpose with or without fee is hereby granted.
-///
-/// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
-/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
-/// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
-/// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
-/// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
-/// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-/// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-/// </license>
+// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
+//
+// Permission to use, copy, modify, and/or distribute this software for
+// any purpose with or without fee is hereby granted.
+//
+// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 
 namespace IDSImaging.Peak.Samples.OpenCamera
 {
+    /// <summary>
+    /// This sample demonstrates how to use the IDS peak DeviceManager to discover,
+    /// select, and open a camera. After opening the device with control access,
+    /// basic device information is retrieved from the remote GenICam node map.
+    /// </summary>
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // The library must be initialized before use.
             // Each call to `Initialize` must be matched with a corresponding call to `Close`.
@@ -79,10 +74,9 @@ namespace IDSImaging.Peak.Samples.OpenCamera
                 }
 
                 // Select a device to open.
-                int selectedDevice = 0;
                 // Prompt user for device index or remove this block to always use the first device.
                 Console.WriteLine("\nSelect device to open: ");
-                if (!int.TryParse(Console.ReadLine(), out selectedDevice))
+                if (!int.TryParse(Console.ReadLine(), out var selectedDevice))
                 {
                     Console.WriteLine("Invalid input — using device 0.");
                     selectedDevice = 0;
@@ -144,7 +138,7 @@ namespace IDSImaging.Peak.Samples.OpenCamera
             Console.ReadKey();
         }
 
-        static string TryReadString(NodeMap nodeMap, string nodeName)
+        private static string TryReadString(NodeMap nodeMap, string nodeName)
         {
             try
             {

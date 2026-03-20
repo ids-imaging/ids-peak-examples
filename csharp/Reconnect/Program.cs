@@ -1,36 +1,33 @@
-/// <summary>
-/// The Reconnect sample demonstrates how to detect device connection changes
-/// and reliably handle temporary disconnections in a C# application using the
-/// IDS peak API. It shows how to monitor device removal, loss of connection,
-/// and subsequent reconnection, and how to safely resume image acquisition
-/// once the device becomes available again.
-/// </summary>
-/// <license>
-/// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
-///
-/// Permission to use, copy, modify, and/or distribute this software for
-/// any purpose with or without fee is hereby granted.
-///
-/// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
-/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
-/// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
-/// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
-/// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
-/// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-/// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-/// </license>
+// Copyright (C) 2026, IDS Imaging Development Systems GmbH.
+//
+// Permission to use, copy, modify, and/or distribute this software for
+// any purpose with or without fee is hereby granted.
+//
+// THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+// OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+// FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+// DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+// AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+// OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 using System;
-
 using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 
 namespace IDSImaging.Peak.Samples.Reconnect
 {
-    internal class Program
+    /// <summary>
+    /// The Reconnect sample demonstrates how to detect device connection changes
+    /// and reliably handle temporary disconnections in a C# application using the
+    /// IDS peak API. It shows how to monitor device removal, loss of connection,
+    /// and subsequent reconnection, and how to safely resume image acquisition
+    /// once the device becomes available again.
+    /// </summary>
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // The library must be initialized before use.
             // Each call to `Initialize` must be matched with a corresponding call to `Close`.
@@ -42,7 +39,6 @@ namespace IDSImaging.Peak.Samples.Reconnect
                 // WARNING: `using` the device manager instance would result
                 //          in breaking the singleton
                 var deviceManager = DeviceManager.Instance();
-                bool acquisitionRunning = false;
 
                 // IDSImaging.Peak.API provides several events that you can subscribe to in order
                 // to be notified when the connection status of a device changes.
@@ -161,7 +157,7 @@ namespace IDSImaging.Peak.Samples.Reconnect
 
                 dataStream.StartAcquisition();
                 remoteDeviceNodeMap.FindNode<CommandNode>("AcquisitionStart").Execute();
-                acquisitionRunning = true;
+                var acquisitionRunning = true;
 
                 Console.CancelKeyPress += (sender, eventArgs) =>
                 {
@@ -200,21 +196,21 @@ namespace IDSImaging.Peak.Samples.Reconnect
             }
         }
 
-        static void EnsureCompatibleBuffersAndRestartAcquisition(DeviceDescriptor reconnectedDevice, DeviceReconnectInformation reconnectInformation)
+        private static void EnsureCompatibleBuffersAndRestartAcquisition(DeviceDescriptor reconnectedDevice, DeviceReconnectInformation reconnectInformation)
         {
             using var device = reconnectedDevice.OpenedDevice();
             using var remoteDeviceNodeMap = device.RemoteDevice().NodeMaps()[0];
             using var dataStream = device.DataStreams()[0].OpenedDataStream();
             var payloadSize = (uint) remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
 
-            bool hasPayloadSizeMismatch = payloadSize != dataStream.AnnouncedBuffers()[0].Size();
+            var hasPayloadSizeMismatch = payloadSize != dataStream.AnnouncedBuffers()[0].Size();
 
             // The payload size might have changed. In this case it's required to reallocate the buffers.
             if (hasPayloadSizeMismatch)
             {
                 Console.WriteLine("PayloadSize has changed. Reallocating buffers...");
 
-                bool isDataSteamGrabbing = dataStream.IsGrabbing();
+                var isDataSteamGrabbing = dataStream.IsGrabbing();
                 if (isDataSteamGrabbing)
                 {
                     dataStream.StopAcquisition();
@@ -234,7 +230,7 @@ namespace IDSImaging.Peak.Samples.Reconnect
                 // Allocate and queue the buffers using the new "PayloadSize".
                 var minBuffers = dataStream.NumBuffersAnnouncedMinRequired();
                 var numBuffers = Math.Max(minBuffers, numBuffersBefore);
-                for (int i = 0; i < numBuffers; i++)
+                for (var i = 0; i < numBuffers; i++)
                 {
                     var buffer = dataStream.AllocAndAnnounceBuffer(payloadSize, IntPtr.Zero);
                     dataStream.QueueBuffer(buffer);
@@ -253,7 +249,7 @@ namespace IDSImaging.Peak.Samples.Reconnect
 
         }
 
-        static bool EnableReconnect(NodeMap systemNodeMap)
+        private static bool EnableReconnect(NodeMap systemNodeMap)
         {
             if (!systemNodeMap.HasNode("ReconnectEnable"))
             {
