@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReconnectFramework", "Recon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmwareUpdateFramework", "FirmwareUpdate\FirmwareUpdateFramework.csproj", "{EA3F1744-D9E2-4B50-B0BA-4ACF591AF83C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicastFramework", "Unicast\UnicastFramework.csproj", "{88941A40-03F4-46AA-8771-7A1FCA98AB97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -40,6 +42,14 @@ Global
 		{EA3F1744-D9E2-4B50-B0BA-4ACF591AF83C}.Release|x64.Build.0 = Release|x64
 		{EA3F1744-D9E2-4B50-B0BA-4ACF591AF83C}.Release|x86.ActiveCfg = Release|x86
 		{EA3F1744-D9E2-4B50-B0BA-4ACF591AF83C}.Release|x86.Build.0 = Release|x86
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Debug|x64.ActiveCfg = Debug|x64
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Debug|x64.Build.0 = Debug|x64
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Debug|x86.ActiveCfg = Debug|x86
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Debug|x86.Build.0 = Debug|x86
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Release|x64.ActiveCfg = Release|x64
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Release|x64.Build.0 = Release|x64
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Release|x86.ActiveCfg = Release|x86
+		{88941A40-03F4-46AA-8771-7A1FCA98AB97}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
