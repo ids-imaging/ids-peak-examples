@@ -9,6 +9,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmwareUpdateFramework", "FirmwareUpdate\FirmwareUpdateFramework.csproj", "{EA3F1744-D9E2-4B50-B0BA-4ACF591AF83C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicastFramework", "Unicast\UnicastFramework.csproj", "{88941A40-03F4-46AA-8771-7A1FCA98AB97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLiveWindowsFormsFramework", "SimpleLiveWindowsForms\SimpleLiveWindowsFormsFramework.csproj", "{ABBCE9C6-C990-4D03-9312-D503FFE852DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineFramework", "Pipeline\PipelineFramework.csproj", "{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}"
 EndProject
@@ -60,6 +61,14 @@ Global
 		{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}.Release|x64.Build.0 = Release|x64
 		{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}.Release|x86.ActiveCfg = Release|x86
 		{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}.Release|x86.Build.0 = Release|x86
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Debug|x64.ActiveCfg = Debug|x64
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Debug|x64.Build.0 = Debug|x64
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Debug|x86.ActiveCfg = Debug|x86
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Debug|x86.Build.0 = Debug|x86
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x64.ActiveCfg = Release|x64
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x64.Build.0 = Release|x64
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x86.ActiveCfg = Release|x86
+		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

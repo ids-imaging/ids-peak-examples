@@ -80,6 +80,8 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
 - [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
+- [SimpleLiveWindowsForms](SimpleLiveWindowsForms) Windows Forms application demonstrating a basic
+  live camera image viewer.
 - [Unicast](Unicast) This example demonstrates how to use the unicast discovery features of the
   transport layer (TL) to locate cameras that are not in the same subnet as the host system.
 - [Pipeline](Pipeline) This command-line example demonstrates how to use the image processing pipeline.
