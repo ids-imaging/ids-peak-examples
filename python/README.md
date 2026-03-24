@@ -55,6 +55,8 @@ python3 example_name.py
 - [Firmware Update](firmware_update) Shows how to programatically update the firmware of a device.
 - [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
   and `IDS peak ICV`.
+- [Node Polling](node_polling) Shows how node polling is used to regularly invalidate GenICam nodes that implement
+- the PollingTime feature, ensuring that cached values stay up to date.
 - [Open Camera](open_camera) Shows how to enumerate devices and access device information.
 - [Reconnect](reconnect) Shows how to use the automatic device reconnect feature of the IDS peak API and how to react to connection state changes.
 - [Record Video](record_video) Shows how to use the VideoWriter of the IDS peak IPL to create a video sequence.
