@@ -1,2 +1,16 @@
-build*
-cmake-build*
+# cmake
+*build*/
+bin/
+obj/
+
+# python
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# visual studio
+.vs/
+*.user
+
+# intellij
+.idea/
