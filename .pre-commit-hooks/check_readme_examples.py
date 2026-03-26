@@ -18,17 +18,27 @@ def load_ignore_patterns() -> list[str]:
     return [
         line.strip()
         for line in IGNORE_FILE.read_text(encoding="utf-8").splitlines()
-        if line.strip() and not line.startswith("#")
+        if line.strip() and not line.strip().startswith("#")
     ]
 
 
-def filter_ignored(folders: set[str], patterns: list[str]) -> set[str]:
-    result = set()
-    for f in folders:
-        if any(fnmatch.fnmatch(f, pat) for pat in patterns):
-            continue
-        result.add(f)
-    return result
+def is_ignored(path: Path, patterns: list[str], base: Path) -> bool:
+    rel_path = path.relative_to(base).as_posix()
+
+    for pat in patterns:
+        pat = pat.strip()
+
+        # Directory pattern (e.g. "bin/" or "*build*/")
+        if pat.endswith("/"):
+            dir_pat = pat.rstrip("/")
+            if path.is_dir() and fnmatch.fnmatch(path.name, dir_pat):
+                return True
+
+        # General pattern (match anywhere in path)
+        if fnmatch.fnmatch(rel_path, pat) or fnmatch.fnmatch(path.name, pat):
+            return True
+
+    return False
 
 
 def get_section(text: str) -> str:
@@ -40,12 +50,27 @@ def parse_entries(section: str) -> set[str]:
     return set(re.findall(r"\[.*?\]\((.*?)\)", section))
 
 
-def get_subfolders(path: Path) -> set[str]:
-    return {
-        p.name
-        for p in path.iterdir()
-        if p.is_dir() and not p.name.startswith(".")
-    }
+def folder_has_relevant_items(folder: Path, ignore_patterns: list[str], base: Path) -> bool:
+    for p in folder.iterdir():
+        if not is_ignored(p, ignore_patterns, base):
+            return True
+    return False
+
+
+def get_subfolders(path: Path, ignore_patterns: list[str]) -> set[str]:
+    result = set()
+
+    for p in path.iterdir():
+        if not p.is_dir() or p.name.startswith("."):
+            continue
+
+        if is_ignored(p, ignore_patterns, path):
+            continue
+
+        if folder_has_relevant_items(p, ignore_patterns, path):
+            result.add(p.name)
+
+    return result
 
 
 def check_directory(base: Path) -> bool:
@@ -62,13 +87,10 @@ def check_directory(base: Path) -> bool:
         print(f"{base}: Missing '{HEADER}' section")
         return False
 
-    readme_entries = parse_entries(section)
-    actual_folders = get_subfolders(base)
-
-    # Apply ignore patterns
     ignore_patterns = load_ignore_patterns()
-    actual_folders = filter_ignored(actual_folders, ignore_patterns)
-    readme_entries = filter_ignored(readme_entries, ignore_patterns)
+
+    readme_entries = parse_entries(section)
+    actual_folders = get_subfolders(base, ignore_patterns)
 
     missing_in_readme = actual_folders - readme_entries
     missing_folders = readme_entries - actual_folders
