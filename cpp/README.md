@@ -31,5 +31,6 @@ cmake --build build
 
 ## Included Examples
 
+* [Get First Pixel](get_first_pixel) This example demonstrates how to acquire an image and print the value of the first pixel.
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera and `IDS peak ICV`.
 * [Open Camera](open_camera) This application demonstrates how to use the device manager to open a camera.
