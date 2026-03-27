@@ -32,3 +32,4 @@ cmake --build build
 ## Included Examples
 
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera and `IDS peak ICV`.
+* [Open Camera](open_camera) This application demonstrates how to use the device manager to open a camera.
