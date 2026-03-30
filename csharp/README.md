@@ -72,22 +72,24 @@ dotnet add package IDSImaging.Peak.<PackageName>
 
 - [Calibration From File](CalibrationFromFile) Demonstrates how to perform a camera calibration by using images from file.
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
+- [Gui-AvaloniaSimpleLive](Gui-AvaloniaSimpleLive) Demonstrates how to display a live video feed from an IDS camera in
+  a cross-platform desktop application using **Avalonia UI** and the **MVVM** pattern.
 - [HDR From File](HDRFromFile) Demonstrates how to generate a **High Dynamic Range (HDR)** image and a **tone‑mapped LDR** output.
 - [Image Region From File](ImageRegionFromFile) Command-line example demonstrating how to handle image regions.
 - [Morphology](Morphology) Demonstrates how to use morphology algorithms on regions.
 - [Nion Point Cloud](NionPointCloud) Command-line example demonstrating Nion Point Cloud acquisition.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
+- [Pipeline From File](PipelineFromFile) This command-line example demonstrates how to use the image processing pipeline.
 - [Point Cloud From File](PointCloudFromFile) Shows how to create a point cloud with mapped Mono data using
   `IDS peak ICV`.
 - [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
 - [SimpleLiveWindowsForms](SimpleLiveWindowsForms) Windows Forms application demonstrating a basic
   live camera image viewer.
-- [Threshold From File](ThresholdFromFile) Demonstrates how to apply a threshold to an image.
-- [Unicast](Unicast) This example demonstrates how to use the unicast discovery features of the
-  transport layer (TL) to locate cameras that are not in the same subnet as the host system.
-- [Pipeline From File](PipelineFromFile) This command-line example demonstrates how to use the image processing pipeline.
 - [System Timestamp](SystemTimestamp) Shows how to use the system timestamp feature in order to get a wall-clock time
   corresponding to an arbitrary device timestamp.
+- [Threshold From File](ThresholdFromFile) Demonstrates how to apply a threshold to an image.
 - [Undistortion From File](UndistortionFromFile) Demonstrates how to undistort a distorted image using precomputed camera calibration parameters.
+- [Unicast](Unicast) This example demonstrates how to use the unicast discovery features of the
+  transport layer (TL) to locate cameras that are not in the same subnet as the host system.
 - [Workspace Calibration From File](WorkspaceCalibrationFromFile) Shows how to calibrate and apply a new workspace
   using `IDS peak ICV`.
