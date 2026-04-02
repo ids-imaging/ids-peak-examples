@@ -61,4 +61,5 @@ python3 example_name.py
 - [Reconnect](reconnect) Shows how to use the automatic device reconnect feature of the IDS peak API and how to react to connection state changes.
 - [Record Video](record_video) Shows how to use the VideoWriter of the IDS peak IPL to create a video sequence.
 - [Software Trigger](software_trigger) Shows how to use the software trigger to acquire images.
+- [Threshold from file](threshold_from_file) Shows how to apply a threshold to an image.
 - [Unicast](unicast) This example demonstrates how to use the unicast discovery features of the transport layer (TL) to locate cameras that are not in the same subnet as the host system.
