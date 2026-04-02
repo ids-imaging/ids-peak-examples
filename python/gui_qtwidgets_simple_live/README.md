@@ -1,6 +1,6 @@
 # QtWidgets Simple Live
 
-![Image of the example window](image.png)
+![Image of the example window](../../doc/gui_qtwidgets_simple_live/image.png)
 
 This example shows how to display a live camera image using
 `pyside6` and QtWidgets.

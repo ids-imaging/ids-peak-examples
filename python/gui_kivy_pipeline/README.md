@@ -1,7 +1,7 @@
 # Graphical Kivy Demo Using the IDS peak DefaultPipeline
 
 
-![Image of kivy pipeline demo](image.png)
+![Image of kivy pipeline demo](../../doc/gui_kivy_pipeline/image.png)
 
 Demonstrates the new `ids-peak-icv` pixel processing pipeline together with the auto-feature module provided by `ids-peak-afl`.
 
