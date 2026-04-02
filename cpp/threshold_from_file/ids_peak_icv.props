@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+<!-- 64-bit Configuration -->
+<ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+<ClCompile>
+<AdditionalIncludeDirectories>$(IDS_PEAK_GENERIC_SDK_PATH)\icv\include;$(ids_peak_common_DIR)\..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<PreprocessorDefinitions>DATA_PATH=R"($(SolutionDir)../../data/)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+</ClCompile>
+<Link>
+<AdditionalDependencies>ids_peak_icv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+<AdditionalLibraryDirectories>$(IDS_PEAK_GENERIC_SDK_PATH)\icv\lib\x86_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+</Link>
+<PostBuildEvent>
+<Command>
+copy /Y "$(IDS_PEAK_GENERIC_SDK_PATH)\icv\lib\x86_64\*.dll" "$(SolutionDir)$(Platform)\$(Configuration)\*.dll"
+copy /Y "$(IDS_PEAK_GENERIC_SDK_PATH)\ipl\lib\x86_64\*.dll" "$(SolutionDir)$(Platform)\$(Configuration)\*.dll"
+</Command>
+</PostBuildEvent>
+</ItemDefinitionGroup>
+
+<!-- 32-bit Configuration -->
+<ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+<ClCompile>
+<AdditionalIncludeDirectories>$(IDS_PEAK_GENERIC_SDK_PATH)\icv\include;$(ids_peak_common_DIR)\..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<PreprocessorDefinitions>DATA_PATH=R"($(SolutionDir)../../data/)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+</ClCompile>
+<Link>
+<AdditionalDependencies>ids_peak_icv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+<AdditionalLibraryDirectories>$(IDS_PEAK_GENERIC_SDK_PATH)\icv\lib\x86_32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+</Link>
+<PostBuildEvent>
+<Command>
+copy /Y "$(IDS_PEAK_GENERIC_SDK_PATH)\icv\lib\x86_32\*.dll" "$(SolutionDir)$(Platform)\$(Configuration)\*.dll"
+copy /Y "$(IDS_PEAK_GENERIC_SDK_PATH)\ipl\lib\x86_32\*.dll" "$(SolutionDir)$(Platform)\$(Configuration)\*.dll"
+</Command>
+</PostBuildEvent>
+</ItemDefinitionGroup>
+
+</Project>

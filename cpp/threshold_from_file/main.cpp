@@ -1,0 +1,69 @@
+/*
+ * Copyright(C) 2026, IDS Imaging Development Systems GmbH.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for
+ * any purpose with or without fee is hereby granted.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+ * WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+ * FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+ * DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+#include <iostream>
+#include <string>
+
+#include <peak_icv/peak_icv.hpp>
+
+#ifndef DATA_PATH
+#    error "Define DATA_PATH to the examples data folder"
+#endif
+
+namespace
+{
+constexpr peak::common::Interval thresholdInterval{ 25, 255 };
+} // namespace
+
+int main()
+{
+    try
+    {
+        peak::icv::library::Init();
+
+        constexpr auto inputImageFilePath = DATA_PATH "/threshold_from_file/beads.png";
+        std::cout << "Loading image " << inputImageFilePath << std::endl;
+        const peak::icv::Image inputImage(inputImageFilePath);
+
+        // For thresholding a grayscale image is needed
+        auto intervalRange = peak::icv::Threshold::GetRange(inputImage);
+
+        std::cout << "Setting the interval [" << thresholdInterval.GetMinimum() << ", "
+                  << thresholdInterval.GetMaximum() << "] for the threshold" << " within the range of ["
+                  << intervalRange.GetMinimum() << ", " << intervalRange.GetMaximum() << "]" << std::endl;
+        peak::icv::Threshold threshold{ thresholdInterval };
+
+        auto region = threshold.Process(inputImage);
+
+        // For the painter, an 8-bit color image is needed
+        auto rgbImage = inputImage.ConvertPixelFormat(peak::common::PixelFormat::RGB8);
+
+        const peak::icv::Painter painter(rgbImage);
+        painter.Draw(region);
+
+        peak::icv::ImageWriter writer;
+        constexpr auto outputFilePath = "image_thresholded.png";
+        writer.Write(outputFilePath, rgbImage);
+        std::cout << "Saved image to " << outputFilePath << std::endl;
+
+        peak::icv::library::Exit();
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
+}
