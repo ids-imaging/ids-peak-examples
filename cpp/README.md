@@ -42,6 +42,7 @@ Open the Visual Studio Project and build it.
 * [Code Reader From File](code_reader_from_file) Shows how to read a data matrix code from an image using `IDS peak ICV`.
 * [Get First Pixel](get_first_pixel) This example demonstrates how to acquire an image and print the value of the first pixel.
 * [Image Region From File](image_region_from_file) Shows what image regions are and how to use them in `IDS peak ICV`.
+* [Morphology](morphology) Shows how to use region morphology using `IDS peak ICV`.
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera and `IDS peak ICV`.
 * [Open Camera](open_camera) This application demonstrates how to use the device manager to open a camera.
 * [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
