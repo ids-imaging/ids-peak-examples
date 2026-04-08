@@ -2,7 +2,8 @@
 
 function runSamplesInFolder()
 {
-  find "$1" -type f -executable -path "*/*_from_file/*" | while read -r sample; do
+  find "$1" -type f -executable -path "*/*_from_file/*" \
+  -o -path "*/morphology/*" | while read -r sample; do
     if [[ ! "$sample" =~ \..+$ ]]; then
       echo "Starting $sample"
       "$sample"

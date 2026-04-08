@@ -8,7 +8,8 @@ function Run-SamplesInFolder {
 
     Get-ChildItem -Path $Root -Recurse -File -Filter *.exe |
         Where-Object {
-            $_.DirectoryName -like "*_from_file*"
+            $_.DirectoryName -like "*_from_file*" -or
+            $_.DirectoryName -like "morphology"
         } |
         ForEach-Object {
             Write-Host "Starting $($_.FullName)"
