@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36327.8
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLiveWindowsFormsFramework", "SimpleLiveWindowsForms\SimpleLiveWindowsFormsFramework.csproj", "{ABBCE9C6-C990-4D03-9312-D503FFE852DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineFramework", "Pipeline\PipelineFramework.csproj", "{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NionPointCloudFramework", "NionPointCloud\NionPointCloudFramework.csproj", "{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTimestampFramework", "SystemTimestamp\SystemTimestampFramework.csproj", "{DC212522-F187-497E-98EC-D009013EA4B3}"
 EndProject
@@ -72,6 +74,14 @@ Global
 		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x64.Build.0 = Release|x64
 		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x86.ActiveCfg = Release|x86
 		{ABBCE9C6-C990-4D03-9312-D503FFE852DB}.Release|x86.Build.0 = Release|x86
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Debug|x64.ActiveCfg = Debug|x64
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Debug|x64.Build.0 = Debug|x64
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Debug|x86.ActiveCfg = Debug|x86
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Debug|x86.Build.0 = Debug|x86
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x64.ActiveCfg = Release|x64
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x64.Build.0 = Release|x64
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x86.ActiveCfg = Release|x86
+		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x86.Build.0 = Release|x86
 		{DC212522-F187-497E-98EC-D009013EA4B3}.Debug|x64.ActiveCfg = Debug|x64
 		{DC212522-F187-497E-98EC-D009013EA4B3}.Debug|x64.Build.0 = Debug|x64
 		{DC212522-F187-497E-98EC-D009013EA4B3}.Debug|x86.ActiveCfg = Debug|x86
