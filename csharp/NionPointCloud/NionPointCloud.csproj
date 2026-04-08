@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+<PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>warnings</Nullable>
+    <RuntimeIdentifiers>
+        win-x86;win-x64;linux-x64;linux-arm;linux-arm64
+    </RuntimeIdentifiers>
+</PropertyGroup>
+
+<ItemGroup>
+    <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />
+    <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*" />
+    <PackageReference Include="IDSImaging.Peak.API" Version="1.*" />
+</ItemGroup>
+
+</Project>
