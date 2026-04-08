@@ -65,19 +65,19 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ids-peak-linux.tgz
-          key: ids-peak-linux-v2.19.0.0
+          key: ids-peak-linux-v2.20.0.0
 
       - name: Download IDS Peak Linux SDK (if missing)
         if: matrix.os == 'ubuntu-latest' && steps.peaklin-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o ids-peak-linux.tgz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_2.19.0.0-260_amd64.tgz"
+          curl -L -o ids-peak-linux.tgz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_2.20.0.0-408_amd64.tgz"
 
       - name: "Save cache: IDS peak SDK Download"
         if: matrix.os == 'ubuntu-latest' && steps.peaklin-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ids-peak-linux.tgz
-          key: ids-peak-linux-v2.19.0.0
+          key: ids-peak-linux-v2.20.0.0
 
       - name: Install IDS Peak SDK (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -113,19 +113,19 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           path: ids-peak-win.zip
-          key: ids-peak-win-v2.19.0.0
+          key: ids-peak-win-v2.20.0.0
 
       - name: Download IDS Peak Windows SDK ZIP (if missing)
         if: matrix.os == 'windows-latest' && steps.peakwin-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o ids-peak-win.zip "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-2.19.0.0.zip"
+          curl -L -o ids-peak-win.zip "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-2.20.0.0.zip"
 
       - name: "Save cache: IDS peak SDK Download"
         if: matrix.os == 'windows-latest' && steps.peakwin-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ids-peak-win.zip
-          key: ids-peak-win-v2.19.0.0
+          key: ids-peak-win-v2.20.0.0
 
       - name: Extract Windows SDK installer
         if: matrix.os == 'windows-latest'
