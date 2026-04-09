@@ -51,8 +51,12 @@ from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.uix.tab import MDTabsCarousel
 from kivymd.uix.tab.tab import MDTabsItem, MDTabsItemText, MDTabsPrimary
 from ids_peak_common import CommonException, PixelFormat, Range, Size
-from ids_peak_icv import Image, Rotation
+from ids_peak_icv import Image
 from ids_peak_icv.pipeline import DefaultPipeline
+try:
+  from ids_peak_icv.pipeline.datatypes import Rotation
+except ImportError:
+  from ids_peak_icv import Rotation
 from plyer import filechooser
 from ids_peak import ids_peak
 
