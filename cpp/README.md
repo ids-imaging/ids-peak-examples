@@ -45,4 +45,5 @@ Open the Visual Studio Project and build it.
 * [Morphology](morphology) Shows how to use region morphology using `IDS peak ICV`.
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera and `IDS peak ICV`.
 * [Open Camera](open_camera) This application demonstrates how to use the device manager to open a camera.
+* [Point Cloud From File](point_cloud_from_file) Shows how to create a point cloud with mapped Mono data using `IDS peak ICV`.
 * [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
