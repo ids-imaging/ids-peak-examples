@@ -70,7 +70,7 @@ python3 example_name.py
   connection state changes.
 - [Record Video](record_video) Shows how to use the VideoWriter of the IDS peak IPL to create a video sequence.
 - [Software Trigger](software_trigger) Shows how to use the software trigger to acquire images.
-- [Threshold From File](threshold_from_file) Shows how to apply a threshold to an image.
+- [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
 - [Undistortion From File](undistortion_from_file) Shows how to apply an undistortion using `IDS peak ICV`.
 - [Unicast](unicast) This example demonstrates how to use the unicast discovery features of the transport layer (TL) to
   locate cameras that are not in the same subnet as the host system.
