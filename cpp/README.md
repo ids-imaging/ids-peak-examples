@@ -61,5 +61,6 @@ Open the Visual Studio Project and build it.
 * [Point Cloud From File](point_cloud_from_file) Shows how to create a point cloud with mapped Mono data using
   `IDS peak ICV`.
 * [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
+* [Undistortion From File](undistortion_from_file) Shows how to apply an undistortion using `IDS peak ICV`.
 * [Workspace Calibration From File](workspace_calibration_from_file) Shows how to calibrate and apply a new workspace
   using `IDS peak ICV`.
