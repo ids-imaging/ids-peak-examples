@@ -73,3 +73,5 @@ python3 example_name.py
 - [Threshold From File](threshold_from_file) Shows how to apply a threshold to an image.
 - [Unicast](unicast) This example demonstrates how to use the unicast discovery features of the transport layer (TL) to
   locate cameras that are not in the same subnet as the host system.
+- [Workspace Calibration From File](workspace_calibration_from_file) Shows how to calibrate and apply a new workspace
+  using `IDS peak ICV`.
