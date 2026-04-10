@@ -1,0 +1,58 @@
+{
+  "creation": "2026-04-08 16:42:15 +0200",
+  "extrinsicCalibration": {
+    "rodriguesRotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "translation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 13.255000114440918
+    }
+  },
+  "intrinsicCalibration": {
+    "binningFactor": {
+      "x": 1,
+      "y": 1
+    },
+    "distortionCoefficients": {
+      "prismDistortion": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radialDistortion": [
+        0.1162840281010174,
+        -0.04958410386185464,
+        -0.1288332350489083,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tangentialDistortion": [
+        -0.0004154481750157286,
+        0.00020864018403222306
+      ],
+      "tiltDistortion": [
+        0.0,
+        0.0
+      ]
+    },
+    "focalLengthPixelSizeRatio": {
+      "x": 870.1139526367188,
+      "y": 870.1139526367188
+    },
+    "imageSize": {
+      "height": 960,
+      "width": 1280
+    },
+    "principlePoint": {
+      "x": 658.1741943359375,
+      "y": 504.38189697265625
+    }
+  },
+  "version": "1.0.0.0"
+}
