@@ -12,22 +12,24 @@
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-import os
 import sys
+from pathlib import Path
 
 from ids_peak_common import Interval, PixelFormat
-from ids_peak_icv import Image, ICVException
+from ids_peak_icv import ICVException, Image
+from ids_peak_icv.painting import ColorPaletteConstant, Painter
 from ids_peak_icv.selectors import RegionSelector
 from ids_peak_icv.thresholds import Threshold
-from ids_peak_icv.painting import Painter, ColorPaletteConstant
+
+DATA_PATH = (
+    Path(__file__).resolve().parent / ".." / ".." / "data" / "threshold_from_file"
+).resolve()
 
 
 def main() -> None:
     try:
         # Load image
-        script_path = os.path.dirname(os.path.realpath(__file__))
-        image = Image.create_from_file(
-            os.path.join(script_path, "../../data/threshold_from_file/beads.png"))
+        image = Image.create_from_file(str(DATA_PATH / "beads.png"))
 
         # Apply a threshold in the range 25 to 255
         threshold = Threshold(Interval(25, 255))

@@ -14,23 +14,24 @@
 
 import os
 import sys
+from pathlib import Path
 
 import numpy as np
-
-from ids_peak_icv import Image, ICVException
+from ids_peak_icv import ICVException, Image
 from ids_peak_icv.calibration import CalibrationPlate, CameraCalibration
 from ids_peak_icv.calibration.camera_calibration import ImageArray
+
+DATA_PATH = (
+    Path(__file__).resolve().parent / ".." / ".." / "data" / "calibration_from_file"
+).resolve()
 
 
 def main() -> None:
     try:
-        script_path = os.path.dirname(os.path.realpath(__file__))
-        data_path = os.path.join(script_path, "../../data/calibration_from_file")
-        calibration_plate_path = os.path.join(data_path,
-                                              "1012041-radon-checkerboard-marker-65mm-6x6.json")
+        calibration_plate_path = str(DATA_PATH / "1012041-radon-checkerboard-marker-65mm-6x6.json")
 
-        print("Loading images from", data_path)
-        images = load_images_from_directory(data_path)
+        print("Loading images from", str(DATA_PATH))
+        images = load_images_from_directory(str(DATA_PATH))
 
         print("Initialize calibration")
         calibration_plate = CalibrationPlate.create_from_file(calibration_plate_path)
@@ -40,7 +41,7 @@ def main() -> None:
         result = camera_calibration.process(images)
         print("Calibration finished with mean reprojection error:", result.mean_reprojection_error)
 
-        output_file_path =  "calibration_result.json"
+        output_file_path = "calibration_result.json"
 
         result.save(output_file_path)
         print("Calibration result saved to file to", output_file_path)

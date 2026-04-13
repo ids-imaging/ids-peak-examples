@@ -11,30 +11,34 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-import os
 import sys
+from pathlib import Path
 
-from ids_peak_common import PixelFormat, Rectangle, Interval
-from ids_peak_icv import Image, Region, ICVException
+from ids_peak_common import Interval, PixelFormat, Rectangle
+from ids_peak_icv import ICVException, Image, Region
+from ids_peak_icv.painting import Color, Opacity, Painter
 from ids_peak_icv.thresholds import Threshold
-from ids_peak_icv.painting import Painter, Opacity, Color
+
+DATA_PATH = (
+    Path(__file__).resolve().parent / ".." / ".." / "data" / "image_region_from_file"
+).resolve()
 
 
 def main() -> None:
     try:
         # load image
-        script_path = os.path.dirname(os.path.realpath(__file__))
-        image = Image.create_from_file(os.path.join(script_path,
-                                                    "../../data/image_region_from_file/beads.png"))
+        image = Image.create_from_file(str(DATA_PATH / "beads.png"))
 
         # convert to grayscale
         image_gray = image.convert_pixel_format(PixelFormat.MONO_8)
 
         # create rectangular image region
         region_minuend = Region.create_from_rectangle(
-            Rectangle.create_from_coordinates_and_dimensions(130, 80, 110, 150))
+            Rectangle.create_from_coordinates_and_dimensions(130, 80, 110, 150)
+        )
         region_subtrahend = Region.create_from_rectangle(
-            Rectangle.create_from_coordinates_and_dimensions(157, 117, 55, 75))
+            Rectangle.create_from_coordinates_and_dimensions(157, 117, 55, 75)
+        )
         region = region_minuend.difference(region_subtrahend)
         image_gray.region = region
 
@@ -48,7 +52,6 @@ def main() -> None:
         image_gray.reset_region()
         threshold_region = threshold.process(image_gray)
         save_result_to_file(image_gray, threshold_region, "image_full_region.png")
-
 
     except ICVException as e:
         print(e)
