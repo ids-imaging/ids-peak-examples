@@ -30,7 +30,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{39c2aca8-8b13-47aa-99eb-2112f86d943d}</ProjectGuid>
-    <RootNamespace>hdr</RootNamespace>
+    <RootNamespace>morphology</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
 
