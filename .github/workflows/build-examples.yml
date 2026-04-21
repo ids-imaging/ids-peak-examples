@@ -233,10 +233,23 @@ jobs:
           msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64 -t:Restore
           msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64
 
+      - name: Run Windows C# examples
+        if: matrix.os == 'windows-latest'
+        run: |
+          pushd csharp\Pipeline; dotnet run --project Pipeline.csproj; popd
+        shell: powershell
+
       - name: Build Linux C# examples
         # only build C# examples once on Linux
         if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
         run: dotnet build csharp/PeakExamples.sln -c Release -p:Platform=x64
+
+      - name: Run Linux C# examples
+        # only run C# examples once on Linux
+        if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
+        run: |
+          pushd csharp/Pipeline && dotnet run --project Pipeline.csproj && popd
+        shell: bash
 
       #################################################################
       # Upload artifacts per matrix combination
