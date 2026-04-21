@@ -9,13 +9,6 @@
             win-x86;win-x64
         </RuntimeIdentifiers>
         <UseWindowsForms>true</UseWindowsForms>
-        <!-- allow restore on Linux CI -->
-        <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    </PropertyGroup>
-
-    <!-- Prevent build on non-Windows -->
-    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-        <BuildProject>false</BuildProject>
     </PropertyGroup>
 
     <ItemGroup>
