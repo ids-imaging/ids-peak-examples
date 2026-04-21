@@ -6,8 +6,10 @@
     <ProjectName>SimpleLiveWindowsForms</ProjectName>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8-windows</TargetFrameworkVersion>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <!-- allow restore on Linux CI -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <LangVersion>8.0</LangVersion>
@@ -119,6 +121,10 @@
     <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />
     <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*" />
   </ItemGroup>
+  <!-- Prevent build on non-Windows -->
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+      <BuildProject>false</BuildProject>
+  </PropertyGroup>
   <PropertyGroup>
     <BuildDependsOn>
       $(BuildDependsOn)
