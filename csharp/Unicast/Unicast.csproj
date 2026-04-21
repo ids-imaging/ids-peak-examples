@@ -18,6 +18,7 @@
   </Target>
 
   <ItemGroup>
+      <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />
       <PackageReference Include="IDSImaging.Peak.API" Version="1.*" />
   </ItemGroup>
 
