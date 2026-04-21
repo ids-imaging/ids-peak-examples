@@ -34,15 +34,15 @@ the `Platform` parameter** when building.
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build -p:Platform=x64 SimpleLiveWindowsForms.csproj
-dotnet run   -p:Platform=x64 --project SimpleLiveWindowsForms.csproj
+dotnet build SimpleLiveWindowsForms.csproj
+dotnet run   --project SimpleLiveWindowsForms.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 -p:Platform=x64 SimpleLiveWindowsForms.csproj
-> dotnet run   -r win-x64 -p:Platform=x64 --project SimpleLiveWindowsForms.csproj
+> dotnet build -r win-x64 SimpleLiveWindowsForms.csproj
+> dotnet run   -r win-x64 --project SimpleLiveWindowsForms.csproj
 > ```
 
 ### .NET Framework (classic)
