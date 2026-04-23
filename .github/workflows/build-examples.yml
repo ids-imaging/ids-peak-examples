@@ -229,9 +229,12 @@ jobs:
         if: matrix.os == 'windows-latest'
         # NOTE: dotnet build does not always work with Framework projects, we use msbuild for now
         run: |
-          dotnet build csharp/PeakExamplesWindows.sln -c Release
-          msbuild csharp\PeakExamplesFrameworkWindows.sln -p:Platform=x64 -t:Restore
-          msbuild csharp\PeakExamplesFrameworkWindows.sln -p:Platform=x64
+          dotnet build csharp/PeakExamples.sln -c Release
+          dotnet build csharp/PeakExamplesWindowsOnly.sln -c Release
+          msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64 -t:Restore
+          msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64
+          msbuild csharp\PeakExamplesFrameworkWindowsOnly.sln -p:Platform=x64 -t:Restore
+          msbuild csharp\PeakExamplesFrameworkWindowsOnly.sln -p:Platform=x64
 
       - name: Run Windows C# examples
         if: matrix.os == 'windows-latest'
@@ -276,4 +279,4 @@ jobs:
         with:
           name: csharp-examples-${{ matrix.os }}-${{ matrix.compiler }}
           if-no-files-found: error
-          path: csharp/*/bin/Release/
+          path: csharp/*/bin/**/Release/
