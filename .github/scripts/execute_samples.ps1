@@ -14,6 +14,9 @@ function Run-SamplesInFolder {
         ForEach-Object {
             Write-Host "Starting $($_.FullName)"
             & $_.FullName
+            if ($LASTEXITCODE) {
+                throw "Sample at '$($_.FullName)' failed with exit code $LASTEXITCODE"
+            }
         }
 }
 
