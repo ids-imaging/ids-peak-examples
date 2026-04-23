@@ -14,7 +14,7 @@ allowing event timestamps to be translated into system time.
 ### Example Output
 
 ```bash
-> dotnet run -p:Platform=x64 --project SystemTimestamp.csproj
+> dotnet run --project SystemTimestamp.csproj
 --Buffer--
 System timestamp [ns since epoch]: 1770887176180300450
 Structured timestamp: [Local] 2026-02-12 10:06:16:180:300:450

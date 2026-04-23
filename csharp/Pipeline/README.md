@@ -18,7 +18,7 @@ This example requires:
 
 ```bash
 dotnet build Pipeline.csproj
-dotnet run --project Pipeline.csproj
+dotnet run   --project Pipeline.csproj
 ```
 
 > Optional (smaller output):

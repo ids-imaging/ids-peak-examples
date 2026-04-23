@@ -229,7 +229,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         # NOTE: dotnet build does not always work with Framework projects, we use msbuild for now
         run: |
-          dotnet build csharp/PeakExamplesWindows.sln -c Release -p:Platform=x64
+          dotnet build csharp/PeakExamplesWindows.sln -c Release
           msbuild csharp\PeakExamplesFrameworkWindows.sln -p:Platform=x64 -t:Restore
           msbuild csharp\PeakExamplesFrameworkWindows.sln -p:Platform=x64
 
@@ -242,7 +242,7 @@ jobs:
       - name: Build Linux C# examples
         # only build C# examples once on Linux
         if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
-        run: dotnet build csharp/PeakExamples.sln -c Release -p:Platform=x64
+        run: dotnet build csharp/PeakExamples.sln -c Release
 
       - name: Run Linux C# examples
         # only run C# examples once on Linux
@@ -276,4 +276,4 @@ jobs:
         with:
           name: csharp-examples-${{ matrix.os }}-${{ matrix.compiler }}
           if-no-files-found: error
-          path: csharp/*/bin/x64/Release/
+          path: csharp/*/bin/Release/
