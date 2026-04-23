@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="IDSImaging.Peak.API" Version="1.15.0.3" />
+      <PackageReference Include="IDSImaging.Peak.API" Version="1.15.0.4" />
   </ItemGroup>
 
 </Project>
