@@ -280,3 +280,109 @@ jobs:
           name: csharp-examples-${{ matrix.os }}-${{ matrix.compiler }}
           if-no-files-found: error
           path: csharp/*/bin/**/Release/
+
+  run-python:
+    name: Run Python examples
+    needs: precommit
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Run Python samples (from_file) [Linux]
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ROOT="python"
+
+          if [[ ! -d "$ROOT" ]]; then
+            echo "No python samples found"
+            exit 0
+          fi
+
+          find "$ROOT" -type d -path "*_from_file" | while read -r sample_dir; do
+            echo "=============================="
+            echo "Running sample: $sample_dir"
+
+            python -m venv "$sample_dir/.venv"
+            source "$sample_dir/.venv/bin/activate"
+
+            pip install --upgrade pip --disable-pip-version-check --no-input
+            pip install -r "$sample_dir/requirements.txt" --no-input
+
+            if [[ -f "$sample_dir/main.py" ]]; then
+              set +e
+              python "$sample_dir/main.py"
+              exit_code=$?
+              set -e
+
+              if [ $exit_code -ne 0 ]; then
+                echo "Error: example at '$sample_dir/main.py' failed with exit code $exit_code"
+                exit $exit_code
+              fi
+            else
+              echo "Error: No main.py in $sample_dir"
+              exit 1
+            fi
+
+            deactivate
+          done
+
+      - name: Run Python samples (from_file) [Windows]
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $Root = "python"
+
+          if (-not (Test-Path $Root -PathType Container)) {
+            Write-Host "No python samples found"
+            exit 0
+          }
+
+          Get-ChildItem -Path $Root -Recurse -Directory |
+            Where-Object { $_.FullName -like "*_from_file" } |
+            ForEach-Object {
+              $sampleDir = $_.FullName
+              Write-Host "=============================="
+              Write-Host "Running sample: $sampleDir"
+
+              $venvPath = Join-Path $sampleDir ".venv"
+
+              python -m venv $venvPath
+              & "$venvPath\Scripts\Activate.ps1"
+
+              pip install --upgrade pip --disable-pip-version-check
+              pip install -r (Join-Path $sampleDir "requirements.txt")
+
+              $mainPy = Join-Path $sampleDir "main.py"
+
+              if (Test-Path $mainPy) {
+                python $mainPy
+                $exitCode = $LASTEXITCODE
+
+                if ($exitCode -ne 0) {
+                  Write-Error "Error: example at '$mainPy' failed with exit code $exitCode"
+                  exit $exitCode
+                }
+              }
+              else {
+                Write-Error "Error: No main.py in $sampleDir"
+                exit 1
+              }
+
+              deactivate
+            }
