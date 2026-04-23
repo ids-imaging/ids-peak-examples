@@ -11,7 +11,7 @@ GUID_PREFIX_RE = re.compile(r'^\{([A-Fa-f0-9\-]+)\}\.')
 PROJECT_LINE_RE = re.compile(r'^Project\(.*\)\s*=\s*".*?",\s*".*?",\s*"\{([A-Fa-f0-9\-]+)\}"')
 SUFFIX_RE = re.compile(r'\.(ActiveCfg|Build\.0)$')
 
-ALLOWED_PLATFORMS = {"x86", "x64", "ARM32", "ARM64", "Any CPU"}
+ALLOWED_PLATFORMS = {"x86", "x64", "ARM64", "Any CPU"}
 
 
 def normalize_left(value: str) -> str:
