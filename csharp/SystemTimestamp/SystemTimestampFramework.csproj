@@ -126,7 +126,7 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <PackageReference Include="IDSImaging.Peak.API" Version="[1.15.0.1,)" />
+    <PackageReference Include="IDSImaging.Peak.API" Version="1.15.0.4" />
   </ItemGroup>
   <PropertyGroup>
     <BuildDependsOn>
