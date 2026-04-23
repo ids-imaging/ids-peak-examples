@@ -39,7 +39,7 @@ dotnet build NionPointCloud.csproj
 dotnet run --project NionPointCloud.csproj
 ```
 
-> Optional (smaller output):[NionPointCloudFramework.csproj](NionPointCloudFramework.csproj)
+> Optional (smaller output):
 >
 > ```bash
 > dotnet build -r win-x64 NionPointCloud.csproj
