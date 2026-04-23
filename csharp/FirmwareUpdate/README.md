@@ -31,21 +31,18 @@ This example requires:
 
 ## Build Instructions
 
-The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
-the `Platform` parameter** when building.
-
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build -p:Platform=x64 FirmwareUpdate.csproj
-dotnet run   -p:Platform=x64 --project FirmwareUpdate.csproj
+dotnet build FirmwareUpdate.csproj
+dotnet run   --project FirmwareUpdate.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 -p:Platform=x64 FirmwareUpdate.csproj
-> dotnet run   -r win-x64 -p:Platform=x64 --project FirmwareUpdate.csproj
+> dotnet build -r win-x64 FirmwareUpdate.csproj
+> dotnet run   -r win-x64 --project FirmwareUpdate.csproj
 > ```
 
 ### .NET Framework (classic)
@@ -56,3 +53,6 @@ Use Visual Studio **or**:
 msbuild FirmwareUpdateFramework.csproj /t:Restore
 msbuild FirmwareUpdateFramework.csproj /p:Platform=x64
 ```
+
+> Note:The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
+> the `Platform` parameter** when building.

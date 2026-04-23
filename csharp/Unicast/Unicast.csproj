@@ -8,14 +8,8 @@
     <RuntimeIdentifiers>
         win-x86;win-x64;linux-x64;linux-arm;linux-arm64
     </RuntimeIdentifiers>
-    <Platforms>x64;x86;ARM32;ARM64</Platforms>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-
-  <Target Name="ValidateCommandLine" BeforeTargets="ResolveAssemblyReferences">
-    <Error Text=" The 'Platform' property must be set on the command line." Condition="'$(Platform)' == ''" />
-    <Error Text=" The 'Platform' property must not be set to Any/AnyCPU." Condition="$(Platform.Contains('Any'))" />
-  </Target>
 
   <ItemGroup>
       <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />

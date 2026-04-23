@@ -38,21 +38,18 @@ This example requires:
 
 ## Build Instructions
 
-The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
-the `Platform` parameter** when building.
-
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build -p:Platform=x64 OpenCamera.csproj
-dotnet run   -p:Platform=x64 --project OpenCamera.csproj
+dotnet build OpenCamera.csproj
+dotnet run   --project OpenCamera.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 -p:Platform=x64 OpenCamera.csproj
-> dotnet run   -r win-x64 -p:Platform=x64 --project OpenCamera.csproj
+> dotnet build -r win-x64 OpenCamera.csproj
+> dotnet run   -r win-x64 --project OpenCamera.csproj
 > ```
 
 ### .NET Framework (classic)
@@ -63,3 +60,6 @@ Use Visual Studio **or**:
 msbuild OpenCameraFramework.csproj /t:Restore
 msbuild OpenCameraFramework.csproj /p:Platform=x64
 ```
+
+> Note: The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
+> the `Platform` parameter** when building.
