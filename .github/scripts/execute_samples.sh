@@ -1,14 +1,27 @@
 #!/bin/bash
+set -e
 
 function runSamplesInFolder()
 {
-  find "$1" -type f -executable -path "*/*_from_file/*" \
-  -o -path "*/morphology/*" | while read -r sample; do
-    if [[ ! "$sample" =~ \..+$ ]]; then
-      echo "Starting $sample"
-      "$sample"
+  while IFS= read -r -d '' sample; do
+    echo "Starting $sample"
+
+    set +e
+    "$sample"
+    exit_code=$?
+    set -e
+
+    if [ $exit_code -ne 0 ]; then
+      echo "Error: example at '$sample' failed with exit code $exit_code"
+      exit $exit_code
     fi
-  done
+
+  done < <(
+    find "$1" \( \
+      -path "*/*_from_file/*" -o \
+      -path "*/morphology/*" \
+      \) -type f -executable -print0
+    )
 }
 
 
@@ -18,4 +31,4 @@ if [[ ! -d "$1" ]]; then
 fi
 
 echo "Search for executable samples in $1"
-runSamplesInFolder $1
+runSamplesInFolder "$1"
