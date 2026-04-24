@@ -14,7 +14,7 @@ It covers:
 The HDR output image is a tiff floating point image, which cannot be trivially displayed by most viewers.
 
 The LDR output image is a tone mapped integer image:
-![LDR floating point image](data/output/tone_mapped_ldr_image.png)
+![LDR floating point image](../../doc/hdr_from_file/tone_mapped_ldr_image.png)
 
 As you can see there are some black spots throughout the right side of the image. Those are only visible as _black_ in
 the tone mapped image. This is an effect due to over exposure in the input images.
