@@ -1,4 +1,4 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36327.8
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -21,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalibrationFromFileFramework", "CalibrationFromFile\CalibrationFromFileFramework.csproj", "{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointCloudFromFileFramework", "PointCloudFromFile\PointCloudFromFileFramework.csproj", "{5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkspaceCalibrationFromFileFramework", "WorkspaceCalibrationFromFile\WorkspaceCalibrationFromFileFramework.csproj", "{8FEC337F-7C68-4324-B294-D81A33030FBC}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,14 +97,14 @@ Global
         {C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x86.ActiveCfg = Release|x86
         {C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x86.Build.0 = Release|x86
         {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.ActiveCfg = Debug|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.Build.0 = Debug|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.ActiveCfg = Debug|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.Build.0 = Debug|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.ActiveCfg = Release|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.Build.0 = Release|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.ActiveCfg = Release|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.Build.0 = Release|x86
-		{5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Debug|x64.ActiveCfg = Debug|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.Build.0 = Debug|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.ActiveCfg = Debug|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.Build.0 = Debug|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.ActiveCfg = Release|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.Build.0 = Release|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.ActiveCfg = Release|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.Build.0 = Release|x86
+        {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Debug|x64.ActiveCfg = Debug|x64
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Debug|x64.Build.0 = Debug|x64
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Debug|x86.ActiveCfg = Debug|x86
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Debug|x86.Build.0 = Debug|x86
@@ -110,8 +112,16 @@ Global
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Release|x64.Build.0 = Release|x64
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Release|x86.ActiveCfg = Release|x86
         {5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}.Release|x86.Build.0 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Debug|x64.ActiveCfg = Debug|x64
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Debug|x64.Build.0 = Debug|x64
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Debug|x86.ActiveCfg = Debug|x86
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Debug|x86.Build.0 = Debug|x86
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Release|x64.ActiveCfg = Release|x64
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Release|x64.Build.0 = Release|x64
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Release|x86.ActiveCfg = Release|x86
+        {8FEC337F-7C68-4324-B294-D81A33030FBC}.Release|x86.Build.0 = Release|x86
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
 EndGlobal

@@ -85,3 +85,5 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Pipeline From File](PipelineFromFile) This command-line example demonstrates how to use the image processing pipeline.
 - [System Timestamp](SystemTimestamp) Shows how to use the system timestamp feature in order to get a wall-clock time
   corresponding to an arbitrary device timestamp.
+- [Workspace Calibration From File](WorkspaceCalibrationFromFile) Shows how to calibrate and apply a new workspace
+  using `IDS peak ICV`.
