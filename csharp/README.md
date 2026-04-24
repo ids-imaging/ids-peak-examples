@@ -72,6 +72,7 @@ dotnet add package IDSImaging.Peak.<PackageName>
 
 - [Calibration From File](CalibrationFromFile) Demonstrates how to perform a camera calibration by using images from file.
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
+- [HDR From File](HDRFromFile) Demonstrates how to generate a **High Dynamic Range (HDR)** image and a **tone‑mapped LDR** output.
 - [Nion Point Cloud](NionPointCloud) Command-line example demonstrating Nion Point Cloud acquisition.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
 - [Point Cloud From File](PointCloudFromFile) Shows how to create a point cloud with mapped Mono data using
