@@ -70,6 +70,7 @@ dotnet add package IDSImaging.Peak.<PackageName>
 
 ## Included Examples
 
+- [Calibration From File](CalibrationFromFile) Demonstrates how to perform a camera calibration by using images from file.
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
 - [Nion Point Cloud](NionPointCloud) Command-line example demonstrating Nion Point Cloud acquisition.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
