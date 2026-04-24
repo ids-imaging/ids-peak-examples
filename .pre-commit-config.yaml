@@ -67,3 +67,11 @@ repos:
         entry: python .pre-commit-hooks/check_solution_files.py
         language: system
         files: \.sln$
+
+  - repo: local
+    hooks:
+        - id: check-readme-links
+          name: Check if README URLs are available
+          entry: python .pre-commit-hooks/check_readme_links.py
+          language: system
+          files: (?i)readme.*\.(md|rst|txt)$
