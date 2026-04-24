@@ -7,10 +7,7 @@ on:
 jobs:
   precommit:
     name: Run Pre-Commit Hooks
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,19 +23,13 @@ jobs:
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
 
-  build:
-    name: Build Examples
+  build-and-run-linux:
+    name: Build Examples [Linux]
     needs: precommit
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            compiler: gcc
-          - os: ubuntu-latest
-            compiler: clang
-          - os: windows-latest
-            compiler: msvc
+          compiler: [gcc, clang]
 
     steps:
       - name: Checkout
@@ -48,7 +39,6 @@ jobs:
       # Linux dependencies
       #################################################################
       - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake ninja-build python3-pip dotnet-sdk-8.0 clang-tidy
@@ -61,104 +51,31 @@ jobs:
       #################################################################
       - name: "Restore cache: IDS peak SDK Download"
         id: peaklin-cache
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/cache/restore@v4
         with:
           path: ids-peak-linux.tgz
           key: ids-peak-linux-v2.21.0.0
 
       - name: Download IDS Peak Linux SDK (if missing)
-        if: matrix.os == 'ubuntu-latest' && steps.peaklin-cache.outputs.cache-hit != 'true'
+        if: steps.peaklin-cache.outputs.cache-hit != 'true'
         run: |
           curl -L -o ids-peak-linux.tgz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_2.21.0.0-532_amd64.tgz"
 
       - name: "Save cache: IDS peak SDK Download"
-        if: matrix.os == 'ubuntu-latest' && steps.peaklin-cache.outputs.cache-hit != 'true'
+        if: steps.peaklin-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ids-peak-linux.tgz
           key: ids-peak-linux-v2.21.0.0
 
       - name: Install IDS Peak SDK (Linux)
-        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo tar -xzf ids-peak-linux.tgz --strip-components=1 -C /usr
           sudo ldconfig
 
       #################################################################
-      # Windows dependencies
-      #################################################################
-      - name: Prepare MSVC environment
-        if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install .NET
-        if: matrix.os == 'windows-latest'
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.x"
-
-      - name: Install Python
-        if: matrix.os == 'windows-latest'
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      #################################################################
-      # IDS Peak SDK caching (Windows)
-      #################################################################
-      - name: "Restore cache: IDS peak SDK Download"
-        id: peakwin-cache
-        uses: actions/cache/restore@v4
-        if: matrix.os == 'windows-latest'
-        with:
-          path: ids-peak-win.zip
-          key: ids-peak-win-v2.21.0.0
-
-      - name: Download IDS Peak Windows SDK ZIP (if missing)
-        if: matrix.os == 'windows-latest' && steps.peakwin-cache.outputs.cache-hit != 'true'
-        run: |
-          curl -L -o ids-peak-win.zip "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-2.21.0.0.zip"
-
-      - name: "Save cache: IDS peak SDK Download"
-        if: matrix.os == 'windows-latest' && steps.peakwin-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ids-peak-win.zip
-          key: ids-peak-win-v2.21.0.0
-
-      - name: Extract Windows SDK installer
-        if: matrix.os == 'windows-latest'
-        run: Expand-Archive -Path ids-peak-win.zip -DestinationPath peaksetup -Verbose
-
-      - name: Install IDS Peak SDK (Windows Silent)
-        if: matrix.os == 'windows-latest'
-        run: |
-          $exe = Get-ChildItem -Path "$env:GITHUB_WORKSPACE/peaksetup" -Filter "*.exe" | Select-Object -First 1
-          $iss = Join-Path $env:GITHUB_WORKSPACE ".github\assets\peak_setup_2.18.1.iss"
-          $log = Join-Path $env:GITHUB_WORKSPACE "peak_install.log"
-          $args = "/s", "/f1`"$iss`"", "/f2`"$log`""
-          Write-Host "Running installer: $($exe.FullName) $args"
-          Start-Process -FilePath $exe.FullName -ArgumentList $args -Wait
-          Write-Host "Installer log:"
-          Get-Content $log
-        shell: powershell
-
-      - name: Print Install Dir
-        if: matrix.os == 'windows-latest'
-        run: |
-          tree "C:\Program Files\IDS"
-        shell: powershell
-
-      #################################################################
       # Cache C/C++ build artifacts
       #################################################################
-      # - name: Cache C build
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: build-c
-      #     key: ${{ runner.os }}-${{ matrix.compiler }}-c-build
-      #     restore-keys: ${{ runner.os }}-${{ matrix.compiler }}-
 
       - name: Cache C++ build
         uses: actions/cache@v4
@@ -170,16 +87,141 @@ jobs:
       #################################################################
       # Configure & Build C/C++ Examples
       #################################################################
-      # - name: Configure C example
-      #  run: cmake -S c -B build-c -G "Ninja" -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure C++ examples Ubuntu
-        if: matrix.os == 'ubuntu-latest'
         run: cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY="clang-tidy" -DCMAKE_CXX_FLAGS="-Wall -Wextra -Wconversion -Werror"
+
+      - name: CMake - Build C++ examples
+        run: cmake --build build-cpp
+
+      - name: CMake - Run C++ examples that do not need a camera
+        run: .github/scripts/execute_examples.sh build-cpp
+        shell: bash
+
+      #################################################################
+      # Cache NuGet packages (C#)
+      #################################################################
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+
+      - name: Build Linux C# examples
+        # only build C# examples once on Linux
+        if: matrix.compiler == 'gcc'
+        run: dotnet build csharp/PeakExamples.sln -c Release
+
+      - name: Run Linux C# examples
+        # only run C# examples once on Linux
+        if: matrix.compiler == 'gcc'
+        run: |
+          pushd csharp/Pipeline && dotnet run --project Pipeline.csproj && popd
+        shell: bash
+
+      #################################################################
+      # Upload artifacts per matrix combination
+      #################################################################
+
+      - name: Upload C++ binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpp-examples-${{ runner.os }}-${{ matrix.compiler }}
+          if-no-files-found: error
+          path: |
+            build-cpp/*/
+            !**/CMakeFiles/
+            !**/*.cmake
+
+      - name: Upload C# binaries
+        # Only the 'gcc' matrix build also builds the C# examples
+        if: matrix.compiler == 'gcc'
+        uses: actions/upload-artifact@v4
+        with:
+          name: csharp-examples-${{ runner.os }}-${{ matrix.compiler }}
+          if-no-files-found: error
+          path: csharp/*/bin/**/Release/
+
+
+  build-and-run-windows:
+    name: Build Examples [Windows]
+    needs: precommit
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      #################################################################
+      # Windows dependencies
+      #################################################################
+      - name: Prepare MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      # - name: Install Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: "3.12"
+
+      #################################################################
+      # IDS Peak SDK caching (Windows)
+      #################################################################
+      - name: "Restore cache: IDS peak SDK Download"
+        id: peakwin-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ids-peak-win.zip
+          key: ids-peak-win-v2.21.0.0
+
+      - name: Download IDS Peak Windows SDK ZIP (if missing)
+        if: steps.peakwin-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o ids-peak-win.zip "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-2.21.0.0.zip"
+
+      - name: "Save cache: IDS peak SDK Download"
+        if: steps.peakwin-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ids-peak-win.zip
+          key: ids-peak-win-v2.21.0.0
+
+      - name: Extract Windows SDK installer
+        run: Expand-Archive -Path ids-peak-win.zip -DestinationPath peaksetup -Verbose
+
+      - name: Install IDS Peak SDK (Windows Silent)
+        run: |
+          $exe = Get-ChildItem -Path "$env:GITHUB_WORKSPACE/peaksetup" -Filter "*.exe" | Select-Object -First 1
+          $iss = Join-Path $env:GITHUB_WORKSPACE ".github\assets\peak_setup_2.18.1.iss"
+          $log = Join-Path $env:GITHUB_WORKSPACE "peak_install.log"
+          $args = "/s", "/f1`"$iss`"", "/f2`"$log`""
+          Write-Host "Running installer: $($exe.FullName) $args"
+          Start-Process -FilePath $exe.FullName -ArgumentList $args -Wait
+          Write-Host "Installer log:"
+          Get-Content $log
+        shell: powershell
+
+      #################################################################
+      # Cache C/C++ build artifacts
+      #################################################################
+
+      - name: Cache C++ build
+        uses: actions/cache@v4
+        with:
+          path: build-cpp
+          key: ${{ runner.os }}-cpp-build
+          restore-keys: ${{ runner.os }}-
+
+      #################################################################
+      # Configure & Build C/C++ Examples
+      #################################################################
 
       # Note: the setup normally updates the environment variables but this does not seem to work with GitHub Actions
       - name: CMake - Configure C++ examples Windows
-        if: matrix.os == 'windows-latest'
         run: |
           $ids_peak="C:\Program Files\IDS\ids_peak\"
           $env:ids_peak_DIR="$ids_peak\generic_sdk\api\lib\x86_64\cmake\"
@@ -190,29 +232,18 @@ jobs:
           cmake -S cpp -B build-cpp -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/W4 /WX"
         shell: powershell
 
-      # - name: Build C example
-      #  run: cmake --build build-c --config Release
-
       - name: CMake - Build C++ examples
         run: cmake --build build-cpp --config Release
 
       - name: CMake - Run C++ examples that do not need a camera
-        if: matrix.os == 'ubuntu-latest'
-        run: .github/scripts/execute_examples.sh build-cpp
-        shell: bash
-
-      - name: CMake - Run C++ examples that do not need a camera
-        if: matrix.os == 'windows-latest'
         run: .github/scripts/execute_examples.ps1 build-cpp
         shell: powershell
 
       - name: VS - Build C++ example
-        if: matrix.os == 'windows-latest'
         run: .github/scripts/build_vs_examples.ps1 cpp
         shell: powershell
 
       - name: VS - Run C++ examples that do not need a camera
-        if: matrix.os == 'windows-latest'
         run: .github/scripts/execute_examples.ps1 cpp
         shell: powershell
 
@@ -226,7 +257,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
 
       - name: Build Windows C# examples
-        if: matrix.os == 'windows-latest'
         # NOTE: dotnet build does not always work with Framework projects, we use msbuild for now
         run: |
           dotnet build csharp/PeakExamples.sln -c Release
@@ -237,36 +267,18 @@ jobs:
           msbuild csharp\PeakExamplesFrameworkWindowsOnly.sln -p:Platform=x64
 
       - name: Run Windows C# examples
-        if: matrix.os == 'windows-latest'
         run: |
           pushd csharp\Pipeline; dotnet run --project Pipeline.csproj; popd
         shell: powershell
 
-      - name: Build Linux C# examples
-        # only build C# examples once on Linux
-        if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
-        run: dotnet build csharp/PeakExamples.sln -c Release
-
-      - name: Run Linux C# examples
-        # only run C# examples once on Linux
-        if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc'
-        run: |
-          pushd csharp/Pipeline && dotnet run --project Pipeline.csproj && popd
-        shell: bash
-
       #################################################################
-      # Upload artifacts per matrix combination
+      # Upload artifacts
       #################################################################
-      # - name: Upload C binaries
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: c-examples-${{ matrix.os }}-${{ matrix.compiler }}
-      #    path: build-c
 
       - name: Upload C++ binaries
         uses: actions/upload-artifact@v4
         with:
-          name: cpp-examples-${{ matrix.os }}-${{ matrix.compiler }}
+          name: cpp-examples-${{ runner.os }}-msvc
           if-no-files-found: error
           path: |
             build-cpp/*/
@@ -274,12 +286,12 @@ jobs:
             !**/*.cmake
 
       - name: Upload C# binaries
-        if: matrix.os == 'windows-latest' || (matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc')
         uses: actions/upload-artifact@v4
         with:
-          name: csharp-examples-${{ matrix.os }}-${{ matrix.compiler }}
+          name: csharp-examples-${{ runner.os }}-msvc
           if-no-files-found: error
           path: csharp/*/bin/**/Release/
+
 
   run-python:
     name: Run Python examples
@@ -304,85 +316,9 @@ jobs:
       - name: Run Python examples (from_file) [Linux]
         if: matrix.os == 'ubuntu-latest'
         shell: bash
-        run: |
-          set -euo pipefail
-
-          ROOT="python"
-
-          if [[ ! -d "$ROOT" ]]; then
-            echo "No python examples found"
-            exit 0
-          fi
-
-          find "$ROOT" -type d -path "*_from_file" | while read -r example_dir; do
-            echo "=============================="
-            echo "Running example: $example_dir"
-
-            python -m venv "$example_dir/.venv"
-            source "$example_dir/.venv/bin/activate"
-
-            pip install --upgrade pip --disable-pip-version-check --no-input
-            pip install -r "$example_dir/requirements.txt" --no-input
-
-            if [[ -f "$example_dir/main.py" ]]; then
-              set +e
-              python "$example_dir/main.py"
-              exit_code=$?
-              set -e
-
-              if [ $exit_code -ne 0 ]; then
-                echo "Error: example at '$example_dir/main.py' failed with exit code $exit_code"
-                exit $exit_code
-              fi
-            else
-              echo "Error: No main.py in $example_dir"
-              exit 1
-            fi
-
-            deactivate
-          done
+        run: ./.github/scripts/execute_python_examples.sh
 
       - name: Run Python examples (from_file) [Windows]
         if: matrix.os == 'windows-latest'
         shell: pwsh
-        run: |
-          $Root = "python"
-
-          if (-not (Test-Path $Root -PathType Container)) {
-            Write-Host "No python examples found"
-            exit 0
-          }
-
-          Get-ChildItem -Path $Root -Recurse -Directory |
-            Where-Object { $_.FullName -like "*_from_file" } |
-            ForEach-Object {
-              $exampleDir = $_.FullName
-              Write-Host "=============================="
-              Write-Host "Running example: $exampleDir"
-
-              $venvPath = Join-Path $exampleDir ".venv"
-
-              python -m venv $venvPath
-              & "$venvPath\Scripts\Activate.ps1"
-
-              pip install --upgrade pip --disable-pip-version-check
-              pip install -r (Join-Path $exampleDir "requirements.txt")
-
-              $mainPy = Join-Path $exampleDir "main.py"
-
-              if (Test-Path $mainPy) {
-                python $mainPy
-                $exitCode = $LASTEXITCODE
-
-                if ($exitCode -ne 0) {
-                  Write-Error "Error: example at '$mainPy' failed with exit code $exitCode"
-                  exit $exitCode
-                }
-              }
-              else {
-                Write-Error "Error: No main.py in $exampleDir"
-                exit 1
-              }
-
-              deactivate
-            }
+        run: ./.github/scripts/execute_python_examples.ps1
