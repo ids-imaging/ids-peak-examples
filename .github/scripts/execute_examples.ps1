@@ -3,7 +3,7 @@ param(
     [string]$Path
 )
 
-function Run-SamplesInFolder {
+function Run-ExamplesInFolder {
     param([string]$Root)
 
     Get-ChildItem -Path $Root -Recurse -File -Filter *.exe |
@@ -15,7 +15,7 @@ function Run-SamplesInFolder {
             Write-Host "Starting $($_.FullName)"
             & $_.FullName
             if ($LASTEXITCODE) {
-                throw "Sample at '$($_.FullName)' failed with exit code $LASTEXITCODE"
+                throw "Example at '$($_.FullName)' failed with exit code $LASTEXITCODE"
             }
         }
 }
@@ -26,4 +26,4 @@ if (-not (Test-Path $Path -PathType Container)) {
     exit 1
 }
 
-Run-SamplesInFolder -Root $Path
+Run-ExamplesInFolder -Root $Path

@@ -26,7 +26,7 @@ using IDSImaging.Peak.API.Core.Nodes;
 using Buffer = IDSImaging.Peak.API.Core.Buffer;
 
 
-namespace IDSImaging.Peak.Samples.NionPointCloud
+namespace IDSImaging.Peak.Examples.NionPointCloud
 {
     /// <summary>
     /// This example shows how to open and configure an IDS Nion camera.
@@ -69,7 +69,7 @@ namespace IDSImaging.Peak.Samples.NionPointCloud
         // Valid Z distance interval in millimeters
         private static readonly IntervalF _filterDistanceIntervalMm = new IntervalF(100.0f, 1000.0f);
 
-        // Number of images acquired in this sample
+        // Number of images acquired in this example
         private const int _imageAcquisitionCount = 10;
 
 

@@ -45,7 +45,7 @@ constexpr bool filterDistanceEnabled = true;
 // Valid Z distance interval in millimeters
 constexpr peak::common::IntervalF filterDistanceIntervalMm{ 100.0F, 1000.0F };
 
-// Number of images acquired in this sample
+// Number of images acquired in this example
 constexpr size_t imageAcquisitionCount = 10;
 
 // ---------------------------------------------------------------------------------------------------------------------

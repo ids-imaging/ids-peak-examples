@@ -10,7 +10,7 @@ This directory contains **C++** example programs demonstrating how to use the ID
 - CMake 3.10+
 - Qt5 or Qt6 for graphical examples (See `README.md` of the example to verify)
 
-Some samples offer Visual Studio Projects, though it is recommended to use CMake for building the examples.
+Some examples offer Visual Studio Projects, though it is recommended to use CMake for building the examples.
 
 ## Build Instructions
 

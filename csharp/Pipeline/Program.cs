@@ -19,7 +19,7 @@ using IDSImaging.Peak.ICV.Pipeline;
 using IDSImaging.Peak.ICV.Pipeline.Types;
 using IDSImaging.Peak.ICV.Types;
 
-namespace IDSImaging.Peak.Samples.Pipeline
+namespace IDSImaging.Peak.Examples.Pipeline
 {
     /// <summary>
     /// This example demonstrates how to configure the image processing

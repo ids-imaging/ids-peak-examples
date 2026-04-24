@@ -198,22 +198,22 @@ jobs:
 
       - name: CMake - Run C++ examples that do not need a camera
         if: matrix.os == 'ubuntu-latest'
-        run: .github/scripts/execute_samples.sh build-cpp
+        run: .github/scripts/execute_examples.sh build-cpp
         shell: bash
 
       - name: CMake - Run C++ examples that do not need a camera
         if: matrix.os == 'windows-latest'
-        run: .github/scripts/execute_samples.ps1 build-cpp
+        run: .github/scripts/execute_examples.ps1 build-cpp
         shell: powershell
 
       - name: VS - Build C++ example
         if: matrix.os == 'windows-latest'
-        run: .github/scripts/build_vs_samples.ps1 cpp
+        run: .github/scripts/build_vs_examples.ps1 cpp
         shell: powershell
 
       - name: VS - Run C++ examples that do not need a camera
         if: matrix.os == 'windows-latest'
-        run: .github/scripts/execute_samples.ps1 cpp
+        run: .github/scripts/execute_examples.ps1 cpp
         shell: powershell
 
       #################################################################
@@ -301,7 +301,7 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Run Python samples (from_file) [Linux]
+      - name: Run Python examples (from_file) [Linux]
         if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
@@ -310,65 +310,65 @@ jobs:
           ROOT="python"
 
           if [[ ! -d "$ROOT" ]]; then
-            echo "No python samples found"
+            echo "No python examples found"
             exit 0
           fi
 
-          find "$ROOT" -type d -path "*_from_file" | while read -r sample_dir; do
+          find "$ROOT" -type d -path "*_from_file" | while read -r example_dir; do
             echo "=============================="
-            echo "Running sample: $sample_dir"
+            echo "Running example: $example_dir"
 
-            python -m venv "$sample_dir/.venv"
-            source "$sample_dir/.venv/bin/activate"
+            python -m venv "$example_dir/.venv"
+            source "$example_dir/.venv/bin/activate"
 
             pip install --upgrade pip --disable-pip-version-check --no-input
-            pip install -r "$sample_dir/requirements.txt" --no-input
+            pip install -r "$example_dir/requirements.txt" --no-input
 
-            if [[ -f "$sample_dir/main.py" ]]; then
+            if [[ -f "$example_dir/main.py" ]]; then
               set +e
-              python "$sample_dir/main.py"
+              python "$example_dir/main.py"
               exit_code=$?
               set -e
 
               if [ $exit_code -ne 0 ]; then
-                echo "Error: example at '$sample_dir/main.py' failed with exit code $exit_code"
+                echo "Error: example at '$example_dir/main.py' failed with exit code $exit_code"
                 exit $exit_code
               fi
             else
-              echo "Error: No main.py in $sample_dir"
+              echo "Error: No main.py in $example_dir"
               exit 1
             fi
 
             deactivate
           done
 
-      - name: Run Python samples (from_file) [Windows]
+      - name: Run Python examples (from_file) [Windows]
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           $Root = "python"
 
           if (-not (Test-Path $Root -PathType Container)) {
-            Write-Host "No python samples found"
+            Write-Host "No python examples found"
             exit 0
           }
 
           Get-ChildItem -Path $Root -Recurse -Directory |
             Where-Object { $_.FullName -like "*_from_file" } |
             ForEach-Object {
-              $sampleDir = $_.FullName
+              $exampleDir = $_.FullName
               Write-Host "=============================="
-              Write-Host "Running sample: $sampleDir"
+              Write-Host "Running example: $exampleDir"
 
-              $venvPath = Join-Path $sampleDir ".venv"
+              $venvPath = Join-Path $exampleDir ".venv"
 
               python -m venv $venvPath
               & "$venvPath\Scripts\Activate.ps1"
 
               pip install --upgrade pip --disable-pip-version-check
-              pip install -r (Join-Path $sampleDir "requirements.txt")
+              pip install -r (Join-Path $exampleDir "requirements.txt")
 
-              $mainPy = Join-Path $sampleDir "main.py"
+              $mainPy = Join-Path $exampleDir "main.py"
 
               if (Test-Path $mainPy) {
                 python $mainPy
@@ -380,7 +380,7 @@ jobs:
                 }
               }
               else {
-                Write-Error "Error: No main.py in $sampleDir"
+                Write-Error "Error: No main.py in $exampleDir"
                 exit 1
               }
 

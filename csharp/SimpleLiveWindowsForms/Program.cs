@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 using IDSImaging.Peak.API;
 
-namespace IDSImaging.Peak.Samples.SimpleLiveWindowsForms
+namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
 {
     internal static class Program
     {

@@ -1,18 +1,18 @@
 #!/bin/bash
 set -e
 
-function runSamplesInFolder()
+function runExamplesInFolder()
 {
-  while IFS= read -r -d '' sample; do
-    echo "Starting $sample"
+  while IFS= read -r -d '' example; do
+    echo "Starting $example"
 
     set +e
-    "$sample"
+    "$example"
     exit_code=$?
     set -e
 
     if [ $exit_code -ne 0 ]; then
-      echo "Error: example at '$sample' failed with exit code $exit_code"
+      echo "Error: example at '$example' failed with exit code $exit_code"
       exit $exit_code
     fi
 
@@ -30,5 +30,5 @@ if [[ ! -d "$1" ]]; then
   return 1
 fi
 
-echo "Search for executable samples in $1"
-runSamplesInFolder "$1"
+echo "Search for executable examples in $1"
+runExamplesInFolder "$1"

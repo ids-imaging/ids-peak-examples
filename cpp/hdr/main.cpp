@@ -294,7 +294,7 @@ void PrintHelp(const char* progName)
               << "  -n, --num-exposures <num>       Number of exposures (default: 5)\n"
               << "  -s, --serial <serial>           Serial number of camera\n"
               << "  -o, --out-dir <dir>             Output directory\n"
-              << "  -i, --in-dir <dir>              Input directory (not fully implemented in C++ sample)\n"
+              << "  -i, --in-dir <dir>              Input directory (not fully implemented in C++ example)\n"
               << "  -a, --acquisition-mode <mode>   Mode used to capture the image sequence. (" << hdrAcquisitionModes
               << ")\n";
 }

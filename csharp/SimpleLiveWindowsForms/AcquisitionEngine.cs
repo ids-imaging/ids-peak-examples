@@ -23,7 +23,7 @@ using IDSImaging.Peak.ICV.Pipeline;
 using Buffer = IDSImaging.Peak.API.Core.Buffer;
 using ICVImage = IDSImaging.Peak.ICV.Types.Image;
 
-namespace IDSImaging.Peak.Samples.SimpleLiveWindowsForms
+namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
 {
     public class AcquisitionEngine : IDisposable
     {

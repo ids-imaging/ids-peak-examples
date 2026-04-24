@@ -30,7 +30,7 @@ Install Python dependencies:
 pip install -r requirements.txt
 ```
 
-## Running the Sample
+## Running the Example
 
 The application can either:
 

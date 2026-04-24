@@ -11,7 +11,7 @@ from previously saved exposure sequences.
 - **CMake** version 3.10 or later
 - A supported C++ compiler (MSVC, GCC, or Clang)
 
-## Running the Sample
+## Running the Example
 
 The application can either:
 

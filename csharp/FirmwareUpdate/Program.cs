@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 
-namespace IDSImaging.Peak.Samples.FirmwareUpdate
+namespace IDSImaging.Peak.Examples.FirmwareUpdate
 {
     internal struct DeviceUpdateInformation
     {
