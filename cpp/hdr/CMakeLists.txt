@@ -59,7 +59,7 @@ ids_peak_icv_deploy(${PROJECT_NAME})
 # To set these environment variables a shell script is used. This script can be automatically generated via ids_peak_generate_starter_script.
 # The shell script will be saved at ${CMAKE_CURRENT_BINARY_DIR}/${targetName}.sh and automatically copied to the output directory during post-build.
 
-# To run the samples run this script, not the binary.
+# To run the examples run this script, not the binary.
 if (UNIX)
     ids_peak_generate_starter_script(${PROJECT_NAME})
 endif ()

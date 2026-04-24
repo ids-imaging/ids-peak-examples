@@ -18,7 +18,7 @@ using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 using IDSImaging.Peak.API.Std;
 
-namespace IDSImaging.Peak.Samples.Unicast
+namespace IDSImaging.Peak.Examples.Unicast
 {
     /// <summary>
     /// This example demonstrates how to use the unicast discovery
@@ -26,7 +26,7 @@ namespace IDSImaging.Peak.Samples.Unicast
     /// are not in the same subnet as the host system.
     ///
     /// Unlike standard discovery mechanisms that rely on broadcast
-    /// traffic, this sample shows how to explicitly target devices
+    /// traffic, this example shows how to explicitly target devices
     /// via their IP addresses.
     /// </summary>
     internal static class Program

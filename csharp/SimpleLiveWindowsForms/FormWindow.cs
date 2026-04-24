@@ -16,7 +16,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Image = IDSImaging.Peak.ICV.Types.Image;
 
-namespace IDSImaging.Peak.Samples.SimpleLiveWindowsForms
+namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
 {
     public sealed class FormWindow : Form
     {

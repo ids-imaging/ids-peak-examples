@@ -1,6 +1,6 @@
-# HDR algorithm sample
+# HDR algorithm example
 
-This sample demonstrates how to generate a **High Dynamic Range (HDR)** image and a **tone‑mapped LDR** output using the `peak::icv` library.
+This example demonstrates how to generate a **High Dynamic Range (HDR)** image and a **tone‑mapped LDR** output using the `peak::icv` library.
 It covers:
 
 - Loading calibration images with multiple exposure times

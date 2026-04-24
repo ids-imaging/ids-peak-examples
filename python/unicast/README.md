@@ -5,7 +5,7 @@ features of the transport layer (TL) to locate cameras that
 are not in the same subnet as the host system.
 
 Unlike standard discovery mechanisms that rely on broadcast
-traffic, this sample shows how to explicitly target devices
+traffic, this example shows how to explicitly target devices
 via their IP addresses.
 
 ## Usage scenario

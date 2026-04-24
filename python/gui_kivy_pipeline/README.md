@@ -12,7 +12,7 @@ In addition, the example demonstrates how to integrate the `IDS peak AFL` auto-f
 All device-specific behavior, such as setting exposure, framerate, and
 supported pixel formats, is encapsulated in `camera.py`.
 
-The `DefaultPipelineSample` class in `main.py` focuses on building the user interface
+The `DefaultPipelineExample` class in `main.py` focuses on building the user interface
 and interacting directly with the default pipeline.
 `DefaultPipeline` provides convenient properties for adjusting pipeline
 settings such as output pixel format, host gain, binning, and more.

@@ -18,7 +18,7 @@ together with the ids_peak_afl auto-feature module.
 All device-specific behavior, such as setting exposure, framerate, and
 supported pixel formats, is encapsulated in camera.py.
 
-The ``DefaultPipelineSample`` class focuses on building the user interface
+The ``DefaultPipelineExample`` class focuses on building the user interface
 and interacting directly with the default pipeline.
 ``DefaultPipeline`` provides convenient properties for adjusting pipeline
 settings such as output pixel format, host gain, binning, and more.
@@ -98,7 +98,7 @@ class ProcessedImage:
     frame_id: int
 
 
-class DefaultPipelineSample(MDApp):
+class DefaultPipelineExample(MDApp):
     auto_brightness_policy_mapping = {
         "Exposure and gain": AutoBrightnessPolicy.EXPOSURE_AND_GAIN,
         "Exposure Only": AutoBrightnessPolicy.EXPOSURE_ONLY,
@@ -1200,4 +1200,4 @@ class DefaultPipelineSample(MDApp):
 
 
 if __name__ == "__main__":
-    DefaultPipelineSample().run()
+    DefaultPipelineExample().run()

@@ -1,5 +1,5 @@
 /// <summary>
-/// The Reconnect sample demonstrates how to detect device connection changes
+/// The Reconnect example demonstrates how to detect device connection changes
 /// and reliably handle temporary disconnections in a C# application using the
 /// IDS peak API. It shows how to monitor device removal, loss of connection,
 /// and subsequent reconnection, and how to safely resume image acquisition
@@ -26,7 +26,7 @@ using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 
-namespace IDSImaging.Peak.Samples.Reconnect
+namespace IDSImaging.Peak.Examples.Reconnect
 {
     internal class Program
     {

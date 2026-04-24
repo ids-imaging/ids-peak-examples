@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 using ICVImage = IDSImaging.Peak.ICV.Types.Image;
 
-namespace IDSImaging.Peak.Samples.SimpleLiveWindowsForms
+namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
 {
     internal class SimplePictureBox : PictureBox
     {

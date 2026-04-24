@@ -8,7 +8,7 @@ A region can be dilated and eroded by using a structuring element.
 The structuring element is defined as a region itself.
 Note, that the structuring element must not be inside the image coordinate system. It has its own coordinate system,
 which may even start negative.
-In this sample a structuring element in form of a rectangle is used:
+In this example a structuring element in form of a rectangle is used:
 ```
 x: -1
 y: -1

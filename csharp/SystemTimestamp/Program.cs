@@ -18,7 +18,7 @@ using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 
-namespace IDSImaging.Peak.Samples.SystemTimestamp
+namespace IDSImaging.Peak.Examples.SystemTimestamp
 {
     /// <summary>
     /// This example demonstrates how to use the IDS peak DeviceManager to discover,

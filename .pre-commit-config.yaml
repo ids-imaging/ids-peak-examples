@@ -75,3 +75,10 @@ repos:
           entry: python .pre-commit-hooks/check_readme_links.py
           language: system
           files: (?i)readme.*\.(md|rst|txt)$
+
+  - repo: local
+    hooks:
+        - id: forbidden-words
+          name: Check forbidden words
+          entry: python .pre-commit-hooks/check_forbidden_words.py
+          language: system

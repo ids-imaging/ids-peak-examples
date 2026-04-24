@@ -1,5 +1,5 @@
 /// <summary>
-/// This sample demonstrates how to use the IDS peak DeviceManager to discover,
+/// This example demonstrates how to use the IDS peak DeviceManager to discover,
 /// select, and open a camera. After opening the device with control access,
 /// basic device information is retrieved from the remote GenICam node map.
 /// </summary>
@@ -27,7 +27,7 @@ using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using IDSImaging.Peak.API.Core.Nodes;
 
-namespace IDSImaging.Peak.Samples.OpenCamera
+namespace IDSImaging.Peak.Examples.OpenCamera
 {
     internal class Program
     {
@@ -39,7 +39,7 @@ namespace IDSImaging.Peak.Samples.OpenCamera
 
             try
             {
-                Console.WriteLine("IDS peak OpenCamera Sample");
+                Console.WriteLine("IDS peak OpenCamera Example");
 
                 // Get the device manager singleton object.
                 // WARNING: `using` the device manager instance would result

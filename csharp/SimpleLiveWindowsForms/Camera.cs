@@ -18,7 +18,7 @@ using IDSImaging.Peak.API;
 using IDSImaging.Peak.API.Core;
 using Image = IDSImaging.Peak.ICV.Types.Image;
 
-namespace IDSImaging.Peak.Samples.SimpleLiveWindowsForms
+namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
 {
     internal class Camera : IDisposable
     {
