@@ -74,6 +74,8 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
 - [Nion Point Cloud](NionPointCloud) Command-line example demonstrating Nion Point Cloud acquisition.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
+- [Point Cloud From File](PointCloudFromFile) Shows how to create a point cloud with mapped Mono data using
+  `IDS peak ICV`.
 - [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
 - [SimpleLiveWindowsForms](SimpleLiveWindowsForms) Windows Forms application demonstrating a basic
   live camera image viewer.

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5A9BC4EE-E79C-4691-90A0-37D0ABA6D435}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <ProjectName>PointCloudFromFile</ProjectName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <ManagedAssembly>true</ManagedAssembly>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <BuildProject>false</BuildProject>
+  </PropertyGroup>
+  <Target Name="ValidateCommandLine" BeforeTargets="ResolveAssemblyReferences">
+    <Error Text=" The 'Platform' property must be set on the command line." Condition="'$(Platform)' == ''" />
+    <Error Text=" The 'Platform' property must not be set to Any/AnyCPU." Condition="$(Platform.Contains('Any'))" />
+  </Target>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <PlatformTarget>x86</PlatformTarget>
+    <PlatformToolset>v143</PlatformToolset>
+    <AssemblyName>PointCloudFromFile</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)$(OutputPath)PointCloudFromFile.exe</StartProgram>
+    <DebugType>full</DebugType>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <PlatformToolset>v143</PlatformToolset>
+    <AssemblyName>PointCloudFromFile</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)$(OutputPath)PointCloudFromFile.exe</StartProgram>
+    <DebugType>none</DebugType>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>queue</ErrorReport>
+    <Optimize>true</Optimize>
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <PlatformTarget>x64</PlatformTarget>
+    <PlatformToolset>v143</PlatformToolset>
+    <AssemblyName>PointCloudFromFile</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)$(OutputPath)PointCloudFromFile.exe</StartProgram>
+    <DebugType>full</DebugType>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <PlatformToolset>v143</PlatformToolset>
+    <AssemblyName>PointCloudFromFile</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)$(OutputPath)PointCloudFromFile.exe</StartProgram>
+    <DebugType>none</DebugType>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>queue</ErrorReport>
+    <Optimize>true</Optimize>
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.CSharp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.CSharp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Core">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="netstandard">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+
+  <ItemGroup>
+      <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Content Include="../../data/point_cloud_from_file/*">
+          <Link>Data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+          <TargetPath>%(Filename)%(Extension)</TargetPath>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn)
+    </BuildDependsOn>
+  </PropertyGroup>
+</Project>
