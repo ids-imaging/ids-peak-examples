@@ -71,7 +71,7 @@ repos:
   - repo: local
     hooks:
         - id: check-readme-links
-          name: Check if README URLs are available
+          name: Check if README links are valid/reachable
           entry: python .pre-commit-hooks/check_readme_links.py
           language: system
           files: (?i)readme.*\.(md|rst|txt)$
