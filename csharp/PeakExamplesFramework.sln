@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NionPointCloudFramework", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTimestampFramework", "SystemTimestamp\SystemTimestampFramework.csproj", "{DC212522-F187-497E-98EC-D009013EA4B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThresholdFromFileFramework", "ThresholdFromFile\ThresholdFromFileFramework.csproj", "{C083FE92-C339-47F7-9197-6256A5F4B647}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalibrationFromFileFramework", "CalibrationFromFile\CalibrationFromFileFramework.csproj", "{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}"
 EndProject
 Global
@@ -82,14 +84,22 @@ Global
 		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x64.Build.0 = Release|x64
 		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x86.ActiveCfg = Release|x86
 		{D50C5F0E-D0AE-4CEB-B1FE-95A155E30473}.Release|x86.Build.0 = Release|x86
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Debug|x64.ActiveCfg = Debug|x64
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Debug|x64.Build.0 = Debug|x64
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Debug|x86.ActiveCfg = Debug|x86
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Debug|x86.Build.0 = Debug|x86
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x64.ActiveCfg = Release|x64
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x64.Build.0 = Release|x64
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x86.ActiveCfg = Release|x86
+		{C083FE92-C339-47F7-9197-6256A5F4B647}.Release|x86.Build.0 = Release|x86
 		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.ActiveCfg = Debug|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.Build.0 = Debug|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.ActiveCfg = Debug|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.Build.0 = Debug|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.ActiveCfg = Release|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.Build.0 = Release|x64
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.ActiveCfg = Release|x86
-		{215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.Build.0 = Release|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x64.Build.0 = Debug|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.ActiveCfg = Debug|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Debug|x86.Build.0 = Debug|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.ActiveCfg = Release|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x64.Build.0 = Release|x64
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.ActiveCfg = Release|x86
+        {215F30DA-288B-4CBB-B8D5-AC7B1176CC3A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
