@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageRegionFromFileFramewor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndistortionFromFileFramework", "UndistortionFromFile\UndistortionFromFileFramework.csproj", "{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorphologyFramework", "Morphology\MorphologyFramework.csproj", "{A292544F-0E77-4EA5-AE10-816DFB855ED4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -150,6 +152,14 @@ Global
 		{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}.Release|x64.Build.0 = Release|x64
 		{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}.Release|x86.ActiveCfg = Release|x86
 		{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}.Release|x86.Build.0 = Release|x86
+		{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.ActiveCfg = Debug|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.Build.0 = Debug|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.ActiveCfg = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.Build.0 = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.ActiveCfg = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.Build.0 = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.ActiveCfg = Release|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
