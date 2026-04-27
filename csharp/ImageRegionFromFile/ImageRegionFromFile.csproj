@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>warnings</Nullable>
+        <RuntimeIdentifiers>
+            win-x86;win-x64;linux-x64;linux-arm64
+        </RuntimeIdentifiers>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />
+        <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+            <Content Include="../../data/image_region_from_file/*">
+                <Link>Data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+                <TargetPath>%(Filename)%(Extension)</TargetPath>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            </Content>
+        </ItemGroup>
+
+</Project>
