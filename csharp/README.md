@@ -77,6 +77,7 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Reconnect](Reconnect) Command-line example demonstrating robust device reconnect handling.
 - [SimpleLiveWindowsForms](SimpleLiveWindowsForms) Windows Forms application demonstrating a basic
   live camera image viewer.
+- [Threshold From File](ThresholdFromFile) Demonstrates how to apply a threshold to an image.
 - [Unicast](Unicast) This example demonstrates how to use the unicast discovery features of the
   transport layer (TL) to locate cameras that are not in the same subnet as the host system.
 - [Pipeline From File](PipelineFromFile) This command-line example demonstrates how to use the image processing pipeline.
