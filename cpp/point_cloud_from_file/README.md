@@ -11,7 +11,7 @@ Finally, the resulting point cloud is exported and saved as a .ply file for furt
 
 Depth Map:
 
-![Depth Map](../../data/point_cloud_from_file/depth_map.tiff)
+![Screenshot Depth_Map](../../doc/point_cloud_from_file/depth_map.png)
 
 Intensity Image:
 
