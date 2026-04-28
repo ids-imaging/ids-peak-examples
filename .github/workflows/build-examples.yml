@@ -24,7 +24,7 @@ jobs:
         run: pre-commit run --all-files
 
   build-and-run-linux:
-    name: Build Examples [Linux]
+    name: Build & run C++ examples [Linux]
     needs: precommit
     runs-on: ubuntu-latest
     strategy:
@@ -41,7 +41,7 @@ jobs:
       - name: Install Linux dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential cmake ninja-build python3-pip dotnet-sdk-8.0 clang-tidy
+          sudo apt install -y build-essential cmake ninja-build python3-pip clang-tidy
           if [ "${{ matrix.compiler }}" = "clang" ]; then
             sudo apt install -y clang
           fi
@@ -99,27 +99,6 @@ jobs:
         shell: bash
 
       #################################################################
-      # Cache NuGet packages (C#)
-      #################################################################
-      - name: Cache NuGet
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-
-      - name: Build Linux C# examples
-        # only build C# examples once on Linux
-        if: matrix.compiler == 'gcc'
-        run: dotnet build csharp/PeakExamples.sln -c Release
-
-      - name: Run Linux C# examples
-        # only run C# examples once on Linux
-        if: matrix.compiler == 'gcc'
-        run: |
-          pushd csharp/Pipeline && dotnet run --project Pipeline.csproj && popd
-        shell: bash
-
-      #################################################################
       # Upload artifacts per matrix combination
       #################################################################
 
@@ -133,18 +112,53 @@ jobs:
             !**/CMakeFiles/
             !**/*.cmake
 
+  build-and-run-linux-csharp:
+    name: Build & run C# examples [Linux]
+    needs: precommit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      #################################################################
+      # Linux dependencies
+      #################################################################
+      - name: Install Linux dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y dotnet-sdk-8.0
+
+      #################################################################
+      # Cache NuGet packages (C#)
+      #################################################################
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+
+      - name: Build Linux C# examples
+        run: dotnet build csharp/PeakExamples.sln -c Release
+
+      - name: Run Linux C# examples
+        run: .github/scripts/execute_csharp_examples.sh .
+        shell: bash
+
+      #################################################################
+      # Upload artifacts
+      #################################################################
+
       - name: Upload C# binaries
-        # Only the 'gcc' matrix build also builds the C# examples
-        if: matrix.compiler == 'gcc'
         uses: actions/upload-artifact@v4
         with:
-          name: csharp-examples-${{ runner.os }}-${{ matrix.compiler }}
+          name: csharp-examples
           if-no-files-found: error
           path: csharp/*/bin/**/Release/
 
 
   build-and-run-windows:
-    name: Build Examples [Windows]
+    name: Build & run C++ examples [Windows]
     needs: precommit
     runs-on: windows-latest
 
@@ -157,11 +171,6 @@ jobs:
       #################################################################
       - name: Prepare MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.x"
 
       # - name: Install Python
       #   uses: actions/setup-python@v5
@@ -248,30 +257,6 @@ jobs:
         shell: powershell
 
       #################################################################
-      # Cache NuGet packages (C#)
-      #################################################################
-      - name: Cache NuGet
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-
-      - name: Build Windows C# examples
-        # NOTE: dotnet build does not always work with Framework projects, we use msbuild for now
-        run: |
-          dotnet build csharp/PeakExamples.sln -c Release
-          dotnet build csharp/PeakExamplesWindowsOnly.sln -c Release
-          msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64 -t:Restore
-          msbuild csharp\PeakExamplesFramework.sln -p:Platform=x64
-          msbuild csharp\PeakExamplesFrameworkWindowsOnly.sln -p:Platform=x64 -t:Restore
-          msbuild csharp\PeakExamplesFrameworkWindowsOnly.sln -p:Platform=x64
-
-      - name: Run Windows C# examples
-        run: |
-          pushd csharp\Pipeline; dotnet run --project Pipeline.csproj; popd
-        shell: powershell
-
-      #################################################################
       # Upload artifacts
       #################################################################
 
@@ -285,13 +270,55 @@ jobs:
             !**/CMakeFiles/
             !**/*.cmake
 
+  build-and-run-windows-csharp:
+    name: Build & run C# examples [Windows]
+    needs: precommit
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      #################################################################
+      # Windows dependencies
+      #################################################################
+      - name: Prepare MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      #################################################################
+      # Cache NuGet packages (C#)
+      #################################################################
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+
+      - name: Build Windows C# examples
+        run: .github/scripts/build_csharp_examples.ps1
+        shell: powershell
+
+      - name: Run Windows C# examples
+        run: |
+          .github/scripts/execute_dotnet_framework_examples.ps1 .
+          .github/scripts/execute_csharp_examples.ps1 .
+        shell: powershell
+
+      #################################################################
+      # Upload artifacts
+      #################################################################
+
       - name: Upload C# binaries
         uses: actions/upload-artifact@v4
         with:
           name: csharp-examples-${{ runner.os }}-msvc
           if-no-files-found: error
           path: csharp/*/bin/**/Release/
-
 
   run-python:
     name: Run Python examples

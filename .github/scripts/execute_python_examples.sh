@@ -9,7 +9,8 @@ echo "No python examples found"
 exit 0
 fi
 
-find "$ROOT" -type d -path "*_from_file" | while read -r example_dir; do
+find "$ROOT" -type d -path "*_from_file" -o \
+ -path "*morphology" | while read -r example_dir; do
 echo "=============================="
 echo "Running example: $example_dir"
 

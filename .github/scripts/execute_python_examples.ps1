@@ -7,7 +7,10 @@ exit 0
 }
 
 Get-ChildItem -Path $Root -Recurse -Directory |
-Where-Object { $_.FullName -like "*_from_file" } |
+Where-Object {
+  $_.FullName -like "*_from_file" -or
+  $_.DirectoryName -like "morphology"
+} |
 ForEach-Object {
   $exampleDir = $_.FullName
   Write-Host "=============================="
