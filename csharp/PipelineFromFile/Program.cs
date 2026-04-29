@@ -11,6 +11,7 @@
 // AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 // OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+using System;
 using System.IO;
 using IDSImaging.Peak.Common.Types;
 using IDSImaging.Peak.ICV;
@@ -19,7 +20,7 @@ using IDSImaging.Peak.ICV.Pipeline;
 using IDSImaging.Peak.ICV.Pipeline.Types;
 using IDSImaging.Peak.ICV.Types;
 
-namespace IDSImaging.Peak.Examples.Pipeline
+namespace IDSImaging.Peak.Examples.PipelineFromFile
 {
     /// <summary>
     /// This example demonstrates how to configure the image processing
@@ -29,11 +30,11 @@ namespace IDSImaging.Peak.Examples.Pipeline
     {
         static void Main()
         {
-            const string DATA_PATH = "../../data/pipeline_from_file/";
-
             // The library must be initialized before use.
             // Each call to `Init` must be matched with a corresponding call to `Exit`.
             Library.Init();
+
+            var baseDir = AppContext.BaseDirectory;
 
             try
             {
@@ -41,7 +42,7 @@ namespace IDSImaging.Peak.Examples.Pipeline
                 using var pipeline = new DefaultPipeline();
 
                 // Load raw camera image from disk
-                using var image = new Image(Path.Combine(DATA_PATH, "input.bmp"), PixelFormat.BayerRG8);
+                using var image = new Image(Path.Combine(baseDir, "input.bmp"), PixelFormat.BayerRG8);
 
                 // Load the hotpixel reference image and perform detection.
                 // This will automatically update the pipeline's hotpixel list.
@@ -54,7 +55,7 @@ namespace IDSImaging.Peak.Examples.Pipeline
                 //
                 // Following these steps ensures the detected hotpixels truly represent
                 // persistent sensor defects rather than scene content or transient noise.
-                using var hotpixelImage = new Image(Path.Combine(DATA_PATH, "hotpixel.bmp"), PixelFormat.BayerRG8);
+                using var hotpixelImage = new Image(Path.Combine(baseDir, "hotpixel.bmp"), PixelFormat.BayerRG8);
                 pipeline.Hotpixel.Detect(hotpixelImage, 1u, 13.8f);
 
                 // Configure gain factors

@@ -17,15 +17,15 @@ This example requires:
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build Pipeline.csproj
-dotnet run   --project Pipeline.csproj
+dotnet build PipelineFromFile.csproj
+dotnet run --project PipelineFromFile.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 Pipeline.csproj
-> dotnet run   -r win-x64 --project Pipeline.csproj
+> dotnet build -r win-x64 PipelineFromFile.csproj
+> dotnet run   -r win-x64 --project PipelineFromFile.csproj
 > ```
 
 ### .NET Framework (classic)
@@ -33,6 +33,6 @@ dotnet run   --project Pipeline.csproj
 Use Visual Studio **or**:
 
 ```bash
-msbuild PipelineFramework.csproj /t:Restore
-msbuild PipelineFramework.csproj /p:Platform=x64
+msbuild PipelineFromFileFramework.csproj /t:Restore
+msbuild PipelineFromFileFramework.csproj /p:Platform=x64
 ```
