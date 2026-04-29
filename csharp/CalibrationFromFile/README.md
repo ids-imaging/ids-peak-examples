@@ -23,9 +23,6 @@ This example requires:
 
 ## Build Instructions
 
-The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
-the `Platform` parameter** when building.
-
 ### .NET (modern, SDK-style)
 
 ```bash
