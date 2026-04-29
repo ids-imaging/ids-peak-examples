@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmwareUpdate", "FirmwareU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicast", "Unicast\Unicast.csproj", "{2A780A15-C157-6535-4CBB-D6826F3E6687}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipeline", "Pipeline\Pipeline.csproj", "{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineFromFile", "PipelineFromFile\PipelineFromFile.csproj", "{09A0F5DA-E97D-7E68-E74F-C1E2A374D290}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NionPointCloud", "NionPointCloud\NionPointCloud.csproj", "{43BC90CC-AB89-4E55-9CB9-427897097D5C}"
 EndProject

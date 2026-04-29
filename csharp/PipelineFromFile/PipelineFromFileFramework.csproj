@@ -7,7 +7,7 @@
     <ProjectGuid>{F9BD9A7E-C674-4FCB-94F0-569287EBC7D1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
-    <ProjectName>Pipeline</ProjectName>
+    <ProjectName>PipelineFromFile</ProjectName>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -31,9 +31,9 @@
     <DefineDebug>true</DefineDebug>
     <PlatformTarget>x86</PlatformTarget>
     <PlatformToolset>v143</PlatformToolset>
-    <AssemblyName>Pipeline</AssemblyName>
+    <AssemblyName>PipelineFromFile</AssemblyName>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)$(OutputPath)Pipeline.exe</StartProgram>
+    <StartProgram>$(SolutionDir)$(OutputPath)PipelineFromFile.exe</StartProgram>
     <DebugType>full</DebugType>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -44,9 +44,9 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <PlatformToolset>v143</PlatformToolset>
-    <AssemblyName>Pipeline</AssemblyName>
+    <AssemblyName>PipelineFromFile</AssemblyName>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)$(OutputPath)Pipeline.exe</StartProgram>
+    <StartProgram>$(SolutionDir)$(OutputPath)PipelineFromFile.exe</StartProgram>
     <DebugType>none</DebugType>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>queue</ErrorReport>
@@ -59,9 +59,9 @@
     <DefineDebug>true</DefineDebug>
     <PlatformTarget>x64</PlatformTarget>
     <PlatformToolset>v143</PlatformToolset>
-    <AssemblyName>Pipeline</AssemblyName>
+    <AssemblyName>PipelineFromFile</AssemblyName>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)$(OutputPath)Pipeline.exe</StartProgram>
+    <StartProgram>$(SolutionDir)$(OutputPath)PipelineFromFile.exe</StartProgram>
     <DebugType>full</DebugType>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -72,9 +72,9 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <PlatformToolset>v143</PlatformToolset>
-    <AssemblyName>Pipeline</AssemblyName>
+    <AssemblyName>PipelineFromFile</AssemblyName>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)$(OutputPath)Pipeline.exe</StartProgram>
+    <StartProgram>$(SolutionDir)$(OutputPath)PipelineFromFile.exe</StartProgram>
     <DebugType>none</DebugType>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>queue</ErrorReport>
@@ -86,8 +86,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <Content Include="*.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="../../data/pipeline_from_file/*">
+        <Link>Data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <TargetPath>%(Filename)%(Extension)</TargetPath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
