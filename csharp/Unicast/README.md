@@ -65,15 +65,15 @@ This example requires:
 ### .NET (modern, SDK-style)
 
 ```bash
-dotnet build FirmwareUpdate.csproj
-dotnet run   --project FirmwareUpdate.csproj
+dotnet build Unicast.csproj
+dotnet run   --project Unicast.csproj
 ```
 
 > Optional (smaller output):
 >
 > ```bash
-> dotnet build -r win-x64 FirmwareUpdate.csproj
-> dotnet run   -r win-x64 --project FirmwareUpdate.csproj
+> dotnet build -r win-x64 Unicast.csproj
+> dotnet run   -r win-x64 --project Unicast.csproj
 > ```
 
 ### .NET Framework (classic)
@@ -81,8 +81,8 @@ dotnet run   --project FirmwareUpdate.csproj
 Use Visual Studio **or**:
 
 ```bash
-msbuild FirmwareUpdateFramework.csproj /t:Restore
-msbuild FirmwareUpdateFramework.csproj /p:Platform=x64
+msbuild UnicastFramework.csproj /t:Restore
+msbuild UnicastFramework.csproj /p:Platform=x64
 ```
 
 > Note: The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
