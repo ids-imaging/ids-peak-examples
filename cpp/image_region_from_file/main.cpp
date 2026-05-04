@@ -87,6 +87,7 @@ void SaveResultToFile(
     painter.Draw(imageRegion);
 
     std::cout << "Painting threshold result in red." << std::endl;
+    painter.SetOpacity(peak::icv::Opacity(100));
     painter.SetColor(peak::icv::Color(255, 0, 0));
     painter.Draw(region);
 
