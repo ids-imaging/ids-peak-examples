@@ -81,8 +81,12 @@ def _handle_exception(e: Exception, no_gui: bool) -> None:
     if no_gui:
         print("Error!", e)
     else:
-        from tkinter import messagebox
-        messagebox.showerror("Error", str(e))
+        try:
+            from tkinter import messagebox
+            messagebox.showerror("Error", str(e))
+
+        except Exception:
+            print("Error!", e)
 
 
 def _process_saved_images(app_config: _AppArgs) -> None:
