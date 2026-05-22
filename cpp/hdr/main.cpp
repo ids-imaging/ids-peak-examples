@@ -15,7 +15,6 @@
 
 #include "camera.hpp"
 #include "hdr.hpp"
-#include "save_hdr_image.hpp"
 #include "utils.hpp"
 
 #include <peak/peak.hpp>
@@ -264,7 +263,7 @@ void SaveHdrResult(const std::string& path, const HdrResult& result)
     std::cout << "Saving hdr image to " << hdrImagePathTiff << "\n";
 
     const std::string hdrImagePathHdr = path + "/" + "hdr_image.hdr";
-    utils::SaveHdrImage(result.hdrImage, hdrImagePathHdr);
+    writer.Write(hdrImagePathHdr, result.hdrImage);
     std::cout << "Saving hdr image to " << hdrImagePathHdr << "\n";
 }
 

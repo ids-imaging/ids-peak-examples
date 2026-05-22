@@ -7,7 +7,7 @@ if (NOT TARGET ids_peak)
     find_package(ids_peak 1.14 REQUIRED)
 endif ()
 if (NOT TARGET ids_peak_icv)
-    find_package(ids_peak_icv 1.3 REQUIRED)
+    find_package(ids_peak_icv 1.4 REQUIRED)
 endif ()
 
 add_executable(${PROJECT_NAME}
@@ -17,7 +17,6 @@ add_executable(${PROJECT_NAME}
         hdr.hpp
         hdr.cpp
         utils.hpp
-        save_hdr_image.hpp
 )
 
 # Set C++ standard
