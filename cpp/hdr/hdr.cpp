@@ -17,7 +17,7 @@
 #include "hdr_utils.hpp"
 
 #include <peak_icv/algorithms/hdr/peak_icv_hdr.hpp>
-#include <peak_icv/algorithms/hdr/peak_icv_tone_mapping.hpp>
+#include <peak_icv/algorithms/hdr/tone_mapping/peak_icv_drago_tone_mapping.hpp>
 
 #include <array>
 #include <chrono>
@@ -142,7 +142,7 @@ HdrResult ComputeHdr(const ImageSequence& imageSequence)
     const peak::icv::experimental::HDR hdrProcessor;
     const auto hdrImage = hdrProcessor.Process(imageSequence);
 
-    const peak::icv::experimental::ToneMapping toneMapper;
+    const peak::icv::experimental::DragoToneMapping toneMapper;
     const auto ldrImage = toneMapper.Process(hdrImage);
 
     return { imageSequence, hdrImage, ldrImage };

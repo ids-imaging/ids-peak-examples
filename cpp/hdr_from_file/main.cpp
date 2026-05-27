@@ -80,7 +80,7 @@ int main()
         std::cout << "HDR image saved to " << GetHdrImageFilePath() << std::endl;
 
         std::cout << "Initialize tone mapping" << std::endl;
-        peak::icv::experimental::ToneMapping toneMapping;
+        peak::icv::experimental::DragoToneMapping toneMapping;
 
         std::cout << "Tone mapping of HDR image" << std::endl;
         const auto ldrImage = toneMapping.Process(hdrImage);
