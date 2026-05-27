@@ -17,6 +17,7 @@ using IDSImaging.Peak.ICV;
 using IDSImaging.Peak.ICV.Types;
 using IDSImaging.Peak.ICV.IO;
 using IDSImaging.Peak.ICV.Experimental.Hdr;
+using IDSImaging.Peak.ICV.Experimental.Hdr.ToneMapping;
 using IDSImaging.Peak.Common.Types;
 
 namespace IDSImaging.Peak.Examples.HdrFromFile
@@ -67,7 +68,7 @@ namespace IDSImaging.Peak.Examples.HdrFromFile
                 Console.WriteLine($"HDR image saved to {GetHdrImageFilePath()}");
 
                 Console.WriteLine("Initialize tone mapping");
-                using var toneMapping = new ToneMapping();
+                using var toneMapping = new DragoToneMapping();
 
                 Console.WriteLine("Tone mapping HDR image");
                 using Image ldrImage = toneMapping.Process(hdrImage);

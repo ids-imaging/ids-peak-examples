@@ -21,7 +21,8 @@ import numpy as np
 from ids_peak_common import Metadata, MetadataKey
 
 from ids_peak_icv import Image, ICVException
-from ids_peak_icv.experimental.hdr import HDR, ToneMapping
+from ids_peak_icv.experimental.hdr import HDR
+from ids_peak_icv.experimental.hdr.tone_mapping import DragoToneMapping
 from ids_peak_icv.experimental.hdr.hdr import ImageArray
 
 # --------------------------------------------------------------------------------------------------
@@ -111,7 +112,7 @@ def main() -> None:
         print("HDR image saved to", hdr_output_path)
 
         print("Initialize tone mapping")
-        tone_mapping = ToneMapping()
+        tone_mapping = DragoToneMapping()
 
         print("Tone mapping of HDR image")
         ldr_image = tone_mapping.process(hdr_image)
