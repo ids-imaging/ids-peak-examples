@@ -23,7 +23,8 @@ import numpy as np
 
 from ids_peak_common import MetadataKey, PixelFormat, Channel, Interval
 from ids_peak_icv import Image
-from ids_peak_icv.experimental.hdr import HDR, ToneMapping
+from ids_peak_icv.experimental.hdr import HDR
+from ids_peak_icv.experimental.hdr.tone_mapping import DragoToneMapping
 
 from camera import Camera, AcquisitionMode, UserSet
 
@@ -99,7 +100,7 @@ def compute_hdr(image_sequence: Sequence[Image]) -> HdrResult:
     hdr_processor = HDR()
     hdr_image = hdr_processor.process(np.array(image_sequence, dtype=object))
 
-    tone_mapper = ToneMapping()
+    tone_mapper = DragoToneMapping()
     ldr_image = tone_mapper.process(hdr_image)
 
     return HdrResult(image_sequence, hdr_image, ldr_image)
