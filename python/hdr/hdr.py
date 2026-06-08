@@ -23,8 +23,8 @@ import numpy as np
 
 from ids_peak_common import MetadataKey, PixelFormat, Channel, Interval
 from ids_peak_icv import Image
-from ids_peak_icv.experimental.hdr import HDR
-from ids_peak_icv.experimental.hdr.tone_mapping import DragoToneMapping
+from ids_peak_icv.hdr import HDR
+from ids_peak_icv.hdr.tone_mapping import DragoToneMapping
 
 from camera import Camera, AcquisitionMode, UserSet
 

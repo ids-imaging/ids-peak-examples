@@ -55,7 +55,7 @@ int main()
         const peak::icv::ImageWriter writer;
 
         std::cout << "Initialize HDR" << std::endl;
-        peak::icv::experimental::HDR hdr;
+        peak::icv::HDR hdr;
 
         std::cout << "Loading calibration images from " << GetCalibrationImageFilePath() << std::endl;
         auto calibrationImages = ReadCalibrationImagesFromDir(GetCalibrationImageFilePath());
@@ -80,7 +80,7 @@ int main()
         std::cout << "HDR image saved to " << GetHdrImageFilePath() << std::endl;
 
         std::cout << "Initialize tone mapping" << std::endl;
-        peak::icv::experimental::DragoToneMapping toneMapping;
+        peak::icv::DragoToneMapping toneMapping;
 
         std::cout << "Tone mapping of HDR image" << std::endl;
         const auto ldrImage = toneMapping.Process(hdrImage);
