@@ -139,10 +139,10 @@ ExposureSequence CreateExposureSequence(
 
 HdrResult ComputeHdr(const ImageSequence& imageSequence)
 {
-    const peak::icv::experimental::HDR hdrProcessor;
+    const peak::icv::HDR hdrProcessor;
     const auto hdrImage = hdrProcessor.Process(imageSequence);
 
-    const peak::icv::experimental::DragoToneMapping toneMapper;
+    const peak::icv::DragoToneMapping toneMapper;
     const auto ldrImage = toneMapper.Process(hdrImage);
 
     return { imageSequence, hdrImage, ldrImage };

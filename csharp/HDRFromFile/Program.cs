@@ -16,8 +16,8 @@ using System.IO;
 using IDSImaging.Peak.ICV;
 using IDSImaging.Peak.ICV.Types;
 using IDSImaging.Peak.ICV.IO;
-using IDSImaging.Peak.ICV.Experimental.Hdr;
-using IDSImaging.Peak.ICV.Experimental.Hdr.ToneMapping;
+using IDSImaging.Peak.ICV.Algorithms.Hdr;
+using IDSImaging.Peak.ICV.Algorithms.Hdr.ToneMapping;
 using IDSImaging.Peak.Common.Types;
 
 namespace IDSImaging.Peak.Examples.HdrFromFile
