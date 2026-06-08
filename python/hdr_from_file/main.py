@@ -21,9 +21,9 @@ import numpy as np
 from ids_peak_common import Metadata, MetadataKey
 
 from ids_peak_icv import Image, ICVException
-from ids_peak_icv.experimental.hdr import HDR
-from ids_peak_icv.experimental.hdr.tone_mapping import DragoToneMapping
-from ids_peak_icv.experimental.hdr.hdr import ImageArray
+from ids_peak_icv.hdr import HDR
+from ids_peak_icv.hdr.tone_mapping import DragoToneMapping
+from ids_peak_icv.hdr.hdr import ImageArray
 
 # --------------------------------------------------------------------------------------------------
 # UTILITIES
