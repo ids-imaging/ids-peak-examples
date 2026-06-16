@@ -174,8 +174,17 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
                     // -------------------------------------------------------------------------------------------------
                     // Point cloud generation
                     // -------------------------------------------------------------------------------------------------
+
                     using var pointCloud = new PointCloudXYZI(undistortedDepth, undistortedIntensity);
-                    WritePointCloudToFile(pointCloud, i);
+
+                    // Applies the extrinsic calibration parameters from the factory calibration
+                    // to shift the coordinate system's origin
+                    // from the optical center directly to the front housing of the Nion camera.
+                    // Alternatively, a workspace calibration can be performed
+                    // to define the origin at any desired location within the scene.
+                    using var transformedPointCloud = pointCloud.TransformToWorkspace(calibration.ExtrinsicParameters);
+
+                    WritePointCloudToFile(transformedPointCloud, i);
                 }
 
                 DeviceStopAcquisition(nodeMap, stream);

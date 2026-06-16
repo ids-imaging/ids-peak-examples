@@ -404,7 +404,17 @@ def main() -> None:
             point_cloud = PointCloud.create_from_undistorted_depth_map(
                 undistorted_depth, undistorted_intensity
             )
-            write_point_cloud_to_file(point_cloud, i)
+
+            # Applies the extrinsic calibration parameters from the factory calibration
+            # to shift the coordinate system's origin
+            # from the optical center directly to the front housing of the Nion camera.
+            # Alternatively, a workspace calibration can be performed
+            # to define the origin at any desired location within the scene.
+            transformed_point_cloud = point_cloud.transform_to_workspace(
+                calibration.extrinsic_parameters
+            )
+
+            write_point_cloud_to_file(transformed_point_cloud, i)
 
         device_stop_acquisition(node_map, stream)
 
