@@ -1,6 +1,6 @@
 # Depth Map Acquisition and Point Cloud Generation Example
 
-Demonstrates how to acquire multipart image data from an **IDS Nion** camera
+Demonstrates how to acquire multipart image data from an `IDS Nion` camera
 and convert it into a metric 3D point cloud with per-point intensity information (XYZI).
 
 This example shows how to open and configure an IDS Nion camera,
@@ -63,5 +63,3 @@ or, if Python files (*.py) are associated with the Python interpreter, by double
 
 - This example assumes that the camera settings for binning and ROI remain unchanged for each image. However, if these
   conditions change, it is advisable to refer to the chunk data.
-- This example is limited to the minimum requirements for operating an IDS Nion. In principle, a workspace
-  calibration can also be performed. We will describe the associated procedure in an additional example.

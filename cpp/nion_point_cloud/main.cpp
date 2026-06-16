@@ -198,7 +198,15 @@ int main()
             // ---------------------------------------------------------------------------------------------------------
 
             peak::icv::PointCloudXYZI pointCloud(undistortedDepth, undistortedIntensity);
-            WritePointCloudToFile(pointCloud, i);
+
+            // Applies the extrinsic calibration parameters from the factory calibration
+            // to shift the coordinate system's origin
+            // from the optical center directly to the front housing of the Nion camera.
+            // Alternatively, a workspace calibration can be performed
+            // to define the origin at any desired location within the scene.
+            auto transformedPointCloud = pointCloud.TransformToWorkspace(calibration.GetExtrinsicParameters());
+
+            WritePointCloudToFile(transformedPointCloud, i);
         }
 
         DeviceStopAcquisition(nodeMap, stream);
