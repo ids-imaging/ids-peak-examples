@@ -35,7 +35,7 @@ def main() -> None:
         # all available DeviceDescriptors.
         device_manager.Update()
 
-        # Filter out devices which cannot be opened
+        # Create a list with all openable devices.
         devices = list(
             filter(
                 lambda dev: dev.IsOpenable(ids_peak.DeviceAccessType_Control),
