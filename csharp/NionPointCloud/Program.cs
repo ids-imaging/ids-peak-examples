@@ -103,6 +103,11 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
                 // Undistortion object initialized with factory calibration data
                 using var undistortion = new Undistortion(calibration);
 
+                // Applies nearest-neighbor interpolation
+                // during undistortion to strictly maintain measured physical geometry
+                // and avoid calculating false, floating depth values.
+                undistortion.Interpolation = Interpolation.NearestNeighbor;
+
                 using DataStream stream = DeviceStartAcquisition(device, nodeMap);
 
                 for (var i = 0; i < _imageAcquisitionCount; i++)

@@ -70,24 +70,41 @@ struct MultipartBuffer
 // ---------------------------------------------------------------------------------------------------------------------
 
 void InitializeLibraries();
+
 void ExitLibraries();
+
 DeviceInfo OpenFirstConnectedDevice();
+
 void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold);
+
 void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 peak::icv::CalibrationParameters DeviceReadCalibrationParameters(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+
 MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer);
+
 void DeviceStopAcquisition(
     const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
+
 std::string GetOutputFilePath();
+
 void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
+
 void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i);
+
 void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i);
 
 } // namespace
@@ -123,6 +140,11 @@ int main()
 
         // Undistortion object initialized with factory calibration data
         peak::icv::Undistortion undistortion(calibration);
+
+        // Applies nearest-neighbor interpolation
+        // during undistortion to strictly maintain measured physical geometry
+        // and avoid calculating false, floating depth values.
+        undistortion.SetInterpolation(peak::icv::Interpolation::NearestNeighbor);
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
