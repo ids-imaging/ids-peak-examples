@@ -237,7 +237,7 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
 
         private static Device OpenFirstConnectedDevice()
         {
-            using var deviceManager = DeviceManager.Instance();
+            var deviceManager = DeviceManager.Instance();
             deviceManager.Update();
 
             foreach (DeviceDescriptor deviceDescriptor in deviceManager.Devices())
