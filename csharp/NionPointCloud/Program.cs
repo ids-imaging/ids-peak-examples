@@ -303,10 +303,10 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
         private static Metadata AppendMetadataByDeviceMetadata(Metadata metadata, NodeMap nodeMap)
         {
             metadata.SetValueByKey(MetadataKeys.BinningHorizontal,
-                (uint) nodeMap.FindNode<IntegerNode>("BinningHorizontal").Value());
+                (ulong) nodeMap.FindNode<IntegerNode>("BinningHorizontal").Value());
 
             metadata.SetValueByKey(MetadataKeys.BinningVertical,
-                (uint) nodeMap.FindNode<IntegerNode>("BinningVertical").Value());
+                (ulong) nodeMap.FindNode<IntegerNode>("BinningVertical").Value());
 
             var roi = new RectangleU(
                 (uint) nodeMap.FindNode<IntegerNode>("OffsetX").Value(),
