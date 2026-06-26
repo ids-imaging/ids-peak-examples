@@ -242,7 +242,7 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
 
             foreach (DeviceDescriptor deviceDescriptor in deviceManager.Devices())
             {
-                if (!deviceDescriptor.ModelName().Contains("NION") || !deviceDescriptor.IsOpenable())
+                if (!deviceDescriptor.ModelName().ToLower().Contains("nion") || !deviceDescriptor.IsOpenable())
                 {
                     continue;
                 }

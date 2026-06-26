@@ -69,7 +69,7 @@ def open_first_connected_nion_device() -> tuple[Device, NodeMap]:
     devices = list(
         filter(
             lambda dev: dev.IsOpenable(ids_peak.DeviceAccessType_Control)
-                        and dev.ModelName().find("NION") != -1,
+            and dev.ModelName().lower().find("nion") != -1,
             instance.Devices(),
         )
     )

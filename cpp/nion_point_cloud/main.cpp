@@ -282,9 +282,15 @@ DeviceInfo OpenFirstConnectedDevice()
     deviceManager.Update();
 
     auto devices = deviceManager.Devices();
+
     const auto it = std::find_if(
         devices.cbegin(), devices.cend(), [](const std::shared_ptr<peak::core::DeviceDescriptor>& dev) {
-            return dev->ModelName().find("NION") != std::string::npos && dev->IsOpenable();
+            std::string modelName = dev->ModelName();
+            std::transform(modelName.begin(), modelName.end(), modelName.begin(), [](unsigned char c) {
+                return std::tolower(c);
+            });
+
+            return modelName.find("nion") != std::string::npos && dev->IsOpenable();
         });
 
     if (it == devices.end())
