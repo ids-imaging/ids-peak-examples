@@ -129,7 +129,7 @@
     <ImportGroup Label="ExtensionTargets">
     </ImportGroup>
     <ItemGroup>
-        <PackageReference Include="IDSImaging.Peak.Common" Version="1.*"/>
+        <PackageReference Include="IDSImaging.Peak.Common" Version="2.*"/>
         <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*"/>
     </ItemGroup>
     <PropertyGroup>

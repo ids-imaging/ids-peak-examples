@@ -27,9 +27,9 @@ This demo depends on the following third-party packages:
 * `plyer`
 
 The following IDS peak python packages are required:
-* `ids-peak-common >= 1.1.0`
+* `ids-peak-common >= 2.0.0`
 * `ids-peak-ipl >= 1.17.1`
-* `ids-peak-icv >= 1.3.0`
+* `ids-peak-icv >= 1.4.0`
 * `ids-peak >= 1.13.0`
 * `ids-peak-afl >= 2.0.0`
 

@@ -20,8 +20,8 @@ Required third-party Python packages
 
 Required IDS peak Python packages:
 
-* `ids-peak-common>=1.3.0`
-* `ids-peak-icv>=1.3.0`
+* `ids-peak-common>=2.0.0`
+* `ids-peak-icv>=1.4.0`
 * `ids-peak>=1.14.0`
 
 Install Python dependencies:

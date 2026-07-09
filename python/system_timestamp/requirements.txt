@@ -1,2 +1,2 @@
-ids-peak-common>=1.3.0
+ids-peak-common>=2.0.0
 ids-peak>=1.15.0

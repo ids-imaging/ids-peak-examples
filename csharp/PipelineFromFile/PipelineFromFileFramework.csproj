@@ -130,7 +130,7 @@
   </ImportGroup>
   <ItemGroup>
     <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*" />
-    <PackageReference Include="IDSImaging.Peak.Common" Version="1.*" />
+    <PackageReference Include="IDSImaging.Peak.Common" Version="2.*" />
   </ItemGroup>
   <PropertyGroup>
     <BuildDependsOn>

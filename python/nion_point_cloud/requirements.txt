@@ -1,4 +1,4 @@
-ids-peak-common>=1.1.0
+ids-peak-common>=2.0.0
 ids-peak-ipl>=1.17.1
-ids-peak-icv>=1.0.0
+ids-peak-icv>=1.4.0
 ids-peak>=1.13.0
