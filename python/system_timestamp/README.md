@@ -16,7 +16,7 @@ The example performs the following steps:
 
 
 ## Requirements
-* `ids-peak-common >= 1.3.0`
+* `ids-peak-common >= 2.0.0`
 * `ids-peak >= 1.15.0`
 
 To install all required dependencies, use the provided `requirements.txt`:

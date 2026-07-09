@@ -13,7 +13,7 @@
 
     <ItemGroup>
         <PackageReference Include="IDSImaging.Peak.API" Version="1.*"/>
-        <PackageReference Include="IDSImaging.Peak.Common" Version="1.*"/>
+        <PackageReference Include="IDSImaging.Peak.Common" Version="2.*"/>
         <PackageReference Include="IDSImaging.Peak.ICV" Version="1.*"/>
     </ItemGroup>
 </Project>

@@ -34,8 +34,8 @@ This example depends on the following components:
 
 - An `IDS Nion` camera
 - [IDS peak standard Setup](https://en.ids-imaging.com/download-peak.html) version 2.19 or later
-- `ids-peak-common >= 1.1.0`
-- `ids-peak-icv >= 1.0.0`
+- `ids-peak-common >= 2.0.0`
+- `ids-peak-icv >= 1.4.0`
 - `ids-peak >= 1.13.0`
 
 To install all required python dependencies, use the provided `requirements.txt`:
