@@ -18,10 +18,10 @@ from typing import Tuple
 from ids_peak_common import PixelFormat
 from ids_peak_icv import Image, PointCloud
 from ids_peak_icv.calibration import CalibrationParameters
-from ids_peak_icv.transformations import Undistortion
+from ids_peak_icv.transformations.undistortion import Undistortion, Interpolation
 
 DATA_PATH = (
-    Path(__file__).resolve().parent / ".." / ".." / "data" / "point_cloud_from_file"
+        Path(__file__).resolve().parent / ".." / ".." / "data" / "point_cloud_from_file"
 ).resolve()
 
 
@@ -47,6 +47,12 @@ def main() -> None:
     depth_map, intensity_image, calibration_parameters = load_files()
 
     undistortion = Undistortion.create_from_intrinsics(calibration_parameters.intrinsic_parameters)
+
+    # Applies nearest-neighbor interpolation
+    # during undistortion to strictly maintain measured physical geometry
+    # and avoid calculating false, floating depth values.
+    undistortion.interpolation = Interpolation.NEAREST_NEIGHBOR
+
     undistorted_depth_map = undistortion.process(depth_map)
     undistorted_intensity_image = undistortion.process(intensity_image)
 

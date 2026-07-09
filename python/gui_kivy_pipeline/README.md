@@ -40,6 +40,19 @@ pip install -r requirements.txt
 
 In addition, a suitable GenTL must be installed, for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
+> [!IMPORTANT]
+> Kivy is currently not compatible with Python >=3.14.
+> The Kivy example (our Python UI package) does not work on Python 3.14 or newer.
+> This also affects distributions such as Ubuntu 26.04, which ship with Python 3.14 by default.
+>
+> Unfortunately, this is an upstream compatibility issue that cannot be resolved within this project.
+> We will support Python 3.14 as soon as a new Kivy release adds compatibility. At the time of writing,
+> the latest Kivy release dates back to 2024.
+>
+> See https://github.com/kivy/kivy/issues/9280 for more information.
+>
+> Workaround: Use Python 3.13 or earlier to run this example until an updated Kivy release becomes available.
+
 ## Running the example
 
 After installing all requirements the demo can be run by executing `main.py` with the Python interpreter

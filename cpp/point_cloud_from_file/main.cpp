@@ -34,7 +34,13 @@ int main()
             DATA_PATH "/point_cloud_from_file/calibration_parameters.json");
         const peak::icv::Image intensityImage(DATA_PATH "/point_cloud_from_file/intensity.png");
 
-        const peak::icv::Undistortion undistortion(calibrationParameters.GetIntrinsicParameters());
+        peak::icv::Undistortion undistortion(calibrationParameters.GetIntrinsicParameters());
+
+        // Applies nearest-neighbor interpolation
+        // during undistortion to strictly maintain measured physical geometry
+        // and avoid calculating false, floating depth values.
+        undistortion.SetInterpolation(peak::icv::Interpolation::NearestNeighbor);
+
         const peak::icv::UndistortedImage undistortedDepthMap = undistortion.Process(depthMap);
         const peak::icv::UndistortedImage undistortedIntensityImage = undistortion.Process(intensityImage);
 

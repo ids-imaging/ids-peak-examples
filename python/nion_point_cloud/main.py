@@ -31,7 +31,7 @@ from ids_peak_common import Interval, Metadata, MetadataKey, PixelFormat, Rectan
 from ids_peak_icv import Image, PointCloud
 from ids_peak_icv.calibration import CalibrationParameters
 from ids_peak_icv.thresholds import Threshold
-from ids_peak_icv.transformations import Undistortion
+from ids_peak_icv.transformations.undistortion import Undistortion, Interpolation
 
 # --------------------------------------------------------------------------------------------------
 # CONFIGURATION
@@ -55,6 +55,7 @@ FILTER_DISTANCE_INTERVAL_MM: Interval = Interval(100.0, 1000.0)
 # Number of images acquired in this example
 IMAGE_ACQUISITION_COUNT: int = 10
 
+
 # --------------------------------------------------------------------------------------------------
 # DEVICE UTILITIES
 # --------------------------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ def open_first_connected_nion_device() -> tuple[Device, NodeMap]:
     devices = list(
         filter(
             lambda dev: dev.IsOpenable(ids_peak.DeviceAccessType_Control)
-            and dev.ModelName().find("NION") != -1,
+            and dev.ModelName().lower().find("nion") != -1,
             instance.Devices(),
         )
     )
@@ -336,6 +337,11 @@ def main() -> None:
         # Undistortion object initialized with factory calibration data
         undistortion = Undistortion.create_from_intrinsics(calibration.intrinsic_parameters)
 
+        # Applies nearest-neighbor interpolation
+        # during undistortion to strictly maintain measured physical geometry
+        # and avoid calculating false, floating depth values.
+        undistortion.interpolation = Interpolation.NEAREST_NEIGHBOR
+
         stream = device_start_acquisition(device, node_map)
 
         for i in range(IMAGE_ACQUISITION_COUNT):
@@ -404,7 +410,17 @@ def main() -> None:
             point_cloud = PointCloud.create_from_undistorted_depth_map(
                 undistorted_depth, undistorted_intensity
             )
-            write_point_cloud_to_file(point_cloud, i)
+
+            # Applies the extrinsic calibration parameters from the factory calibration
+            # to shift the coordinate system's origin
+            # from the optical center directly to the front housing of the Nion camera.
+            # Alternatively, a workspace calibration can be performed
+            # to define the origin at any desired location within the scene.
+            transformed_point_cloud = point_cloud.transform_to_workspace(
+                calibration.extrinsic_parameters
+            )
+
+            write_point_cloud_to_file(transformed_point_cloud, i)
 
         device_stop_acquisition(node_map, stream)
 

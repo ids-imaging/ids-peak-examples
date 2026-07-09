@@ -103,6 +103,11 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
                 // Undistortion object initialized with factory calibration data
                 using var undistortion = new Undistortion(calibration);
 
+                // Applies nearest-neighbor interpolation
+                // during undistortion to strictly maintain measured physical geometry
+                // and avoid calculating false, floating depth values.
+                undistortion.Interpolation = Interpolation.NearestNeighbor;
+
                 using DataStream stream = DeviceStartAcquisition(device, nodeMap);
 
                 for (var i = 0; i < _imageAcquisitionCount; i++)
@@ -174,8 +179,17 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
                     // -------------------------------------------------------------------------------------------------
                     // Point cloud generation
                     // -------------------------------------------------------------------------------------------------
+
                     using var pointCloud = new PointCloudXYZI(undistortedDepth, undistortedIntensity);
-                    WritePointCloudToFile(pointCloud, i);
+
+                    // Applies the extrinsic calibration parameters from the factory calibration
+                    // to shift the coordinate system's origin
+                    // from the optical center directly to the front housing of the Nion camera.
+                    // Alternatively, a workspace calibration can be performed
+                    // to define the origin at any desired location within the scene.
+                    using var transformedPointCloud = pointCloud.TransformToWorkspace(calibration.ExtrinsicParameters);
+
+                    WritePointCloudToFile(transformedPointCloud, i);
                 }
 
                 DeviceStopAcquisition(nodeMap, stream);
@@ -223,12 +237,12 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
 
         private static Device OpenFirstConnectedDevice()
         {
-            using var deviceManager = DeviceManager.Instance();
+            var deviceManager = DeviceManager.Instance();
             deviceManager.Update();
 
             foreach (DeviceDescriptor deviceDescriptor in deviceManager.Devices())
             {
-                if (!deviceDescriptor.ModelName().Contains("NION") || !deviceDescriptor.IsOpenable())
+                if (!deviceDescriptor.ModelName().ToLower().Contains("nion") || !deviceDescriptor.IsOpenable())
                 {
                     continue;
                 }
