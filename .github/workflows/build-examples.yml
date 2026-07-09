@@ -53,24 +53,24 @@ jobs:
         id: peaklin-cache
         uses: actions/cache/restore@v4
         with:
-          path: ids-peak-linux.tgz
-          key: ids-peak-linux-v2.21.0.0
+          path: ids-peak-linux.tar.gz
+          key: ids-peak-linux-v26.06
 
       - name: Download IDS Peak Linux SDK (if missing)
         if: steps.peaklin-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o ids-peak-linux.tgz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_2.21.0.0-532_amd64.tgz"
+          curl -L -o ids-peak-linux.tar.gz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_26.06_amd64.tar.gz"
 
       - name: "Save cache: IDS peak SDK Download"
         if: steps.peaklin-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: ids-peak-linux.tgz
-          key: ids-peak-linux-v2.21.0.0
+          path: ids-peak-linux.tar.gz
+          key: ids-peak-linux-v26.06
 
       - name: Install IDS Peak SDK (Linux)
         run: |
-          sudo tar -xzf ids-peak-linux.tgz --strip-components=1 -C /usr
+          sudo tar -xzf ids-peak-linux.tar.gz --strip-components=1 -C /usr
           sudo ldconfig
 
       #################################################################
@@ -184,23 +184,20 @@ jobs:
         id: peakwin-cache
         uses: actions/cache/restore@v4
         with:
-          path: ids-peak-win.zip
-          key: ids-peak-win-v2.21.0.0
+          path: ids-peak-win.exe
+          key: ids-peak-win-v26.06
 
-      - name: Download IDS Peak Windows SDK ZIP (if missing)
+      - name: Download IDS Peak Windows SDK exe (if missing)
         if: steps.peakwin-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L -o ids-peak-win.zip "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-2.21.0.0.zip"
+          curl -L -o ids-peak-win.exe "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-26.06.exe"
 
       - name: "Save cache: IDS peak SDK Download"
         if: steps.peakwin-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: ids-peak-win.zip
-          key: ids-peak-win-v2.21.0.0
-
-      - name: Extract Windows SDK installer
-        run: Expand-Archive -Path ids-peak-win.zip -DestinationPath peaksetup -Verbose
+          path: ids-peak-win.exe
+          key: ids-peak-win-v26.06
 
       - name: Install IDS Peak SDK (Windows Silent)
         run: |
