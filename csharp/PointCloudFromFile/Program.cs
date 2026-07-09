@@ -34,6 +34,11 @@ namespace IDSImaging.Peak.Examples.PointCloudFromFile
 
                 Console.WriteLine("Undistort depth map and intensity image");
                 using var undistortion = new Undistortion(calibrationParameters.IntrinsicParameters);
+
+                // Applies nearest-neighbor interpolation
+                // during undistortion to strictly maintain measured physical geometry
+                // and avoid calculating false, floating depth values.
+                undistortion.Interpolation = Interpolation.NearestNeighbor;
                 using var undistortedDepthMap = undistortion.Process(depthMap);
                 using var undistortedIntensityImage = undistortion.Process(intensityImage);
 

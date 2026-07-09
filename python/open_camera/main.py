@@ -43,7 +43,6 @@ def main() -> None:
     device_manager = ids_peak.DeviceManager.Instance()
 
     try:
-        # Update the device manager.
         # When `Update` is called, it searches for all producer libraries
         # contained in the directories found in the official GenICam GenTL
         # environment variable GENICAM_GENTL{32/64}_PATH. It then opens all
@@ -51,7 +50,7 @@ def main() -> None:
         # all available DeviceDescriptors.
         device_manager.Update()
 
-        # Exit program if no device was found.
+        # Exit program if no openable device was found.
         if len(device_manager.Devices()) == 0:
             print("No device found. Exiting Program.")
             return
