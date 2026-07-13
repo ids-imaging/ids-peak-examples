@@ -58,8 +58,10 @@ jobs:
 
       - name: Download IDS Peak Linux SDK (if missing)
         if: steps.peaklin-cache.outputs.cache-hit != 'true'
+        env:
+          TOKEN: ${{ secrets.IDS_WEBSITE_ACCESS_TOKEN }}
         run: |
-          curl -L -o ids-peak-linux.tar.gz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_26.06_amd64.tar.gz"
+          curl -H "X-Github-Secret: $TOKEN" -L -o ids-peak-linux.tar.gz "https://de.ids-imaging.com/files/downloads/ids-peak/software/linux-desktop/ids-peak_26.06_amd64.tar.gz"
 
       - name: "Save cache: IDS peak SDK Download"
         if: steps.peaklin-cache.outputs.cache-hit != 'true'
@@ -189,8 +191,10 @@ jobs:
 
       - name: Download IDS Peak Windows SDK exe (if missing)
         if: steps.peakwin-cache.outputs.cache-hit != 'true'
+        env:
+          TOKEN: ${{ secrets.IDS_WEBSITE_ACCESS_TOKEN }}
         run: |
-          curl -L -o ids-peak-win.exe "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-26.06.exe"
+          curl -H "X-Github-Secret: $TOKEN" -L -o ids-peak-win.exe "https://de.ids-imaging.com/files/downloads/ids-peak/software/windows/ids-peak-win-standard-setup-64-26.06.exe"
 
       - name: "Save cache: IDS peak SDK Download"
         if: steps.peakwin-cache.outputs.cache-hit != 'true'
