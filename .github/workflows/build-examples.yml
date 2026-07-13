@@ -205,12 +205,12 @@ jobs:
 
       - name: Install IDS Peak SDK (Windows Silent)
         run: |
-          $exe = Get-ChildItem -Path "$env:GITHUB_WORKSPACE/peaksetup" -Filter "*.exe" | Select-Object -First 1
+          $exe = Join-Path $env:GITHUB_WORKSPACE "ids-peak-win.exe"
           $iss = Join-Path $env:GITHUB_WORKSPACE ".github\assets\peak_setup_2.18.1.iss"
           $log = Join-Path $env:GITHUB_WORKSPACE "peak_install.log"
           $args = "/s", "/f1`"$iss`"", "/f2`"$log`""
-          Write-Host "Running installer: $($exe.FullName) $args"
-          Start-Process -FilePath $exe.FullName -ArgumentList $args -Wait
+          Write-Host "Running installer: $($exe) $args"
+          Start-Process -FilePath $exe -ArgumentList $args -Wait
           Write-Host "Installer log:"
           Get-Content $log
         shell: powershell
