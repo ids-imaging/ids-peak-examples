@@ -93,3 +93,6 @@ dotnet add package IDSImaging.Peak.<PackageName>
   transport layer (TL) to locate cameras that are not in the same subnet as the host system.
 - [Workspace Calibration From File](WorkspaceCalibrationFromFile) Shows how to calibrate and apply a new workspace
   using `IDS peak ICV`.
+- [Textured Point Cloud From File](TexturedPointCloudFromFile) Demonstrates how to align 3D coordinate data from a
+  3D camera with a 2D color image from a standard 2D RGB camera to create a textured point cloud.
+
