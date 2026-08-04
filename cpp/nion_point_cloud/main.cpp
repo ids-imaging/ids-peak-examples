@@ -20,7 +20,6 @@
 #include <stdexcept>
 #include <vector>
 
-// IDS peak headers
 #include <peak/peak.hpp>
 #include <peak_icv/peak_icv.hpp>
 
@@ -106,7 +105,6 @@ void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
 void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i);
 
 void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i);
-
 } // namespace
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -245,7 +243,6 @@ int main()
 
 namespace
 {
-
 // ---------------------------------------------------------------------------------------------------------------------
 // PEAK LIBRARY LIFECYCLE
 // ---------------------------------------------------------------------------------------------------------------------
@@ -492,5 +489,4 @@ void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i
     pointCloudWriter.Write(pointCloudFilePath, pointCloud);
     std::cout << "Point cloud written to: " << pointCloudFilePath << std::endl;
 }
-
 } // namespace

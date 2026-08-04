@@ -72,3 +72,5 @@ Open the Visual Studio Project and build it.
 * [Undistortion From File](undistortion_from_file) Shows how to apply an undistortion using `IDS peak ICV`.
 * [Workspace Calibration From File](workspace_calibration_from_file) Shows how to calibrate and apply a new workspace
   using `IDS peak ICV`.
+* [Textured Point Cloud From File](textured_point_cloud_from_file) Demonstrates how to align 3D coordinate data from a
+  3D camera with a 2D color image from a standard 2D RGB camera to create a textured point cloud.
