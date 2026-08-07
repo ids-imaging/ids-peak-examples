@@ -10,7 +10,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_EXTENSIONS OFF
 )
 
-find_package(ids_peak REQUIRED)
+find_package(ids_peak 1.17 REQUIRED)
 find_package(ids_peak_icv REQUIRED)
 
 # This function will add a post-build step to your target
