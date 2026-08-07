@@ -18,4 +18,4 @@ The example performs the following steps:
 To run this example, you need:
 
 - An **IDS** camera
-- [IDS peak standard Setup](https://en.ids-imaging.com/download-peak.html) version 2.21 or later
+- [IDS peak standard Setup](https://en.ids-imaging.com/download-peak.html) version 26.06.2 or later
