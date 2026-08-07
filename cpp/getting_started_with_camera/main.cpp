@@ -37,15 +37,8 @@ int main()
         deviceManager.Update();
 
         // Find the first available camera with control access
-        std::shared_ptr<peak::core::DeviceDescriptor> deviceDescriptor = nullptr;
-        for (const auto& dev : deviceManager.Devices())
-        {
-            if (dev->IsOpenable(peak::core::DeviceAccessType::Control))
-            {
-                deviceDescriptor = dev;
-                break;
-            }
-        }
+        std::shared_ptr<peak::core::DeviceDescriptor> deviceDescriptor = deviceManager.FirstAvailableDevice(
+            peak::core::DeviceAccessType::Control);
 
         if (deviceDescriptor == nullptr)
         {
@@ -70,11 +63,7 @@ int main()
         auto bufferCount = dataStream->NumBuffersAnnouncedMinRequired();
 
         // Allocate buffers and queue them
-        for (size_t i = 0; i < bufferCount; ++i)
-        {
-            auto buffer = dataStream->AllocAndAnnounceBuffer(payloadSize, nullptr);
-            dataStream->QueueBuffer(buffer);
-        }
+        dataStream->AddAcquisitionBuffers(payloadSize, bufferCount);
 
         // Lock transport layer parameters (TLParamsLocked = 1) to
         // prevent irregular access to the remote device during acquisition
@@ -82,8 +71,7 @@ int main()
 
         // Start acquisition on both data stream and device
         dataStream->StartAcquisition();
-        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->Execute();
-        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->WaitUntilDone();
+        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->ExecuteAndWait();
 
         std::cout << "Acquisition started. Capturing 5 ICV images...\n";
 
@@ -91,35 +79,27 @@ int main()
         for (int i = 0; i < 5; ++i)
         {
             // Wait for a filled buffer (timeout: 5000 ms)
-            auto buffer = dataStream->WaitForFinishedBuffer(5'000);
+            peak::core::BufferGuard guard(dataStream->WaitForFinishedBuffer(5'000));
 
             // Create an ICV image from the buffer
-            auto image = peak::icv::Image(buffer->ToImageView());
+            auto image = peak::icv::Image(guard.Buffer()->ToImageView());
 
             // The image can now be used for further processing
             std::cout << "Image " << (i + 1) << " captured! "
                       << "ICV dimensions: " << image.GetSize() << " px, "
                       << "PixelFormat: " << image.GetPixelFormat() << ", "
                       << "First pixel value: " << static_cast<int>(*image.At<uint8_t>(0, 0)) << "\n";
-
-            // Re-queue the buffer for reuse
-            dataStream->QueueBuffer(buffer);
         }
 
         // Stop acquisition
-        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->Execute();
-        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->WaitUntilDone();
+        nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->ExecuteAndWait();
         dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
-        dataStream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
 
         // Unlock transport layer parameters
         nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);
 
         // Release acquisition buffers
-        for (const auto& buffer : dataStream->AnnouncedBuffers())
-        {
-            dataStream->RevokeBuffer(buffer);
-        }
+        dataStream->FlushAndRevokeAllBuffers();
 
         std::cout << "Camera closed and resources released successfully.\n";
     }
