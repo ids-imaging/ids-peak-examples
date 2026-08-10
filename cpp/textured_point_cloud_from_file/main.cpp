@@ -16,7 +16,6 @@
 #include <iostream>
 #include <string>
 
-// IDS peak headers
 #include <peak_icv/peak_icv.hpp>
 #include <peak_icv/algorithms/transformations/peak_icv_xyz_projection.hpp>
 
@@ -40,10 +39,8 @@ int main()
         const std::string camera2dImagePath = camera2dPath + "/color_image.png";
         const std::string camera2dCalibrationParametersPath = camera2dPath + "/calibration_parameters.json";
 
-        auto camera3dDepthMap = peak::icv::Image(
-            camera3dDepthMapPath,
-            peak::common::PixelFormat::Coord3D_C32f
-        );
+        const peak::icv::Image camera3dDepthMap(
+            camera3dDepthMapPath, peak::common::PixelFormat::Coord3D_C32f);
         auto camera2dImage = peak::icv::Image(camera2dImagePath);
 
         auto camera3dCalibrationParameters = peak::icv::CalibrationParameters(

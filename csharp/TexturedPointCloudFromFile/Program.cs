@@ -25,7 +25,7 @@ namespace TexturedPointCloudFromFile
         {
             try
             {
-                Library.Init();
+                ICV.Library.Init();
 
                 var dataPath = Path.Combine(AppContext.BaseDirectory);
                 var camera3DPath = Path.Combine(dataPath, "3d_camera");
