@@ -53,9 +53,10 @@ Open the Visual Studio Project and build it.
   `IDS peak ICV`.
 * [Get First Pixel](get_first_pixel) This example demonstrates how to acquire an image and print the value of the first
   pixel.
-* [HDR](hdr) Demonstrates how to acquire multiple images with different exposure times
-  using an IDS camera and combine them into a single High Dynamic Range (HDR) image.
-* [HDR from file](hdr_from_file) Shows how to create an HDR image and apply tone mapping for visual appearance using `IDS peak ICV`.
+* [HDR](hdr) Demonstrates how to acquire multiple images with different exposure times using an IDS camera and combine
+  them into a single High Dynamic Range (HDR) image.
+* [HDR from file](hdr_from_file) Shows how to create an HDR image and apply tone mapping for visual appearance using
+  `IDS peak ICV`.
 * [Image Region From File](image_region_from_file) Shows what image regions are and how to use them in `IDS peak ICV`.
 * [Morphology](morphology) Shows how to use region morphology using `IDS peak ICV`.
 * [Nion Point Cloud](nion_point_cloud) Shows how to calculate the depth Map and point cloud using the `IDS Nion` camera
@@ -69,3 +70,5 @@ Open the Visual Studio Project and build it.
 * [Undistortion From File](undistortion_from_file) Shows how to apply an undistortion using `IDS peak ICV`.
 * [Workspace Calibration From File](workspace_calibration_from_file) Shows how to calibrate and apply a new workspace
   using `IDS peak ICV`.
+* [Textured Point Cloud From File](textured_point_cloud_from_file) Demonstrates how to align 3D coordinate data from a
+  3D camera with a 2D color image from a standard 2D RGB camera to create a textured point cloud.

@@ -20,93 +20,92 @@
 #include <stdexcept>
 #include <vector>
 
-// IDS peak headers
 #include <peak/peak.hpp>
 #include <peak_icv/peak_icv.hpp>
 
 namespace
 {
-// ---------------------------------------------------------------------------------------------------------------------
-// CONFIGURATION
-// ---------------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    // CONFIGURATION
+    // ---------------------------------------------------------------------------------------------------------------------
 
-// Enable filtering of depth values based on the camera confidence image
-constexpr bool filterDepthMapByConfidenceEnabled = true;
+    // Enable filtering of depth values based on the camera confidence image
+    constexpr bool filterDepthMapByConfidenceEnabled = true;
 
-// Pixels with confidence values below this threshold are marked as invalid. The Range is 0 to 4095.
-constexpr int32_t confidenceThreshold = 100;
+    // Pixels with confidence values below this threshold are marked as invalid. The Range is 0 to 4095.
+    constexpr int32_t confidenceThreshold = 100;
 
-// Camera exposure time in microseconds
-constexpr float exposureTimeUs = 1000.0F;
+    // Camera exposure time in microseconds
+    constexpr float exposureTimeUs = 1000.0F;
 
-// Enable filtering of depth values based on the Z distance
-constexpr bool filterDistanceEnabled = true;
+    // Enable filtering of depth values based on the Z distance
+    constexpr bool filterDistanceEnabled = true;
 
-// Valid Z distance interval in millimeters
-constexpr peak::common::IntervalF filterDistanceIntervalMm{ 100.0F, 1000.0F };
+    // Valid Z distance interval in millimeters
+    constexpr peak::common::IntervalF filterDistanceIntervalMm{100.0F, 1000.0F};
 
-// Number of images acquired in this example
-constexpr size_t imageAcquisitionCount = 10;
+    // Number of images acquired in this example
+    constexpr size_t imageAcquisitionCount = 10;
 
-// ---------------------------------------------------------------------------------------------------------------------
-// UTILITIES
-// ---------------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    // UTILITIES
+    // ---------------------------------------------------------------------------------------------------------------------
 
-struct DeviceInfo
-{
-    std::shared_ptr<peak::core::Device> device{};
-    std::shared_ptr<peak::core::NodeMap> nodeMap{};
-};
+    struct DeviceInfo
+    {
+        std::shared_ptr<peak::core::Device> device{};
+        std::shared_ptr<peak::core::NodeMap> nodeMap{};
+    };
 
-// Structure holding the required multipart buffer parts
-struct MultipartBuffer
-{
-    std::shared_ptr<peak::core::BufferPart> depthMap{};
-    std::shared_ptr<peak::core::BufferPart> intensity{};
-};
+    // Structure holding the required multipart buffer parts
+    struct MultipartBuffer
+    {
+        std::shared_ptr<peak::core::BufferPart> depthMap{};
+        std::shared_ptr<peak::core::BufferPart> intensity{};
+    };
 
-// ---------------------------------------------------------------------------------------------------------------------
-// DECLARATIONS
-// ---------------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    // DECLARATIONS
+    // ---------------------------------------------------------------------------------------------------------------------
 
-void InitializeLibraries();
+    void InitializeLibraries();
 
-void ExitLibraries();
+    void ExitLibraries();
 
-DeviceInfo OpenFirstConnectedDevice();
+    DeviceInfo OpenFirstConnectedDevice();
 
-void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold);
+    void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold);
 
-void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-peak::icv::CalibrationParameters DeviceReadCalibrationParameters(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    peak::icv::CalibrationParameters DeviceReadCalibrationParameters(
+        const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
-    const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+    std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
+        const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 
-MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer);
+    MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer);
 
-void DeviceStopAcquisition(
-    const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
+    void DeviceStopAcquisition(
+        const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
 
-std::string GetOutputFilePath();
+    std::string GetOutputFilePath();
 
-void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
+    void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
 
-void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i);
+    void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i);
 
-void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i);
-
+    void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i);
 } // namespace
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -184,7 +183,7 @@ int main()
             auto depth = rawDepth.ConvertPixelFormatWithFactor(peak::common::PixelFormat::Coord3D_C32f, scaleFactor);
 
             // Remove invalid depth pixels and get region of only valid pixels
-            peak::icv::ThresholdF validPixelThreshold{ minimumValidValue, maximumValidValue };
+            peak::icv::ThresholdF validPixelThreshold{minimumValidValue, maximumValidValue};
 
             auto validPixelsRegion = validPixelThreshold.Process(depth);
 
@@ -245,252 +244,257 @@ int main()
 
 namespace
 {
+    // ---------------------------------------------------------------------------------------------------------------------
+    // PEAK LIBRARY LIFECYCLE
+    // ---------------------------------------------------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------------------------------------------------
-// PEAK LIBRARY LIFECYCLE
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Initialize peak core and peak ICV libraries
-void InitializeLibraries()
-{
-    peak::Library::Initialize();
-    peak::icv::library::Init();
-}
-
-// Shutdown peak libraries
-void ExitLibraries()
-{
-    try
+    // Initialize peak core and peak ICV libraries
+    void InitializeLibraries()
     {
-        peak::icv::library::Exit();
-        peak::Library::Close();
+        peak::Library::Initialize();
+        peak::icv::library::Init();
     }
-    catch (...)
+
+    // Shutdown peak libraries
+    void ExitLibraries()
     {
-        std::cerr << "Error: Exception occured while exiting libraries!";
+        try
+        {
+            peak::icv::library::Exit();
+            peak::Library::Close();
+        }
+        catch (...)
+        {
+            std::cerr << "Error: Exception occured while exiting libraries!";
+        }
     }
-}
 
-// ---------------------------------------------------------------------------------------------------------------------
-// DEVICE UTILITIES
-// ---------------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------
+    // DEVICE UTILITIES
+    // ---------------------------------------------------------------------------------------------------------------------
 
-// Open the first connected IDS Nion device
-DeviceInfo OpenFirstConnectedDevice()
-{
-    auto& deviceManager = peak::DeviceManager::Instance();
-    deviceManager.Update();
+    // Open the first connected IDS Nion device
+    DeviceInfo OpenFirstConnectedDevice()
+    {
+        auto& deviceManager = peak::DeviceManager::Instance();
+        deviceManager.Update();
 
-    auto devices = deviceManager.Devices();
+        auto devices = deviceManager.Devices();
 
-    const auto it = std::find_if(
-        devices.cbegin(), devices.cend(), [](const std::shared_ptr<peak::core::DeviceDescriptor>& dev) {
-            std::string modelName = dev->ModelName();
-            std::transform(modelName.begin(), modelName.end(), modelName.begin(), [](unsigned char c) {
-                return std::tolower(c);
+        const auto it = std::find_if(
+            devices.cbegin(), devices.cend(), [](const std::shared_ptr<peak::core::DeviceDescriptor>& dev)
+            {
+                std::string modelName = dev->ModelName();
+                std::transform(modelName.begin(), modelName.end(), modelName.begin(), [](unsigned char c)
+                {
+                    return std::tolower(c);
+                });
+
+                return modelName.find("nion") != std::string::npos && dev->IsOpenable();
             });
 
-            return modelName.find("nion") != std::string::npos && dev->IsOpenable();
-        });
-
-    if (it == devices.end())
-    {
-        throw std::runtime_error("No IDS Nion device found.");
-    }
-
-    const auto device = (*it)->OpenDevice(peak::core::DeviceAccessType::Control);
-    const auto nodeMap = device->RemoteDevice()->NodeMaps().at(0);
-
-    return { device, nodeMap };
-}
-
-void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Default");
-
-    const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("UserSetLoad");
-    cmd->Execute();
-    cmd->WaitUntilDone();
-}
-
-void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold)
-{
-    // Sets the gray value of all pixels in the Range component whose corresponding value in the Confidence
-    // component is below the set threshold to Scan3dInvalidDataValue.
-    nodeMap->FindNode<peak::core::nodes::IntegerNode>("Scan3dRangeConfidenceThreshold")->SetValue(threshold);
-}
-
-void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    nodeMap->FindNode<peak::core::nodes::FloatNode>("ExposureTime")->SetValue(exposureTimeUs);
-}
-
-peak::icv::CalibrationParameters DeviceReadCalibrationParameters(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    const peak::core::file::FileAdapter adapter(nodeMap, "LensCalibrationData");
-
-    if ((int)adapter.Size() <= 0)
-    {
-        throw std::runtime_error("No factory calibration data available.");
-    }
-
-    return peak::icv::CalibrationParameters(adapter.Read(adapter.Size()));
-}
-
-float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dAxisMin")->Value());
-}
-
-float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dAxisMax")->Value());
-}
-
-// Get the scale factor for converting depth values into metric units
-float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
-}
-
-// Create a metadata object containing binning and ROI information
-// The metadata is required for correct undistortion of images.
-peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    peak::common::Metadata metadata;
-
-    metadata.SetValueByKey<peak::common::MetadataKey::BinningHorizontal>(
-        nodeMap->FindNode<peak::core::nodes::IntegerNode>("BinningHorizontal")->Value());
-    metadata.SetValueByKey<peak::common::MetadataKey::BinningVertical>(
-        nodeMap->FindNode<peak::core::nodes::IntegerNode>("BinningVertical")->Value());
-
-    peak::common::RectangleU roi{ static_cast<uint32_t>(
-                                      nodeMap->FindNode<peak::core::nodes::IntegerNode>("OffsetX")->Value()),
-        static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("OffsetY")->Value()),
-        static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("Width")->Value()),
-        static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("Height")->Value()) };
-
-    metadata.SetValueByKey<peak::common::MetadataKey::Roi>(roi);
-    return metadata;
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// ACQUISITION
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Start image acquisition and prepare the data stream
-std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
-    const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    auto stream = device->DataStreams().front()->OpenDataStream();
-
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("AcquisitionMode")->SetCurrentEntry("Continuous");
-
-    const auto payloadSize = nodeMap->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
-
-    for (size_t i = 0; i < stream->NumBuffersAnnouncedMinRequired(); ++i)
-    {
-        stream->QueueBuffer(stream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr));
-    }
-
-    nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
-
-    stream->StartAcquisition();
-
-    const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart");
-    cmd->Execute();
-    cmd->WaitUntilDone();
-
-    return stream;
-}
-
-// Extract depth and intensity images from a multipart buffer
-MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer)
-{
-    const auto& parts = buffer->Parts();
-
-    auto getPart = [&](peak::core::BufferPartType type) {
-        const auto it = std::find_if(parts.begin(), parts.end(), [&](const auto& p) {
-            return p->Type() == type;
-        });
-
-        if (it == parts.end())
+        if (it == devices.end())
         {
-            throw std::runtime_error("Missing buffer part: " + ToString(type));
+            throw std::runtime_error("No IDS Nion device found.");
         }
 
-        return *it;
-    };
+        const auto device = (*it)->OpenDevice(peak::core::DeviceAccessType::Control);
+        const auto nodeMap = device->RemoteDevice()->NodeMaps().at(0);
 
-    return { getPart(peak::core::BufferPartType::Image3D), getPart(peak::core::BufferPartType::Image2D) };
-}
-
-// Stop acquisition and release buffers
-void DeviceStopAcquisition(
-    const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream)
-{
-    const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop");
-    cmd->Execute();
-    cmd->WaitUntilDone();
-
-    stream->StopAcquisition();
-    nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);
-
-    stream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
-
-    for (auto& b : stream->AnnouncedBuffers())
-    {
-        stream->RevokeBuffer(b);
+        return {device, nodeMap};
     }
-}
 
-// ---------------------------------------------------------------------------------------------------------------------
-// FILE OUTPUT
-// ---------------------------------------------------------------------------------------------------------------------
+    void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Default");
 
-// Get platform-dependent output directory
-std::string GetOutputFilePath()
-{
+        const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("UserSetLoad");
+        cmd->Execute();
+        cmd->WaitUntilDone();
+    }
+
+    void DeviceSetConfidenceThreshold(const std::shared_ptr<peak::core::NodeMap>& nodeMap, int32_t threshold)
+    {
+        // Sets the gray value of all pixels in the Range component whose corresponding value in the Confidence
+        // component is below the set threshold to Scan3dInvalidDataValue.
+        nodeMap->FindNode<peak::core::nodes::IntegerNode>("Scan3dRangeConfidenceThreshold")->SetValue(threshold);
+    }
+
+    void DeviceSetExposureTime(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        nodeMap->FindNode<peak::core::nodes::FloatNode>("ExposureTime")->SetValue(exposureTimeUs);
+    }
+
+    peak::icv::CalibrationParameters DeviceReadCalibrationParameters(
+        const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        const peak::core::file::FileAdapter adapter(nodeMap, "LensCalibrationData");
+
+        if ((int)adapter.Size() <= 0)
+        {
+            throw std::runtime_error("No factory calibration data available.");
+        }
+
+        return peak::icv::CalibrationParameters(adapter.Read(adapter.Size()));
+    }
+
+    float DeviceGetDepthMinimumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dAxisMin")->Value());
+    }
+
+    float DeviceGetDepthMaximumValidValue(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dAxisMax")->Value());
+    }
+
+    // Get the scale factor for converting depth values into metric units
+    float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
+    }
+
+    // Create a metadata object containing binning and ROI information
+    // The metadata is required for correct undistortion of images.
+    peak::common::Metadata DeviceGetImageMetadata(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        peak::common::Metadata metadata;
+
+        metadata.SetValueByKey<peak::common::MetadataKey::BinningHorizontal>(
+            nodeMap->FindNode<peak::core::nodes::IntegerNode>("BinningHorizontal")->Value());
+        metadata.SetValueByKey<peak::common::MetadataKey::BinningVertical>(
+            nodeMap->FindNode<peak::core::nodes::IntegerNode>("BinningVertical")->Value());
+
+        peak::common::RectangleU roi{
+            static_cast<uint32_t>(
+                nodeMap->FindNode<peak::core::nodes::IntegerNode>("OffsetX")->Value()),
+            static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("OffsetY")->Value()),
+            static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("Width")->Value()),
+            static_cast<uint32_t>(nodeMap->FindNode<peak::core::nodes::IntegerNode>("Height")->Value())
+        };
+
+        metadata.SetValueByKey<peak::common::MetadataKey::Roi>(roi);
+        return metadata;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    // ACQUISITION
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    // Start image acquisition and prepare the data stream
+    std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
+        const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+    {
+        auto stream = device->DataStreams().front()->OpenDataStream();
+
+        nodeMap->FindNode<peak::core::nodes::EnumerationNode>("AcquisitionMode")->SetCurrentEntry("Continuous");
+
+        const auto payloadSize = nodeMap->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
+
+        for (size_t i = 0; i < stream->NumBuffersAnnouncedMinRequired(); ++i)
+        {
+            stream->QueueBuffer(stream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr));
+        }
+
+        nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
+
+        stream->StartAcquisition();
+
+        const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart");
+        cmd->Execute();
+        cmd->WaitUntilDone();
+
+        return stream;
+    }
+
+    // Extract depth and intensity images from a multipart buffer
+    MultipartBuffer ExtractBufferParts(const std::shared_ptr<peak::core::Buffer>& buffer)
+    {
+        const auto& parts = buffer->Parts();
+
+        auto getPart = [&](peak::core::BufferPartType type)
+        {
+            const auto it = std::find_if(parts.begin(), parts.end(), [&](const auto& p)
+            {
+                return p->Type() == type;
+            });
+
+            if (it == parts.end())
+            {
+                throw std::runtime_error("Missing buffer part: " + ToString(type));
+            }
+
+            return *it;
+        };
+
+        return {getPart(peak::core::BufferPartType::Image3D), getPart(peak::core::BufferPartType::Image2D)};
+    }
+
+    // Stop acquisition and release buffers
+    void DeviceStopAcquisition(
+        const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream)
+    {
+        const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop");
+        cmd->Execute();
+        cmd->WaitUntilDone();
+
+        stream->StopAcquisition();
+        nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);
+
+        stream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
+
+        for (auto& b : stream->AnnouncedBuffers())
+        {
+            stream->RevokeBuffer(b);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    // FILE OUTPUT
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    // Get platform-dependent output directory
+    std::string GetOutputFilePath()
+    {
 #ifdef __linux__
-    return "/tmp/";
+        return "/tmp/";
 #elif _WIN32
-    return "C:/Users/Public/Pictures/";
+        return "C:/Users/Public/Pictures/";
 #else
 #    error Platform not supported
 #endif
-}
+    }
 
-void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i)
-{
-    const peak::icv::ImageWriter imageWriter;
+    void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i)
+    {
+        const peak::icv::ImageWriter imageWriter;
 
-    // When written to file the set region is ignored and
-    // all pixels are displayed if you want to change this
-    // you have to paint the unused pixels with the Painter class
-    const auto undistortedDepthMapFilePath = GetOutputFilePath() + "undistorted_depth_map_" + std::to_string(i)
-        + ".tiff";
-    imageWriter.Write(undistortedDepthMapFilePath, depthMap);
-    std::cout << "Undistorted depth map written to: " << undistortedDepthMapFilePath << std::endl;
-}
+        // When written to file the set region is ignored and
+        // all pixels are displayed if you want to change this
+        // you have to paint the unused pixels with the Painter class
+        const auto undistortedDepthMapFilePath = GetOutputFilePath() + "undistorted_depth_map_" + std::to_string(i)
+            + ".tiff";
+        imageWriter.Write(undistortedDepthMapFilePath, depthMap);
+        std::cout << "Undistorted depth map written to: " << undistortedDepthMapFilePath << std::endl;
+    }
 
-void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i)
-{
-    const peak::icv::ImageWriter imageWriter;
+    void WriteIntensityToFile(const peak::icv::Image& intensity, size_t i)
+    {
+        const peak::icv::ImageWriter imageWriter;
 
-    const auto undistortedIntensityImageFilePath = GetOutputFilePath() + "undistorted_intensity_image_"
-        + std::to_string(i) + ".png";
-    imageWriter.Write(undistortedIntensityImageFilePath, intensity);
-    std::cout << "Undistorted intensity image written to: " << undistortedIntensityImageFilePath << std::endl;
-}
+        const auto undistortedIntensityImageFilePath = GetOutputFilePath() + "undistorted_intensity_image_"
+            + std::to_string(i) + ".png";
+        imageWriter.Write(undistortedIntensityImageFilePath, intensity);
+        std::cout << "Undistorted intensity image written to: " << undistortedIntensityImageFilePath << std::endl;
+    }
 
-void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i)
-{
-    const peak::icv::PointCloudWriter pointCloudWriter;
+    void WritePointCloudToFile(const peak::icv::PointCloudXYZI& pointCloud, size_t i)
+    {
+        const peak::icv::PointCloudWriter pointCloudWriter;
 
-    const auto pointCloudFilePath = GetOutputFilePath() + "point_cloud_xyzi_" + std::to_string(i) + ".ply";
+        const auto pointCloudFilePath = GetOutputFilePath() + "point_cloud_xyzi_" + std::to_string(i) + ".ply";
 
-    pointCloudWriter.Write(pointCloudFilePath, pointCloud);
-    std::cout << "Point cloud written to: " << pointCloudFilePath << std::endl;
-}
-
+        pointCloudWriter.Write(pointCloudFilePath, pointCloud);
+        std::cout << "Point cloud written to: " << pointCloudFilePath << std::endl;
+    }
 } // namespace
