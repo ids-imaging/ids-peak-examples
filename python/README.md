@@ -56,6 +56,8 @@ python3 example_name.py
 
 - [Calibration From File](calibration_from_file) Shows how to perform a camera calibration.
 - [Firmware Update](firmware_update) Shows how to programmatically update the firmware of a device.
+- [Getting Started With Camera](getting_started_with_camera) This application demonstrates how to open the
+  first available camera to acquire images and print their first pixel value.
 - [HDR](hdr) Demonstrates how to acquire multiple images with different exposure times using an IDS camera and combine
   them into a single High Dynamic Range (HDR) image.
 - [HDR from file](hdr_from_file) Shows how to create an HDR image and apply tone mapping for visual appearance using `IDS peak ICV`.
