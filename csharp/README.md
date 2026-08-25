@@ -72,6 +72,7 @@ dotnet add package IDSImaging.Peak.<PackageName>
 
 - [Calibration From File](CalibrationFromFile) Demonstrates how to perform a camera calibration by using images from file.
 - [Firmware Update](FirmwareUpdate) Shows how to programatically update the firmware of a device.
+- [Getting Started With Camera](GettingStartedWithCamera) Shows how to open the first available camera to acquire images.
 - [Gui-AvaloniaSimpleLive](Gui-AvaloniaSimpleLive) Demonstrates how to display a live video feed from an IDS camera in
   a cross-platform desktop application using **Avalonia UI** and the **MVVM** pattern.
 - [HDR From File](HDRFromFile) Demonstrates how to generate a **High Dynamic Range (HDR)** image and a **tone‑mapped LDR** output.
