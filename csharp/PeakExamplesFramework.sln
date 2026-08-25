@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorphologyFramework", "Morp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TexturedPointCloudFromFileFramework", "TexturedPointCloudFromFile\TexturedPointCloudFromFileFramework.csproj", "{AAB0931B-9267-468E-AE9C-808FDACF7C4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GettingStartedWithCameraFramework", "GettingStartedWithCamera\GettingStartedWithCameraFramework.csproj", "{B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -155,13 +157,28 @@ Global
 		{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}.Release|x86.ActiveCfg = Release|x86
 		{58BC3677-EDDA-496E-91CE-6B869EFAAEFA}.Release|x86.Build.0 = Release|x86
 		{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.ActiveCfg = Debug|x64
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.Build.0 = Debug|x64
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.ActiveCfg = Debug|x86
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.Build.0 = Debug|x86
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.ActiveCfg = Release|x64
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.Build.0 = Release|x64
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.ActiveCfg = Release|x86
-								{A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.Build.0 = Release|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.Build.0 = Debug|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.ActiveCfg = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.Build.0 = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.ActiveCfg = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.Build.0 = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.ActiveCfg = Release|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.Build.0 = Release|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x64.Build.0 = Debug|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.ActiveCfg = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Debug|x86.Build.0 = Debug|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.ActiveCfg = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x64.Build.0 = Release|x64
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.ActiveCfg = Release|x86
+        {A292544F-0E77-4EA5-AE10-816DFB855ED4}.Release|x86.Build.0 = Release|x86
+		{B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Debug|x64.ActiveCfg = Debug|x64
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Debug|x64.Build.0 = Debug|x64
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Debug|x86.ActiveCfg = Debug|x86
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Debug|x86.Build.0 = Debug|x86
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Release|x64.ActiveCfg = Release|x64
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Release|x64.Build.0 = Release|x64
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Release|x86.ActiveCfg = Release|x86
+        {B4D52C8A-3FB7-4A7A-9F31-3E9C4A8D72F6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
