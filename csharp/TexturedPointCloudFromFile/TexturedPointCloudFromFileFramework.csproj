@@ -87,7 +87,7 @@
     <PropertyGroup Label="UserMacros"/>
     <ItemGroup>
       <Content Include="../../data/textured_pointcloud_from_file/**/*">
-        <Link>calibration\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
