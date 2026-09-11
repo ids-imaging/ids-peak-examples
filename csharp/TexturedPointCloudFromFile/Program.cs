@@ -9,6 +9,8 @@
 // FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
 // DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS.
 
+using System;
+using System.IO;
 using IDSImaging.Peak.Common.Types;
 using IDSImaging.Peak.ICV;
 using IDSImaging.Peak.ICV.Algorithms.Calibration;
@@ -25,7 +27,7 @@ namespace TexturedPointCloudFromFile
         {
             try
             {
-                ICV.Library.Init();
+                Library.Init();
 
                 var dataPath = Path.Combine(AppContext.BaseDirectory);
                 var camera3DPath = Path.Combine(dataPath, "3d_camera");
@@ -48,7 +50,7 @@ namespace TexturedPointCloudFromFile
 
                 using var camera3DXyzImage = new XYZImage(camera3DUndistortedDepthMap);
 
-                var projection = new XYZProjection(
+                var alignment = new XYZTextureAlignment(
                     camera3DCalibrationParameters.ExtrinsicParameters,
                     camera2DCalibrationParameters);
 
@@ -56,7 +58,7 @@ namespace TexturedPointCloudFromFile
                 // to its corresponding 2d color pixel
                 // to ensure 1:1 pixel index alignment
                 // between depth and color data.
-                using XYZImage camera3DProjectedXyzImage = projection.Process(camera3DXyzImage);
+                using XYZImage camera3DProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3DXyzImage);
 
                 using var pointCloud = new PointCloudXYZRGB(camera3DProjectedXyzImage, camera2DImage);
 

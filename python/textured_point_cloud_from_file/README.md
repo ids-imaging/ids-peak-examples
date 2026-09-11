@@ -51,7 +51,3 @@ by capturing a calibration plate in the exact same location in both cameras.
 
 Once you have mastered these individual concepts, you can combine them to dynamically generate textured point clouds
 using live physical cameras.
-
-
-
-

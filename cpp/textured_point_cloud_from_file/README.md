@@ -1,11 +1,13 @@
-# Textured Point Cloud Example
+#Textured Point Cloud Example
 
-This example demonstrates how to align 3D coordinate data from a 3D camera with a 2D color image from a standard 2D RGB
-camera. By utilizing intrinsic and extrinsic calibration parameters, the 3D coordinate data is undistorted and projected
-into the 2D camera's coordinate system.
+This example demonstrates how to align 3D coordinate data from a 3D camera with a 2D color image from a
+    standard 2D RGB camera.By utilizing intrinsic and extrinsic calibration parameters,
+    the 3D coordinate data is undistorted and projected into the 2D camera's coordinate system.
 
-After projection, the point cloud and the color image share the same coordinate space, meaning a pixel at index `[x, y]`
-corresponds to the exact same physical point in both images. The result is a colorized (textured) point cloud which is
+    After projection,
+    the point cloud and the color image share the same coordinate space,
+    meaning a pixel at index `[x, y]` corresponds to the exact same physical point in both images.The result is a
+    colorized(textured) point cloud which is
 saved as a `.ply` file next to the executable.
 
 Observed scene:
@@ -44,7 +46,3 @@ by capturing a calibration plate in the exact same location in both cameras.
 
 Once you have mastered these individual concepts, you can combine them to dynamically generate textured point clouds
 using live physical cameras.
-
-
-
-

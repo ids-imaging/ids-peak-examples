@@ -95,4 +95,3 @@ dotnet add package IDSImaging.Peak.<PackageName>
   using `IDS peak ICV`.
 - [Textured Point Cloud From File](TexturedPointCloudFromFile) Demonstrates how to align 3D coordinate data from a
   3D camera with a 2D color image from a standard 2D RGB camera to create a textured point cloud.
-

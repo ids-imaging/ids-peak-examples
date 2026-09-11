@@ -18,11 +18,11 @@ from pathlib import Path
 from ids_peak_common import PixelFormat
 from ids_peak_icv import Image, ICVException, XYZImage, PointCloud
 from ids_peak_icv.calibration import CalibrationParameters
-from ids_peak_icv.experimental.transformations import XYZProjection
+from ids_peak_icv.experimental.transformations import XYZTextureAlignment
 from ids_peak_icv.transformations import Undistortion
 
 DATA_PATH = (
-        Path(__file__).resolve().parent / ".." / ".." / "data" / "textured_pointcloud_from_file"
+    Path(__file__).resolve().parent / ".." / ".." / "data" / "textured_pointcloud_from_file"
 ).resolve()
 
 
@@ -36,28 +36,39 @@ def main() -> None:
         camera_2d_image_path = str(camera_2d_path / "color_image.png")
         camera_2d_calibration_parameters_path = str(camera_2d_path / "calibration_parameters.json")
 
-        camera_3d_depth_map = Image.create_from_file(camera_3d_depth_map_path, PixelFormat.COORD3D_C32F)
+        camera_3d_depth_map = Image.create_from_file(
+            camera_3d_depth_map_path, PixelFormat.COORD3D_C32F
+        )
         camera_2d_image = Image.create_from_file(camera_2d_image_path)
 
-        camera_3d_calibration_parameters = CalibrationParameters.create_from_file(camera_3d_calibration_parameters_path)
-        camera_2d_calibration_parameters = CalibrationParameters.create_from_file(camera_2d_calibration_parameters_path)
+        camera_3d_calibration_parameters = CalibrationParameters.create_from_file(
+            camera_3d_calibration_parameters_path
+        )
+        camera_2d_calibration_parameters = CalibrationParameters.create_from_file(
+            camera_2d_calibration_parameters_path
+        )
 
-        undistortion = Undistortion.create_from_intrinsics(camera_3d_calibration_parameters.intrinsic_parameters)
+        undistortion = Undistortion.create_from_intrinsics(
+            camera_3d_calibration_parameters.intrinsic_parameters
+        )
         camera_3d_undistorted_depth_map = undistortion.process(camera_3d_depth_map)
-        camera_3d_xyz_image = XYZImage.create_from_undistorted_image(camera_3d_undistorted_depth_map)
+        camera_3d_xyz_image = XYZImage.create_from_undistorted_image(
+            camera_3d_undistorted_depth_map
+        )
 
-        projection = XYZProjection.create_from_extrinsics_and_calibration_parameters(
-            camera_3d_calibration_parameters.extrinsic_parameters,
-            camera_2d_calibration_parameters
+        alignment = XYZTextureAlignment.create_from_extrinsics_and_calibration_parameters(
+            camera_3d_calibration_parameters.extrinsic_parameters, camera_2d_calibration_parameters
         )
 
         # Rearrange every point in the xyz image
         # to its corresponding 2d color pixel
         # to ensure 1:1 pixel index alignment
         # between depth and color data.
-        camera_3d_projected_xyz_image = projection.process(camera_3d_xyz_image)
+        camera_3d_projected_xyz_image = alignment.align_xyz_to_texture_grid(camera_3d_xyz_image)
 
-        point_cloud = PointCloud.create_from_xyz_image(camera_3d_projected_xyz_image, camera_2d_image)
+        point_cloud = PointCloud.create_from_xyz_image(
+            camera_3d_projected_xyz_image, camera_2d_image
+        )
 
         output_file_path = "textured_pointcloud.ply"
 

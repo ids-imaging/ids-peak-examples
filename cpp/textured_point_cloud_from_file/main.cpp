@@ -16,8 +16,8 @@
 #include <iostream>
 #include <string>
 
+#include <peak_icv/algorithms/transformations/peak_icv_xyz_texture_alignment.hpp>
 #include <peak_icv/peak_icv.hpp>
-#include <peak_icv/algorithms/transformations/peak_icv_xyz_projection.hpp>
 
 #ifndef DATA_PATH
 #    error "Define DATA_PATH to the examples data folder"
@@ -39,33 +39,25 @@ int main()
         const std::string camera2dImagePath = camera2dPath + "/color_image.png";
         const std::string camera2dCalibrationParametersPath = camera2dPath + "/calibration_parameters.json";
 
-        const peak::icv::Image camera3dDepthMap(
-            camera3dDepthMapPath, peak::common::PixelFormat::Coord3D_C32f);
+        const peak::icv::Image camera3dDepthMap(camera3dDepthMapPath, peak::common::PixelFormat::Coord3D_C32f);
         auto camera2dImage = peak::icv::Image(camera2dImagePath);
 
-        auto camera3dCalibrationParameters = peak::icv::CalibrationParameters(
-            camera3dCalibrationParametersPath);
-        auto camera2dCalibrationParameters = peak::icv::CalibrationParameters(
-            camera2dCalibrationParametersPath);
+        auto camera3dCalibrationParameters = peak::icv::CalibrationParameters(camera3dCalibrationParametersPath);
+        auto camera2dCalibrationParameters = peak::icv::CalibrationParameters(camera2dCalibrationParametersPath);
 
-        auto undistortion = peak::icv::Undistortion(
-            camera3dCalibrationParameters.GetIntrinsicParameters()
-        );
+        auto undistortion = peak::icv::Undistortion(camera3dCalibrationParameters.GetIntrinsicParameters());
         auto camera3dUndistortedDepthMap = undistortion.Process(camera3dDepthMap);
 
         auto camera3dXyzImage = peak::icv::XYZImage(camera3dUndistortedDepthMap);
 
-        auto projection =
-            peak::icv::experimental::XYZProjection(
-                camera3dCalibrationParameters.GetExtrinsicParameters(),
-                camera2dCalibrationParameters
-            );
+        auto alignment = peak::icv::experimental::XYZTextureAlignment(
+            camera3dCalibrationParameters.GetExtrinsicParameters(), camera2dCalibrationParameters);
 
         // Rearrange every point in the xyz image
         // to its corresponding 2d color pixel
         // to ensure 1:1 pixel index alignment
         // between depth and color data.
-        auto camera3dProjectedXyzImage = projection.Process(camera3dXyzImage);
+        auto camera3dProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3dXyzImage);
 
         auto pointCloud = peak::icv::PointCloudXYZRGB(camera3dProjectedXyzImage, camera2dImage);
 
