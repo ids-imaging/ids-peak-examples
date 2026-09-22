@@ -218,7 +218,7 @@ class RecordVideoExample:
                 video_writer.Append(
                     ids_peak_ipl.Image.CreateFromSizeAndPythonBuffer(
                         converted_image.pixel_format.value,
-                        bytes(data),
+                        data, # type: ignore[arg-type]
                         converted_image.width,
                         converted_image.height,
                     )
