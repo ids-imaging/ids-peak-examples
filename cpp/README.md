@@ -66,6 +66,8 @@ Open the Visual Studio Project and build it.
 * [Open Camera](open_camera) This application demonstrates how to use the device manager to open a camera.
 * [Point Cloud From File](point_cloud_from_file) Shows how to create a point cloud with mapped Mono data using
   `IDS peak ICV`.
+* [PTP](ptp) Shows how to configure and use Precision Time Protocol (PTP)
+  with connected GigE cameras.
 * [System Timestamp](system_timestamp) Shows how to use the system timestamp feature in order to get a wall-clock time
   corresponding to an arbitrary device timestamp.
 * [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
