@@ -56,15 +56,23 @@ def main() -> None:
             camera_3d_undistorted_depth_map
         )
 
-        alignment = XYZTextureAlignment.create_from_extrinsics_and_calibration_parameters(
-            camera_3d_calibration_parameters.extrinsic_parameters, camera_2d_calibration_parameters
+        # Calculate the relative pose between the 3D camera and the 2D camera
+        pose = XYZTextureAlignment.calculate_relative_pose(
+            camera_2d_calibration_parameters.extrinsic_parameters,
+            camera_3d_calibration_parameters.extrinsic_parameters,
+        )
+
+        alignment = XYZTextureAlignment.create_from_relative_pose_and_intrinsic_parameters(
+            pose, camera_2d_calibration_parameters.intrinsic_parameters
         )
 
         # Rearrange every point in the xyz image
         # to its corresponding 2d color pixel
         # to ensure 1:1 pixel index alignment
         # between depth and color data.
-        camera_3d_projected_xyz_image = alignment.align_xyz_to_texture_grid(camera_3d_xyz_image)
+        camera_3d_projected_xyz_image = alignment.align_xyz_to_texture_grid(
+            camera_3d_xyz_image, camera_2d_image
+        )
 
         point_cloud = PointCloud.create_from_xyz_image(
             camera_3d_projected_xyz_image, camera_2d_image
@@ -72,7 +80,6 @@ def main() -> None:
 
         print("Save point cloud")
         point_cloud.save("textured_pointcloud.ply")
-
 
     except ICVException as e:
         print(e)
