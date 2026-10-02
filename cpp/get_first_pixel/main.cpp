@@ -184,14 +184,14 @@ std::shared_ptr<peak::core::DataStream> StartAcquisition(const std::shared_ptr<p
 void StopAcquisition(const std::shared_ptr<peak::core::DataStream>& dataStream)
 {
     // stop acquisition of camera
-    dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
-
     auto device = dataStream->ParentDevice();
     auto nodeMapRemoteDevice = device->RemoteDevice()->NodeMaps().at(0);
 
     auto acquisitionStopNode = nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop");
     acquisitionStopNode->Execute();
     acquisitionStopNode->WaitUntilDone();
+
+    dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
 
     // Unlock parameters after acquisition stop
     nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);
