@@ -321,8 +321,8 @@ void StopAcquisition(const std::shared_ptr<peak::core::DataStream>& dataStream)
 {
     const auto nodeMapRemoteDevice = dataStream->ParentDevice()->RemoteDevice()->NodeMaps().at(0);
 
-    dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
     nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->Execute();
+    dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
 
     // Unlock parameters after acquisition stop
     nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);

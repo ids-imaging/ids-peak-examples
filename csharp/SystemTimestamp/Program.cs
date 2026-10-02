@@ -284,8 +284,8 @@ namespace IDSImaging.Peak.Examples.SystemTimestamp
         {
             var nodeMapRemote = dataStream.ParentDevice().RemoteDevice().NodeMaps()[0];
 
-            dataStream.StopAcquisition(AcquisitionStopMode.Default);
             nodeMapRemote.FindNode<CommandNode>("AcquisitionStop").Execute();
+            dataStream.StopAcquisition(AcquisitionStopMode.Default);
 
             nodeMapRemote.FindNode<IntegerNode>("TLParamsLocked").SetValue(0);
 
