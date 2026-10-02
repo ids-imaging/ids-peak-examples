@@ -49,14 +49,19 @@ int main()
 
         const peak::icv::XYZImage camera3dXyzImage(camera3dUndistortedDepthMap);
 
+        // Calculate the relative pose between the 3D camera and the 2D camera
+        auto pose = peak::icv::experimental::XYZTextureAlignment::CalculateRelativePose(
+            camera2dCalibrationParameters.GetExtrinsicParameters(),
+            camera3dCalibrationParameters.GetExtrinsicParameters());
+
         peak::icv::experimental::XYZTextureAlignment alignment(
-            camera3dCalibrationParameters.GetExtrinsicParameters(), camera2dCalibrationParameters);
+            pose, camera2dCalibrationParameters.GetIntrinsicParameters());
 
         // Rearrange every point in the xyz image
         // to its corresponding 2d color pixel
         // to ensure 1:1 pixel index alignment
         // between depth and color data.
-        auto camera3dProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3dXyzImage);
+        auto camera3dProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3dXyzImage, camera2dImage);
 
         const peak::icv::PointCloudXYZRGB pointCloud(camera3dProjectedXyzImage, camera2dImage);
 
