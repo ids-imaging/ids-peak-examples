@@ -24,6 +24,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -319,18 +320,28 @@ std::vector<DeviceContext> OpenAllAvailableGevCameras()
             return descriptor->IsOpenable(peak::core::DeviceAccessType::Control) && descriptor->TLType() == "GEV";
         });
 
-    if (filteredDevices.empty())
+    std::vector<std::shared_ptr<peak::core::DeviceDescriptor>> uniqueDevices{};
+    std::set<std::string> serialNumbers{};
+    for (const auto& descriptor : filteredDevices)
+    {
+        if (serialNumbers.insert(descriptor->SerialNumber()).second)
+        {
+            uniqueDevices.push_back(descriptor);
+        }
+    }
+
+    if (uniqueDevices.empty())
     {
         throw std::runtime_error("Failed to find any openable camera!");
     }
 
-    if (filteredDevices.size() < 2)
+    if (uniqueDevices.size() < 2)
     {
         throw std::runtime_error("At least two cameras are required for PTP synchronization!");
     }
 
-    std::cout << "Opening " << filteredDevices.size() << " available devices...\n";
-    for (const auto& dev : filteredDevices)
+    std::cout << "Opening " << uniqueDevices.size() << " available devices...\n";
+    for (const auto& dev : uniqueDevices)
     {
         DeviceContext context;
         context.device = dev->OpenDevice(peak::core::DeviceAccessType::Control);

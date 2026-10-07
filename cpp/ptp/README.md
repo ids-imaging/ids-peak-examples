@@ -75,5 +75,6 @@ necessarily produce identical `ReadOutStart` timestamps across cameras.
 
 To run this example, you need:
 
-- At least two **IDS** cameras
+- At least two **IDS** GigE Vision cameras
+  - Chunk data and the ExposureStart trigger must be supported
 - [IDS peak standard Setup](https://en.ids-imaging.com/download-peak.html) version 26.06.2 or later
