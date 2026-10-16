@@ -68,6 +68,7 @@ Open the Visual Studio Project and build it.
   `IDS peak ICV`.
 * [PTP](ptp) Shows how to configure and use Precision Time Protocol (PTP)
   with connected GigE cameras.
+* [Sequencer](sequencer) Shows how to configure and use an IDS camera sequencer.
 * [System Timestamp](system_timestamp) Shows how to use the system timestamp feature in order to get a wall-clock time
   corresponding to an arbitrary device timestamp.
 * [Threshold From File](threshold_from_file) Shows how to apply a threshold using `IDS peak ICV`.
