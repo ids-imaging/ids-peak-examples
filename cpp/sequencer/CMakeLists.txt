@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(sequencer LANGUAGES CXX)
+project(sequencer LANGUAGES C CXX)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
