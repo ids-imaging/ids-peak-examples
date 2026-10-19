@@ -35,7 +35,8 @@ constexpr std::size_t sequenceLength = 4;
 
 std::shared_ptr<peak::core::Device> OpenFirstAvailableSequencerDevice();
 void StopAcquisition(const std::shared_ptr<peak::core::DataStream>& dataStream);
-std::vector<double> CreateFeatureValues(const std::shared_ptr<peak::core::nodes::FloatNode>& featureNode);
+std::vector<double> CreateExposureValues(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice);
+std::vector<double> CreateGainValues(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice);
 void ResetToDefault(const std::shared_ptr<peak::core::Device>& device);
 } // namespace
 
@@ -79,11 +80,9 @@ int main()
                 sequencerFeatureEnable->SetValue(true);
             }
 
-            const auto exposureValues = CreateFeatureValues(
-                nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("ExposureTime"));
+            const auto exposureValues = CreateExposureValues(nodeMapRemoteDevice);
             sequencerFeatureSelector->SetCurrentEntry("Gain");
-            const auto gainValues = CreateFeatureValues(
-                nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("Gain"));
+            const auto gainValues = CreateGainValues(nodeMapRemoteDevice);
 
             for (std::size_t i = 0; i < sequenceLength; ++i)
             {
@@ -255,13 +254,29 @@ void StopAcquisition(const std::shared_ptr<peak::core::DataStream>& dataStream)
     }
 }
 
-std::vector<double> CreateFeatureValues(const std::shared_ptr<peak::core::nodes::FloatNode>& featureNode)
+std::vector<double> CreateExposureValues(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice)
 {
-    const auto minimum = featureNode->Minimum();
-    const auto maximum = featureNode->Maximum();
+    const auto minimum = nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("ExposureTime")->Minimum();
+    const auto maximum = nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("ExposureTime")->Maximum();
 
-    return { std::max(minimum, maximum / 4.0), std::max(minimum, maximum / 2.0), std::max(minimum, maximum * 3.0 / 4.0),
-        maximum };
+    constexpr double customExposureUS = 50.0 * 1'000.0;
+    return { std::min(maximum, std::max(minimum, customExposureUS)),
+        std::min(maximum, std::max(minimum + customExposureUS, customExposureUS * 2.0)),
+        std::min(maximum, std::max(minimum + customExposureUS * 2, customExposureUS * 3.0)),
+        std::min(maximum, std::max(minimum + customExposureUS * 3, customExposureUS * 4.0)) };
+}
+
+std::vector<double> CreateGainValues(const std::shared_ptr<peak::core::NodeMap>& nodeMapRemoteDevice)
+{
+    const auto minimum = nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("Gain")->Minimum();
+    const auto maximum = nodeMapRemoteDevice->FindNode<peak::core::nodes::FloatNode>("Gain")->Maximum();
+
+    constexpr double customGainIncrement = 0.2;
+    constexpr double customGainStart = 1.0;
+    return { std::min(maximum, std::max(minimum, customGainStart)),
+        std::min(maximum, std::max(minimum + customGainIncrement, customGainStart + customGainIncrement * 2.0)),
+        std::min(maximum, std::max(minimum + customGainIncrement * 2.0, customGainStart + customGainIncrement * 3.0)),
+        std::min(maximum, std::max(minimum + customGainIncrement * 3.0, customGainStart + customGainIncrement * 4.0)) };
 }
 
 } // namespace
