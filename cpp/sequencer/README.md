@@ -21,7 +21,7 @@ Counter0 triggers the four exposures, and sequencer sets advance on
 
 ## Requirements
 
-- An IDS camera with Sequencer support
+- An IDS camera with Sequencer and Counter support
 - [IDS peak Setup](https://en.ids-imaging.com/download-peak.html) version 26.06.2 or later
 - CMake version 3.10 or later
 - A supported C++ compiler (MSVC, GCC, or Clang)
