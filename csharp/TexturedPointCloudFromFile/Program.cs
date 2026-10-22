@@ -50,15 +50,19 @@ namespace IDSImaging.Peak.Examples.TexturedPointCloudFromFile
 
                 using var camera3DXyzImage = new XYZImage(camera3DUndistortedDepthMap);
 
+                // Calculate the relative pose between the 3D camera and the 2D camera
+                var pose = XYZTextureAlignment.CalculateRelativePose(camera2DCalibrationParameters.ExtrinsicParameters,
+                camera3DCalibrationParameters.ExtrinsicParameters);
+
                 var alignment = new XYZTextureAlignment(
-                    camera3DCalibrationParameters.ExtrinsicParameters,
-                    camera2DCalibrationParameters);
+                    pose,
+                    camera2DCalibrationParameters.IntrinsicParameters);
 
                 // Rearrange every point in the xyz image
                 // to its corresponding 2d color pixel
                 // to ensure 1:1 pixel index alignment
                 // between depth and color data.
-                using XYZImage camera3DProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3DXyzImage);
+                using XYZImage camera3DProjectedXyzImage = alignment.AlignXYZToTextureGrid(camera3DXyzImage, camera2DImage);
 
                 using var pointCloud = new PointCloudXYZRGB(camera3DProjectedXyzImage, camera2DImage);
 
