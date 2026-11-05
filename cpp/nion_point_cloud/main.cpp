@@ -264,7 +264,7 @@ void ExitLibraries()
     }
     catch (...)
     {
-        std::cerr << "Error: Exception occured while exiting libraries!";
+        std::cerr << "Error: Exception occurred while exiting libraries!";
     }
 }
 
