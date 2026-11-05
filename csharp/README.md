@@ -79,6 +79,8 @@ dotnet add package IDSImaging.Peak.<PackageName>
 - [Image Region From File](ImageRegionFromFile) Command-line example demonstrating how to handle image regions.
 - [Morphology](Morphology) Demonstrates how to use morphology algorithms on regions.
 - [Nion Point Cloud](NionPointCloud) Command-line example demonstrating Nion Point Cloud acquisition.
+* [Nion Unambiguous Range](NionUnambiguousRange) Shows how to move the unambiguous range data of the `IDS Nion` camera
+  by a specified offset.
 - [OpenCamera](OpenCamera) Command-line example demonstrating device enumeration and access.
 - [Pipeline From File](PipelineFromFile) This command-line example demonstrates how to use the image processing pipeline.
 - [Point Cloud From File](PointCloudFromFile) Shows how to create a point cloud with mapped Mono data using

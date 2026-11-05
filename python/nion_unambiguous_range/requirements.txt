@@ -1,0 +1,4 @@
+numpy
+ids-peak-common>=2.0.0
+ids-peak-icv>=1.6.0
+ids-peak>=1.17.0
