@@ -227,7 +227,7 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
             }
             catch (Exception)
             {
-                Console.WriteLine("Error: Exception occured while exiting libraries!");
+                Console.WriteLine("Error: Exception occurred while exiting libraries!");
             }
         }
 

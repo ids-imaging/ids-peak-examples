@@ -88,7 +88,7 @@ namespace IDSImaging.Peak.Examples.CalibrationFromFile
             }
             catch (Exception)
             {
-                Console.WriteLine("Error: Exception occured while exiting library!");
+                Console.WriteLine("Error: Exception occurred while exiting library!");
             }
         }
 
