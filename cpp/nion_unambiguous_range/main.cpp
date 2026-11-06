@@ -24,26 +24,17 @@
 
 namespace
 {
-// ---------------------------------------------------------------------------------------------------------------------
-// CONFIGURATION
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Number of images acquired in this example
-constexpr size_t imageAcquisitionCount = 10;
-
-// ---------------------------------------------------------------------------------------------------------------------
-// UTILITIES
-// ---------------------------------------------------------------------------------------------------------------------
+namespace example_config
+{
+constexpr size_t imageAcquisitionCount = 1;
+constexpr size_t offsetMilliMeter = 42;
+} // namespace example_config
 
 struct DeviceInfo
 {
     std::shared_ptr<peak::core::Device> device{};
     std::shared_ptr<peak::core::NodeMap> nodeMap{};
 };
-
-// ---------------------------------------------------------------------------------------------------------------------
-// DECLARATIONS
-// ---------------------------------------------------------------------------------------------------------------------
 
 void InitializeLibraries();
 
@@ -62,12 +53,7 @@ void DeviceStopAcquisition(
     const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
 
 void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
-
 } // namespace
-
-// ---------------------------------------------------------------------------------------------------------------------
-// MAIN
-// ---------------------------------------------------------------------------------------------------------------------
 
 int main()
 {
@@ -81,15 +67,14 @@ int main()
 
         DeviceResetToDefault(nodeMap);
 
-        constexpr size_t offsetMilliMeter = 42;
-        constexpr size_t maximumValidValue = 4096;
         const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
+        const auto offset = std::lround(example_config::offsetMilliMeter / scaleFactor);
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
-        for (size_t i = 0; i < imageAcquisitionCount; ++i)
+        for (size_t i = 0; i < example_config::imageAcquisitionCount; ++i)
         {
-            const auto buffer = peak::core::BufferGuard(stream->WaitForFinishedBuffer(5000));
+            const auto buffer = peak::core::BufferGuard(stream->WaitForFinishedBuffer(5'000));
 
             if (buffer->IsIncomplete())
             {
@@ -102,23 +87,16 @@ int main()
                 continue;
             }
 
-            if (!buffer->HasParts())
-            {
-                throw std::runtime_error("Buffer has no parts. Aborting.");
-            }
-
-            // Create image from raw depth buffer and attach metadata
             peak::icv::Image rawDepth(buffer->ToImageView());
-            static peak::icv::Image depthMap(peak::common::PixelFormat::Coord3D_C32f, rawDepth.GetSize());
+            peak::icv::Image depthMap(peak::common::PixelFormat::Coord3D_C32f, rawDepth.GetSize());
 
             const auto* srcBegin = reinterpret_cast<uint16_t*>(rawDepth.GetData());
             const auto* srcEnd = srcBegin + (rawDepth.GetSizeInBytes() / sizeof(uint16_t));
             auto* dstBegin = reinterpret_cast<float*>(depthMap.GetData());
 
-            const auto offset = std::lround(offsetMilliMeter / scaleFactor);
-
             std::transform(srcBegin, srcEnd, dstBegin, [offset](const uint16_t& value) {
-                return (offset + value) % 4096;
+                static constexpr size_t maximumValidValue = 4'096;
+                return (offset + value) % maximumValidValue;
             });
 
             WriteDepthMapToFile(depthMap, i);
@@ -138,18 +116,12 @@ int main()
 
 namespace
 {
-// ---------------------------------------------------------------------------------------------------------------------
-// PEAK LIBRARY LIFECYCLE
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Initialize peak core and peak ICV libraries
 void InitializeLibraries()
 {
     peak::Library::Initialize();
     peak::icv::library::Init();
 }
 
-// Shutdown peak libraries
 void ExitLibraries()
 {
     try
@@ -163,25 +135,19 @@ void ExitLibraries()
     }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// DEVICE UTILITIES
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Open the first connected IDS Nion camera
 DeviceInfo OpenFirstAvailableNionCamera()
 {
     auto& deviceManager = peak::DeviceManager::Instance();
     deviceManager.Update();
 
-    const auto devices = deviceManager.FindDevices(
-    [](const std::shared_ptr<peak::core::DeviceDescriptor>& dev) {
-            std::string modelName = dev->ModelName();
-            std::transform(modelName.begin(), modelName.end(), modelName.begin(), [](unsigned char c) {
-                return std::tolower(c);
-            });
-
-            return modelName.find("nion") != std::string::npos && dev->IsOpenable();
+    const auto devices = deviceManager.FindDevices([](const std::shared_ptr<peak::core::DeviceDescriptor>& dev) {
+        std::string modelName = dev->ModelName();
+        std::transform(modelName.begin(), modelName.end(), modelName.begin(), [](unsigned char c) {
+            return std::tolower(c);
         });
+
+        return modelName.find("nion") != std::string::npos && dev->IsOpenable();
+    });
 
     if (devices.empty())
     {
@@ -208,20 +174,13 @@ float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& node
     return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// ACQUISITION
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Start image acquisition and prepare the data stream
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap)
 {
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")
-    ->SetCurrentEntry("Intensity");
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")->SetCurrentEntry("Intensity");
     nodeMap->FindNode<peak::core::nodes::BooleanNode>("ImageComponentEnable")->SetValue(false);
 
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")
-        ->SetCurrentEntry("Confidence");
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")->SetCurrentEntry("Confidence");
     nodeMap->FindNode<peak::core::nodes::BooleanNode>("ImageComponentEnable")->SetValue(false);
 
     auto stream = device->DataStreams().front()->OpenDataStream();
@@ -242,7 +201,6 @@ std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     return stream;
 }
 
-// Stop acquisition and release buffers
 void DeviceStopAcquisition(
     const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream)
 {
@@ -259,13 +217,8 @@ void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i)
 {
     const peak::icv::ImageWriter imageWriter;
 
-    // When written to file the set region is ignored and
-    // all pixels are displayed if you want to change this
-    // you have to paint the unused pixels with the Painter class
-    const auto undistortedDepthMapFilePath = "undistorted_depth_map_" + std::to_string(i)
-        + ".tiff";
-    imageWriter.Write(undistortedDepthMapFilePath, depthMap);
-    std::cout << "Undistorted depth map written to: " << undistortedDepthMapFilePath << std::endl;
+    const auto filePath = "depth_map_" + std::to_string(i) + ".tiff";
+    imageWriter.Write(filePath, depthMap);
+    std::cout << "Depth map written to: " << filePath << std::endl;
 }
-
 } // namespace
