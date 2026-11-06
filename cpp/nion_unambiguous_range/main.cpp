@@ -92,8 +92,8 @@ int main()
 
             std::transform(
                 srcBegin, srcEnd, dstBegin, [offsetDn, scaleFactor, coordinateOffset](const uint16_t& value) {
-                    static constexpr size_t maximumValidValue = 4'096;
-                    const auto shiftedDn = (offsetDn + value) % maximumValidValue;
+                    static constexpr size_t maximumValidRange = 4'096;
+                    const auto shiftedDn = (offsetDn + value) % maximumValidRange;
                     return static_cast<float>(shiftedDn) * scaleFactor + coordinateOffset;
                 });
 
