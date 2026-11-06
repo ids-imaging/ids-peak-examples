@@ -37,21 +37,15 @@ struct DeviceInfo
 };
 
 void InitializeLibraries();
-
 void ExitLibraries();
-
 DeviceInfo OpenFirstAvailableNionCamera();
-
 void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
-
 float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
-
+float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
-
 void DeviceStopAcquisition(
     const std::shared_ptr<peak::core::NodeMap>& nodeMap, const std::shared_ptr<peak::core::DataStream>& stream);
-
 void WriteDepthMapToFile(const peak::icv::Image& depthMap, size_t i);
 } // namespace
 
@@ -68,7 +62,9 @@ int main()
         DeviceResetToDefault(nodeMap);
 
         const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
-        const auto offset = std::lround(example_config::offsetMilliMeter / scaleFactor);
+        const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
+
+        const auto offsetDn = static_cast<size_t>(std::lround(example_config::offsetMilliMeter / scaleFactor));
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
@@ -94,10 +90,12 @@ int main()
             const auto* srcEnd = srcBegin + (rawDepth.GetSizeInBytes() / sizeof(uint16_t));
             auto* dstBegin = reinterpret_cast<float*>(depthMap.GetData());
 
-            std::transform(srcBegin, srcEnd, dstBegin, [offset](const uint16_t& value) {
-                static constexpr size_t maximumValidValue = 4'096;
-                return (offset + value) % maximumValidValue;
-            });
+            std::transform(
+                srcBegin, srcEnd, dstBegin, [offsetDn, scaleFactor, coordinateOffset](const uint16_t& value) {
+                    static constexpr size_t maximumValidValue = 4'096;
+                    const auto shiftedDn = (offsetDn + value) % maximumValidValue;
+                    return static_cast<float>(shiftedDn) * scaleFactor + coordinateOffset;
+                });
 
             WriteDepthMapToFile(depthMap, i);
         }
@@ -174,6 +172,11 @@ float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& node
     return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
 }
 
+float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+{
+    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateOffset")->Value());
+}
+
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap)
 {
@@ -189,7 +192,7 @@ std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
 
     const auto payloadSize = nodeMap->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
 
-    stream->AddAcquisitionBuffers(payloadSize, stream->NumBuffersAnnouncedMinRequired());
+    stream->AddAcquisitionBuffers(static_cast<size_t>(payloadSize), stream->NumBuffersAnnouncedMinRequired());
 
     nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
