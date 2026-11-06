@@ -26,6 +26,10 @@ namespace
 {
 namespace example_config
 {
+constexpr float startingPointMillimeter = 300;
+constexpr float unambiguousRangeDistanceMillimeter = 750;
+constexpr peak::common::IntervalF unambiguousRange{ startingPointMillimeter,
+    startingPointMillimeter + unambiguousRangeDistanceMillimeter };
 constexpr size_t imageAcquisitionCount = 1;
 } // namespace example_config
 
@@ -38,7 +42,8 @@ struct DeviceInfo
 void InitializeLibraries();
 void ExitLibraries();
 DeviceInfo OpenFirstAvailableNionCamera();
-void DeviceLoadUnambiguousRange750(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+void DeviceLoadUnambiguousRangeUserSet(
+    const std::shared_ptr<peak::core::NodeMap>& nodeMap, float unambiguousRangeDistanceMillimeter);
 float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
@@ -58,16 +63,13 @@ int main()
         auto nodeMap = deviceInfo.nodeMap;
         auto device = deviceInfo.device;
 
-        DeviceLoadUnambiguousRange750(nodeMap);
+        DeviceLoadUnambiguousRangeUserSet(nodeMap, example_config::unambiguousRangeDistanceMillimeter);
 
-        constexpr float unambiguousRangeDistanceMillimeter = 750;
-        constexpr float startingPointMillimeter = 300;
-        constexpr peak::common::IntervalF unambiguousRange{ startingPointMillimeter,
-            startingPointMillimeter + unambiguousRangeDistanceMillimeter };
         const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
-        const peak::common::Interval unambiguousRangeDn{ static_cast<int32_t>(
-                                                             std::lround(unambiguousRange.GetMinimum() / scaleFactor)),
-            static_cast<int32_t>(std::lround(unambiguousRange.GetMaximum() / scaleFactor)) };
+        const peak::common::Interval unambiguousRangeDn{
+            static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMinimum() / scaleFactor)),
+            static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMaximum() / scaleFactor))
+        };
         const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
@@ -96,16 +98,19 @@ int main()
 
             std::transform(
                 srcBegin, srcEnd, dstBegin, [unambiguousRangeDn, scaleFactor, coordinateOffset](const uint16_t& value) {
+                    if (value == 0 || value == 4'095)
+                    {
+                        return static_cast<float>(value);
+                    }
                     const auto span = unambiguousRangeDn.GetMaximum() - unambiguousRangeDn.GetMinimum() + 1;
                     const auto rem = (static_cast<int32_t>(value) - unambiguousRangeDn.GetMinimum()) % span;
+                    if (rem < 0)
+                    {
+                        const auto shiftedDnNegative = unambiguousRangeDn.GetMinimum() + rem + span;
+                        return static_cast<float>(shiftedDnNegative) * scaleFactor + coordinateOffset;
+                    }
                     const auto shiftedDnPositive = unambiguousRangeDn.GetMinimum() + rem;
-                    const auto shiftedDnNegative = unambiguousRangeDn.GetMinimum() + rem + span;
-                    const std::array<int32_t, 2> shiftedDns{ shiftedDnPositive, shiftedDnNegative };
-                    const bool isInvalidValue = value == 0 || value == 4'095;
-                    const auto depthValue = static_cast<float>(shiftedDns[static_cast<size_t>(rem < 0)]) * scaleFactor
-                        + coordinateOffset;
-                    const std::array<float, 2> values{ depthValue, static_cast<float>(value) };
-                    return values[static_cast<size_t>(isInvalidValue)];
+                    return static_cast<float>(shiftedDnPositive) * scaleFactor + coordinateOffset;
                 });
 
             WriteDepthMapToFile(depthMap, i);
@@ -169,9 +174,11 @@ DeviceInfo OpenFirstAvailableNionCamera()
     return { device, nodeMap };
 }
 
-void DeviceLoadUnambiguousRange750(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+void DeviceLoadUnambiguousRangeUserSet(
+    const std::shared_ptr<peak::core::NodeMap>& nodeMap, float unambiguousRangeDistanceMillimeter)
 {
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Uar750QuadVga");
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")
+        ->SetCurrentEntry("Uar" + std::to_string(static_cast<size_t>(unambiguousRangeDistanceMillimeter)) + "QuadVga");
 
     const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("UserSetLoad");
     cmd->ExecuteAndWait();
