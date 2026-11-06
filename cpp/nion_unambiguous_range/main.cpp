@@ -66,11 +66,11 @@ int main()
         DeviceLoadUnambiguousRangeUserSet(nodeMap, example_config::unambiguousRangeDistanceMillimeter);
 
         const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
+        const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
         const peak::common::Interval unambiguousRangeDn{
             static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMinimum() / scaleFactor)),
             static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMaximum() / scaleFactor))
         };
-        const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
