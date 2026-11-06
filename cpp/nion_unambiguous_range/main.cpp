@@ -115,10 +115,10 @@ int main()
             const auto* srcEnd = srcBegin + (rawDepth.GetSizeInBytes() / sizeof(uint16_t));
             auto* dstBegin = reinterpret_cast<float*>(depthMap.GetData());
 
-            const auto offset = static_cast<size_t>(offsetMilliMeter / scaleFactor);
+            const auto offset = std::lround(offsetMilliMeter / scaleFactor);
 
             std::transform(srcBegin, srcEnd, dstBegin, [offset](const uint16_t& value) {
-                return offset + (value + (maximumValidValue - offset)) % maximumValidValue;
+                return (offset + value) % 4096;
             });
 
             WriteDepthMapToFile(depthMap, i);
