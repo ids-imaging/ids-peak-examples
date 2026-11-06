@@ -27,7 +27,6 @@ namespace
 namespace example_config
 {
 constexpr size_t imageAcquisitionCount = 1;
-constexpr size_t offsetMilliMeter = 1'000;
 } // namespace example_config
 
 struct DeviceInfo
@@ -39,7 +38,7 @@ struct DeviceInfo
 void InitializeLibraries();
 void ExitLibraries();
 DeviceInfo OpenFirstAvailableNionCamera();
-void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+void DeviceLoadUnambiguousRange750(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
@@ -59,12 +58,17 @@ int main()
         auto nodeMap = deviceInfo.nodeMap;
         auto device = deviceInfo.device;
 
-        DeviceResetToDefault(nodeMap);
+        DeviceLoadUnambiguousRange750(nodeMap);
 
+        constexpr float unambiguousRangeDistanceMillimeter = 750;
+        constexpr float startingPointMillimeter = 300;
+        constexpr peak::common::IntervalF unambiguousRange{ startingPointMillimeter,
+            startingPointMillimeter + unambiguousRangeDistanceMillimeter };
         const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
+        const peak::common::Interval unambiguousRangeDn{ static_cast<int32_t>(
+                                                             std::lround(unambiguousRange.GetMinimum() / scaleFactor)),
+            static_cast<int32_t>(std::lround(unambiguousRange.GetMaximum() / scaleFactor)) };
         const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
-
-        const auto offsetDn = static_cast<size_t>(std::lround(example_config::offsetMilliMeter / scaleFactor));
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
@@ -91,11 +95,15 @@ int main()
             auto* dstBegin = reinterpret_cast<float*>(depthMap.GetData());
 
             std::transform(
-                srcBegin, srcEnd, dstBegin, [offsetDn, scaleFactor, coordinateOffset](const uint16_t& value) {
-                    static constexpr size_t maximumValidRange = 4'096;
-                    const auto shiftedDn = (offsetDn + value) % maximumValidRange;
+                srcBegin, srcEnd, dstBegin, [unambiguousRangeDn, scaleFactor, coordinateOffset](const uint16_t& value) {
+                    const auto span = unambiguousRangeDn.GetMaximum() - unambiguousRangeDn.GetMinimum() + 1;
+                    const auto rem = (static_cast<int32_t>(value) - unambiguousRangeDn.GetMinimum()) % span;
+                    const auto shiftedDnPositive = unambiguousRangeDn.GetMinimum() + rem;
+                    const auto shiftedDnNegative = unambiguousRangeDn.GetMinimum() + rem + span;
+                    const std::array<int32_t, 2> shiftedDns{ shiftedDnPositive, shiftedDnNegative };
                     const bool isInvalidValue = value == 0 || value == 4'095;
-                    const auto depthValue = static_cast<float>(shiftedDn) * scaleFactor + coordinateOffset;
+                    const auto depthValue = static_cast<float>(shiftedDns[static_cast<size_t>(rem < 0)]) * scaleFactor
+                        + coordinateOffset;
                     const std::array<float, 2> values{ depthValue, static_cast<float>(value) };
                     return values[static_cast<size_t>(isInvalidValue)];
                 });
@@ -161,9 +169,9 @@ DeviceInfo OpenFirstAvailableNionCamera()
     return { device, nodeMap };
 }
 
-void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
+void DeviceLoadUnambiguousRange750(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
 {
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Default");
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Uar750QuadVga");
 
     const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("UserSetLoad");
     cmd->ExecuteAndWait();
