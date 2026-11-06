@@ -370,7 +370,7 @@ void PrintStructuredTimestamp(std::uint64_t timestampTimeSinceEpochNs, Time time
     switch (time)
     {
     case Time::Local: {
-#if defined(_WIN32)
+#ifdef _WIN32
         localtime_s(&tm, &seconds);
 #else
         localtime_r(&seconds, &tm);
@@ -378,7 +378,7 @@ void PrintStructuredTimestamp(std::uint64_t timestampTimeSinceEpochNs, Time time
         break;
     }
     case Time::Utc: {
-#if defined(_WIN32)
+#ifdef _WIN32
         gmtime_s(&tm, &seconds);
 #else
         gmtime_r(&seconds, &tm);
