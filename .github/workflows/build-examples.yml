@@ -126,10 +126,10 @@ jobs:
       #################################################################
       # Linux dependencies
       #################################################################
-      - name: Install Linux dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y dotnet-sdk-8.0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
 
       #################################################################
       # Cache NuGet packages (C#)
