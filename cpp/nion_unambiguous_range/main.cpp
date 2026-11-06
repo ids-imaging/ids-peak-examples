@@ -27,7 +27,7 @@ namespace
 namespace example_config
 {
 constexpr size_t imageAcquisitionCount = 1;
-constexpr size_t offsetMilliMeter = 42;
+constexpr size_t offsetMilliMeter = 1'000;
 } // namespace example_config
 
 struct DeviceInfo
@@ -94,7 +94,10 @@ int main()
                 srcBegin, srcEnd, dstBegin, [offsetDn, scaleFactor, coordinateOffset](const uint16_t& value) {
                     static constexpr size_t maximumValidRange = 4'096;
                     const auto shiftedDn = (offsetDn + value) % maximumValidRange;
-                    return static_cast<float>(shiftedDn) * scaleFactor + coordinateOffset;
+                    const bool isInvalidValue = value == 0 || value == 4'095;
+                    const auto depthValue = static_cast<float>(shiftedDn) * scaleFactor + coordinateOffset;
+                    const std::array<float, 2> values{ depthValue, static_cast<float>(value) };
+                    return values[static_cast<size_t>(isInvalidValue)];
                 });
 
             WriteDepthMapToFile(depthMap, i);
@@ -180,11 +183,11 @@ float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>&
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap)
 {
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")->SetCurrentEntry("Intensity");
-    nodeMap->FindNode<peak::core::nodes::BooleanNode>("ImageComponentEnable")->SetValue(false);
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ComponentSelector")->SetCurrentEntry("Intensity");
+    nodeMap->FindNode<peak::core::nodes::BooleanNode>("ComponentEnable")->SetValue(false);
 
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ImageComponentSelector")->SetCurrentEntry("Confidence");
-    nodeMap->FindNode<peak::core::nodes::BooleanNode>("ImageComponentEnable")->SetValue(false);
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("ComponentSelector")->SetCurrentEntry("Confidence");
+    nodeMap->FindNode<peak::core::nodes::BooleanNode>("ComponentEnable")->SetValue(false);
 
     auto stream = device->DataStreams().front()->OpenDataStream();
 
