@@ -26,10 +26,7 @@ namespace
 {
 namespace example_config
 {
-constexpr float startingPointMillimeter = 300;
-constexpr float unambiguousRangeDistanceMillimeter = 750;
-constexpr peak::common::IntervalF unambiguousRange{ startingPointMillimeter,
-    startingPointMillimeter + unambiguousRangeDistanceMillimeter };
+constexpr float startingPointMillimeter = 750;
 constexpr size_t imageAcquisitionCount = 1;
 } // namespace example_config
 
@@ -42,10 +39,7 @@ struct DeviceInfo
 void InitializeLibraries();
 void ExitLibraries();
 DeviceInfo OpenFirstAvailableNionCamera();
-void DeviceLoadUnambiguousRangeUserSet(
-    const std::shared_ptr<peak::core::NodeMap>& nodeMap, float unambiguousRangeDistanceMillimeter);
-float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
-float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
+void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
     const std::shared_ptr<peak::core::Device>& device, const std::shared_ptr<peak::core::NodeMap>& nodeMap);
 void DeviceStopAcquisition(
@@ -63,14 +57,19 @@ int main()
         auto nodeMap = deviceInfo.nodeMap;
         auto device = deviceInfo.device;
 
-        DeviceLoadUnambiguousRangeUserSet(nodeMap, example_config::unambiguousRangeDistanceMillimeter);
+        DeviceResetToDefault(nodeMap);
 
-        const auto scaleFactor = DeviceGetDepthScaleFactor(nodeMap);
-        const auto coordinateOffset = DeviceGetDepthCoordinateOffset(nodeMap);
-        const peak::common::Interval unambiguousRangeDn{
-            static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMinimum() / scaleFactor)),
-            static_cast<int32_t>(std::lround(example_config::unambiguousRange.GetMaximum() / scaleFactor))
-        };
+        const auto scaleFactor = static_cast<float>(
+            nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
+        const auto coordinateOffset = static_cast<float>(
+            nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateOffset")->Value());
+        const auto scan3DAxisMax = static_cast<int32_t>(
+            nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dAxisMax")->Value());
+
+        const auto startingPointDn = static_cast<int32_t>(
+            std::lround(example_config::startingPointMillimeter / scaleFactor));
+        const peak::common::Interval unambiguousRangeDn{ startingPointDn,
+            startingPointDn + scan3DAxisMax }; // todo must max be +1?
 
         auto stream = DeviceStartAcquisition(device, nodeMap);
 
@@ -174,25 +173,11 @@ DeviceInfo OpenFirstAvailableNionCamera()
     return { device, nodeMap };
 }
 
-void DeviceLoadUnambiguousRangeUserSet(
-    const std::shared_ptr<peak::core::NodeMap>& nodeMap, float unambiguousRangeDistanceMillimeter)
+void DeviceResetToDefault(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
 {
-    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")
-        ->SetCurrentEntry("Uar" + std::to_string(static_cast<size_t>(unambiguousRangeDistanceMillimeter)) + "QuadVga");
-
+    nodeMap->FindNode<peak::core::nodes::EnumerationNode>("UserSetSelector")->SetCurrentEntry("Default");
     const auto cmd = nodeMap->FindNode<peak::core::nodes::CommandNode>("UserSetLoad");
     cmd->ExecuteAndWait();
-}
-
-// Get the scale factor for converting depth values into metric units
-float DeviceGetDepthScaleFactor(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateScale")->Value());
-}
-
-float DeviceGetDepthCoordinateOffset(const std::shared_ptr<peak::core::NodeMap>& nodeMap)
-{
-    return static_cast<float>(nodeMap->FindNode<peak::core::nodes::FloatNode>("Scan3dCoordinateOffset")->Value());
 }
 
 std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
