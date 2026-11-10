@@ -25,7 +25,7 @@ namespace
 {
 namespace example_config
 {
-constexpr float startingPointMillimeter = 450;
+constexpr float startingPointMillimeters = 450;
 constexpr size_t imageAcquisitionCount = 1;
 } // namespace example_config
 
@@ -74,7 +74,7 @@ int main()
         // Use Scan3dCoordinateScale to convert the unambiguous range from millimeters to DN (digital number) values and
         // the other way around.
         const auto startingPointDn = static_cast<int32_t>(
-            std::lround(example_config::startingPointMillimeter / scaleFactor));
+            std::lround(example_config::startingPointMillimeters / scaleFactor));
         const peak::common::Interval unambiguousRangeDn{ startingPointDn, startingPointDn + scan3DAxisMax };
 
         auto dataStream = DeviceStartAcquisition(device, nodeMap);

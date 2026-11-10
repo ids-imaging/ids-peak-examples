@@ -1,7 +1,7 @@
 # IDS Nion Unambiguous Range Example
 
-This console example acquires a depth image from an IDS Nion camera and moves
-the unambiguous range by a specified 450 mm offset.
+This console example acquires a depth image from an IDS Nion camera
+and moves the unambiguous range by a specified offset.
 It saves one depth map in the current working directory.
 
 ## Workflow
@@ -32,14 +32,17 @@ Install the Python dependencies with:
 pip install -r requirements.txt
 ```
 
-In addition, a suitable GenTL must be installed, for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
+In addition, a suitable GenTL must be installed,
+for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
 ## Running the example
 
-After installing all requirements the demo can be run by executing `main.py` with the Python interpreter
+After installing all requirements the demo can be run
+by executing `main.py` with the Python interpreter.
 
 ```bash
 python main.py
 ```
 
-or, if Python files (*.py) are associated with the Python interpreter, by double-clicking the file.
+or, if Python files (*.py) are associated with the Python interpreter,
+by double-clicking the file.

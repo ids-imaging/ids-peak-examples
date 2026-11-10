@@ -60,11 +60,17 @@ namespace IDSImaging.Peak.Examples.NionUnambiguousRange
 
                 DeviceResetToDefault(nodeMap);
 
+                // note: Scan3dCoordinateScale changes when unambiguous range is changed.
                 float scaleFactor = (float) nodeMap.FindNode<FloatNode>("Scan3dCoordinateScale").Value();
                 float coordinateOffset = (float) nodeMap.FindNode<FloatNode>("Scan3dCoordinateOffset").Value();
+                // note: Scan3dAxisMax does not change when unambiguous range is changed.
+                // The IDS Nion camera will always return values in the range [0, Scan3dAxisMax] for the depth map,
+                // regardless of the unambiguous range setting.
                 int scan3DAxisMax = (int) nodeMap.FindNode<FloatNode>("Scan3dAxisMax").Value();
                 uint invalidDataValueDn = (uint) nodeMap.FindNode<FloatNode>("Scan3dInvalidDataValue").Value();
 
+                // Use Scan3dCoordinateScale to convert the unambiguous range from millimeters to DN (digital number)
+                // values and the other way around.
                 int startingPointDn = (int) Math.Round(
                     _startingPointMillimeter / scaleFactor,
                     MidpointRounding.AwayFromZero);

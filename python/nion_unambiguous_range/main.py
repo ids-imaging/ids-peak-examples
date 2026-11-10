@@ -160,8 +160,7 @@ def main() -> int:
         ).Value()
         # note: Scan3dAxisMax does not change when unambiguous range is changed.
         # The IDS Nion camera will always return values in the range [0, Scan3dAxisMax]
-        # for the depth map, regardless
-        # of the unambiguous range setting.
+        # for the depth map, regardless of the unambiguous range setting.
         scan3d_axis_max = int(
             cast(
                 FloatNode,
@@ -176,8 +175,7 @@ def main() -> int:
         )
 
         # Use Scan3dCoordinateScale to convert the unambiguous range
-        # from millimeters to DN (digital number) values
-        # and the other way around.
+        # from millimeters to DN (digital number) values and the other way around.
         starting_point_dn = math.floor(STARTING_POINT_MM / scale_factor + 0.5)
 
         data_stream = device_start_acquisition(device, node_map)
