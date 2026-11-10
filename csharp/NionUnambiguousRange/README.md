@@ -13,11 +13,11 @@ the unambiguous range by a specified 450 mm offset. It saves one depth map as
    offset and saves the result as `depth_map_0.tiff`.
 5. Stops acquisition and releases the image buffers.
 
-For more information about the unambiguous range of IDS Nion cameras, see the
-[IDS Nion Getting Started](https://en.ids-imaging.com/techtipp-details/items/nion-getting-started.html).
+For more information about the unambiguous range of IDS Nion cameras,
+see the [IDS Nion Getting Started](https://en.ids-imaging.com/techtipp-details/items/nion-getting-started.html).
 
-In order to create a point cloud from the depth map, refer to the
-[Nion Point Cloud Example](../NionPointCloud/README.md).
+In order to create a point cloud from the depth map,
+refer to the [Nion Point Cloud Example](../NionPointCloud/README.md).
 
 ## Requirements
 
@@ -55,5 +55,5 @@ msbuild NionUnambiguousRangeFramework.csproj /t:Restore
 msbuild NionUnambiguousRangeFramework.csproj /p:Platform=x64
 ```
 
-> Note: The IDS peak SDK uses **native (unmanaged) DLLs**, so you **must specify
-> the `Platform` parameter** when building.
+> Note: The IDS peak SDK uses **native (unmanaged) DLLs**,
+> so you **must specify the `Platform` parameter** when building.
