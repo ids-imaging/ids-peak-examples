@@ -9,7 +9,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_EXTENSIONS OFF
 )
 
-find_package(ids_peak_icv 1.6 REQUIRED)
+find_package(ids_peak_icv 1.7 REQUIRED)
 
 # This function will add a post build step to your target
 # in order to copy all needed files (e.g. DLL's) to the output directory.
