@@ -5,8 +5,9 @@ This repository contains example projects demonstrating how to use `IDS peak` ac
 
 This collection aims to provide minimal, easy-to-understand examples that show how to interact with IDS cameras using `IDS peak`.
 
-> Note: The full set of example projects is currently available only in the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
-> Additional examples are being gradually migrated into this repository.
+> Note: This repository is the primary and most comprehensive source for IDS peak examples.
+> Some examples are still available only in the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html),
+> but these are gradually being migrated to GitHub.
 
 
 ## Available Languages
