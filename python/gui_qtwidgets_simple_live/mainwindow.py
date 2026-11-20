@@ -197,6 +197,13 @@ class MainWindow(QMainWindow):
                 # Userset is not available
                 pass
 
+            # Lock critical features to prevent them from changing during
+            # acquisition, especially features that can change
+            # the payload size.
+            # Some devices require this to be done before starting acquisition.
+            cast(ids_peak.IntegerNode, self._nodemap_remote_device.FindNode(
+                "TLParamsLocked")).SetValue(1)
+
             # Get the payload size for correct buffer allocation
             payload_size = cast(
                 ids_peak.IntegerNode,
@@ -225,6 +232,17 @@ class MainWindow(QMainWindow):
         """
         # Stop Acquisition in case it is still running
         self._stop_acquisition()
+
+        # Unlock parameters after acquisition stop
+        if self._nodemap_remote_device is not None:
+            try:
+                cast(ids_peak.IntegerNode,
+                     self._nodemap_remote_device.FindNode(
+                         "TLParamsLocked")).SetValue(0)
+            except Exception as e:
+                QMessageBox.information(
+                    self, "Exception", str(e), QMessageBox.StandardButton.Ok
+                )
 
         # If a datastream has been opened, try to revoke its image buffers
         if self._datastream is not None:
@@ -268,11 +286,6 @@ class MainWindow(QMainWindow):
             return False
 
         try:
-            # Lock writable nodes, which could influence the payload size or
-            # similar information during acquisition.
-            cast(ids_peak.IntegerNode, self._nodemap_remote_device.FindNode(
-                "TLParamsLocked")).SetValue(1)
-
             # Start acquisition both locally and on device.
             self._datastream.StartAcquisition()
             acquisition_start_node = cast(
@@ -326,17 +339,6 @@ class MainWindow(QMainWindow):
             # Discard all buffers from the acquisition engine.
             # They remain in the announced buffer pool.
             self._datastream.Flush(ids_peak.DataStreamFlushMode_DiscardAll)
-
-            # Unlock parameters after acquisition stop
-            if self._nodemap_remote_device is not None:
-                try:
-                    cast(ids_peak.IntegerNode,
-                         self._nodemap_remote_device.FindNode(
-                             "TLParamsLocked")).SetValue(0)
-                except Exception as e:
-                    QMessageBox.information(
-                        self, "Exception", str(e), QMessageBox.StandardButton.Ok
-                    )
             self._acquisition_running = False
 
         except Exception as e:

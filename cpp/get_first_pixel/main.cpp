@@ -158,6 +158,12 @@ std::shared_ptr<peak::core::DataStream> StartAcquisition(const std::shared_ptr<p
     userSetLoadNode->Execute();
     userSetLoadNode->WaitUntilDone();
 
+
+    // Lock critical features to prevent them from changing during acquisition,
+    // especially features that can change the payload size.
+    // Some devices require this to be done before starting acquisition.
+    nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
+
     // allocate and announce image buffers
     auto payloadSize = dataStream->DefinesPayloadSize() ?
         dataStream->PayloadSize() :
@@ -168,9 +174,6 @@ std::shared_ptr<peak::core::DataStream> StartAcquisition(const std::shared_ptr<p
         auto buffer = dataStream->AllocAndAnnounceBuffer(payloadSize, nullptr);
         dataStream->QueueBuffer(buffer);
     }
-
-    // Lock critical features to prevent them from changing during acquisition
-    nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
     // start acquisition
     dataStream->StartAcquisition(peak::core::AcquisitionStartMode::Default);

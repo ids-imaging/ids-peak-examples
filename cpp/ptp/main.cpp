@@ -193,9 +193,9 @@ int main()
                 ->SetCurrentEntry("Timestamp");
             nodeMapRemoteDevice->FindNode<peak::core::nodes::BooleanNode>("ChunkEnable")->SetValue(true);
 
-            // Prepare devices for acquisition
-            // Lock transport layer parameters (`TLParamsLocked` = 1) to
-            // prevent irregular access to the remote device during acquisition
+            // Lock critical features to prevent them from changing during acquisition,
+            // especially features that can change the payload size.
+            // Some devices require this to be done before starting acquisition.
             nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
             // Get the required payload size. If the data stream does not
@@ -364,7 +364,7 @@ void StopAcquisitionAndRevokeBuffers(const std::vector<DeviceContext>& deviceLis
         currentDevice.dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
 
         // Unlock transport layer parameters (`TLParamsLocked` = 0) to allow
-        // access to the remote device again
+        // modifying critical features again after acquisition has stopped.
         nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(0);
 
         // Revoke all buffers

@@ -220,11 +220,11 @@ std::shared_ptr<peak::core::DataStream> DeviceStartAcquisition(
 
     nodeMap->FindNode<peak::core::nodes::EnumerationNode>("AcquisitionMode")->SetCurrentEntry("Continuous");
 
+    nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
+
     const auto payloadSize = nodeMap->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
 
     stream->AddAcquisitionBuffers(static_cast<size_t>(payloadSize), stream->NumBuffersAnnouncedMinRequired());
-
-    nodeMap->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
     stream->StartAcquisition();
 

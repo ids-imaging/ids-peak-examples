@@ -395,7 +395,6 @@ void Camera::StartAcquisition(size_t bufferCountHint)
 {
     AllocBuffers(std::max(bufferCountHint, m_dataStream->NumBuffersAnnouncedMinRequired()));
 
-    LockTlParams(true);
     m_dataStream->StartAcquisition(peak::core::AcquisitionStartMode::Default, m_acquisitionFrameCount);
     ExecCommandNodeAndWait("AcquisitionStart");
 }
@@ -434,6 +433,7 @@ void Camera::AllocBuffers(size_t numBuffers)
 {
     RevokeBuffers();
 
+    LockTlParams(true);
     const auto payloadSize = m_dataStream->DefinesPayloadSize() ? m_dataStream->PayloadSize() :
                                                                   static_cast<size_t>(GetNodeValueInt("PayloadSize"));
 

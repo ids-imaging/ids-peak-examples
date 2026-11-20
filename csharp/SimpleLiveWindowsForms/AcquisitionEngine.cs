@@ -102,6 +102,11 @@ namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
                 // UserSet is not available
             }
 
+            // Lock critical features to prevent them from changing during acquisition,
+            // especially features that can change the payload size.
+            // Some devices require this to be done before starting acquisition.
+            _remoteDeviceNodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
             // Get the payload size for correct buffer allocation
             var payloadSize = Convert.ToUInt32(_remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value());
 
@@ -134,9 +139,6 @@ namespace IDSImaging.Peak.Examples.SimpleLiveWindowsForms
             }
 
             PrepareAcquisition();
-
-            // Lock critical features to prevent them from changing during acquisition
-            _remoteDeviceNodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
 
             // Start acquisition
             _dataStream.StartAcquisition();

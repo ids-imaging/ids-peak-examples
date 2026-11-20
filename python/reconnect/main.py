@@ -111,7 +111,7 @@ class ReconnectExample:
             self.revoke_buffers()
 
             # Allocate and queue the buffers using the new "PayloadSize".
-            self.alloc_buffers()
+            self._alloc_buffers()
 
             if is_data_stream_running:
                 self.data_stream.StartAcquisition()
@@ -221,10 +221,8 @@ class ReconnectExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
-        # Lock writable nodes, which could influence the payload size or
-        # similar information during acquisition.
-        cast(ids_peak.IntegerNode,
-             self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
+        # Allocate buffers for the acquisition.
+        self._alloc_buffers()
 
         self.data_stream.StartAcquisition()
         acquisition_start_node = cast(
@@ -259,7 +257,7 @@ class ReconnectExample:
         acquisition_stop_node.WaitUntilDone()
         self.data_stream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
 
-        # Unlock writable nodes again. See `Lock writable nodes`.
+        # Unlock writable nodes again. See `Lock critical features`.
         cast(ids_peak.IntegerNode,
              self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
@@ -327,9 +325,16 @@ class ReconnectExample:
         user_set_load_node.Execute()
         user_set_load_node.WaitUntilDone()
 
-    def alloc_buffers(self) -> None:
+    def _alloc_buffers(self) -> None:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
+
+        # Lock critical features to prevent them from changing
+        # during acquisition, especially features that can change
+        # the payload size.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         # Buffer size
         payload_size = cast(
@@ -393,10 +398,8 @@ class ReconnectExample:
             # the remote device will not be restarted.
             # self.set_roi()
 
-            # Allocate buffers for the acquisition.
-            self.alloc_buffers()
-
-            # Run acquisition loop until an error occurs or the user presses Ctrl+C.
+            # Prepare and run the acquisition loop until an error occurs
+            # or the user presses Ctrl+C.
             self.run_acquisition_loop()
 
             # Revoke all buffers.

@@ -210,6 +210,11 @@ def device_start_acquisition(device: Device, node_map: NodeMap) -> DataStream:
         node_map.FindNode("AcquisitionMode"),
     ).SetCurrentEntry("Continuous")
 
+    cast(
+        ids_peak.IntegerNode,
+        node_map.FindNode("TLParamsLocked"),
+    ).SetValue(1)
+
     payload_size = cast(
         ids_peak.IntegerNode,
         node_map.FindNode("PayloadSize"),
@@ -220,11 +225,6 @@ def device_start_acquisition(device: Device, node_map: NodeMap) -> DataStream:
         buffer = data_stream.AllocAndAnnounceBuffer(payload_size)
         # Queue the buffer so that the datastream is allowed to fill it with image data.
         data_stream.QueueBuffer(buffer)
-
-    cast(
-        ids_peak.IntegerNode,
-        node_map.FindNode("TLParamsLocked"),
-    ).SetValue(1)
 
     data_stream.StartAcquisition()
     cast(

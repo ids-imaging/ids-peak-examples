@@ -64,6 +64,11 @@ def main() -> None:
 
         data_stream = device.DataStreams()[0].OpenDataStream()
 
+        # Lock critical features to prevent them from changing during acquisition,
+        # especially features that can change the payload size.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode, nodemap_remote_device.FindNode("TLParamsLocked")).SetValue(1)
+
         payload_size = cast(ids_peak.IntegerNode,
                             nodemap_remote_device.FindNode("PayloadSize")).Value()
 
@@ -76,10 +81,6 @@ def main() -> None:
             buffer = data_stream.AllocAndAnnounceBuffer(payload_size)
             # Put the buffer in the pool
             data_stream.QueueBuffer(buffer)
-
-        # Lock writable nodes, which could influence the payload size or
-        # similar information during acquisition.
-        cast(ids_peak.IntegerNode, nodemap_remote_device.FindNode("TLParamsLocked")).SetValue(1)
 
         print("Starting acquisition...")
         data_stream.StartAcquisition()
@@ -111,7 +112,7 @@ def main() -> None:
         acquisition_stop_node.WaitUntilDone()
         data_stream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
 
-        # Unlock writable nodes again. See `Lock writable nodes`.
+        # Unlock writable nodes again. See `Lock critical features`.
         cast(ids_peak.IntegerNode, nodemap_remote_device.FindNode("TLParamsLocked")).SetValue(0)
 
         data_stream.Flush(ids_peak.DataStreamFlushMode_DiscardAll)

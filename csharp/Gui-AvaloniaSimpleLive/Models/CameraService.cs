@@ -302,6 +302,11 @@ public class CameraService : IDisposable
             return;
         }
 
+        // Lock critical features to prevent them from changing during acquisition,
+        // especially features that can change the payload size.
+        // Some devices require this to be done before starting acquisition.
+        _remoteNodeMap!.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
         var payloadSize = _remoteNodeMap!.FindNode<IntegerNode>("PayloadSize").Value();
         var minBufferCountRequired = _dataStream!.NumBuffersAnnouncedMinRequired();
 
@@ -311,9 +316,6 @@ public class CameraService : IDisposable
             _dataStream!.QueueBuffer(buff);
         }
 
-        // Lock transport layer parameters before acquisition to prevent
-        // settings changes that could corrupt the stream.
-        _remoteNodeMap!.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
         _dataStream!.StartAcquisition();
         _remoteNodeMap!.FindNode<CommandNode>("AcquisitionStart").Execute();
         _remoteNodeMap!.FindNode<CommandNode>("AcquisitionStart").WaitUntilDone();

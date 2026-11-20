@@ -217,12 +217,12 @@ namespace IDSImaging.Peak.Examples.NionUnambiguousRange
             DataStream dataStream = device.DataStreams()[0].OpenDataStream();
             nodeMap.FindNode<EnumerationNode>("AcquisitionMode").SetCurrentEntry("Continuous");
 
+            nodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
             uint payloadSize = (uint) nodeMap.FindNode<IntegerNode>("PayloadSize").Value();
             dataStream.AddAcquisitionBuffers(
                 payloadSize,
                 dataStream.NumBuffersAnnouncedMinRequired());
-
-            nodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
 
             dataStream.StartAcquisition();
             nodeMap.FindNode<CommandNode>("AcquisitionStart").ExecuteAndWait();

@@ -324,7 +324,6 @@ class Camera:
             buffer_count = buffer_count_hint
 
         self._alloc_buffers(buffer_count)
-        self._lock_tl_params(True)
         self._data_stream.StartAcquisition(
             ids_peak.AcquisitionStartMode_Default,
             self._acquisition_frame_count)
@@ -366,6 +365,7 @@ class Camera:
     def _alloc_buffers(self, num_buffers: int = 5) -> None:
         self._revoke_buffers()
 
+        self._lock_tl_params(True)
         if self._data_stream.DefinesPayloadSize():
             payload_size = self._data_stream.PayloadSize()
         else:

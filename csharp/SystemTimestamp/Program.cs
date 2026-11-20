@@ -211,6 +211,8 @@ namespace IDSImaging.Peak.Examples.SystemTimestamp
             var dataStream = device.DataStreams()[0].OpenDataStream();
             var nodeMapRemote = device.RemoteDevice().NodeMaps()[0];
 
+            nodeMapRemote.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
             var payloadSize = nodeMapRemote.FindNode<IntegerNode>("PayloadSize").Value();
             ulong minBuffers = dataStream.NumBuffersAnnouncedMinRequired();
 
@@ -219,8 +221,6 @@ namespace IDSImaging.Peak.Examples.SystemTimestamp
                 var buffer = dataStream.AllocAndAnnounceBuffer((uint) payloadSize, IntPtr.Zero);
                 dataStream.QueueBuffer(buffer);
             }
-
-            nodeMapRemote.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
 
             dataStream.StartAcquisition(AcquisitionStartMode.Default);
             nodeMapRemote.FindNode<CommandNode>("AcquisitionStart").Execute();
