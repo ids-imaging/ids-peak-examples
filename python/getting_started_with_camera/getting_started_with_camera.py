@@ -46,6 +46,12 @@ def main() -> int:
         # Open the data stream and prepare the buffers
         data_stream = device.DataStreams()[0].OpenDataStream()
 
+
+        # Lock critical features to prevent them from changing during acquisition,
+        # especially features that can change the payload size.
+        # Some devices require this to be done before starting acquisition.
+        node_map_remote_device["TLParamsLocked", IntegerNode].SetValue(1)
+
         # Get the required payload size
         if data_stream.DefinesPayloadSize():
             payload_size = data_stream.PayloadSize()
@@ -56,9 +62,6 @@ def main() -> int:
 
         # Allocate buffers and queue them
         data_stream.AddAcquisitionBuffers(payload_size, buffer_count)
-
-        # Lock transport layer parameters (TLParamsLocked = 1)
-        node_map_remote_device["TLParamsLocked", IntegerNode].SetValue(1)
 
         # Start acquisition on both data stream and device
         data_stream.StartAcquisition()

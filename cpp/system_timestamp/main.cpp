@@ -223,6 +223,11 @@ std::shared_ptr<peak::core::DataStream> PrepareAndStartAcquisition(const std::sh
 
     const auto nodeMapRemoteDevice = device->RemoteDevice()->NodeMaps().at(0);
 
+    // Lock critical features to prevent them from changing during acquisition,
+    // especially features that can change the payload size.
+    // Some devices require this to be done before starting acquisition.
+    nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
+
     // allocate and announce image buffers
     const auto payloadSize = nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
     const auto numBuffersAnnouncedMinRequired = dataStream->NumBuffersAnnouncedMinRequired();
@@ -231,9 +236,6 @@ std::shared_ptr<peak::core::DataStream> PrepareAndStartAcquisition(const std::sh
         auto buffer = dataStream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr);
         dataStream->QueueBuffer(buffer);
     }
-
-    // Lock critical features to prevent them from changing during acquisition
-    nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
     // start acquisition
     dataStream->StartAcquisition(peak::core::AcquisitionStartMode::Default);

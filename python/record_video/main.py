@@ -114,9 +114,14 @@ class RecordVideoExample:
 
             gain_node.SetValue(self._gain)
 
-    def alloc_buffers(self) -> None:
+    def _alloc_buffers(self) -> None:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
+
+        # Lock critical features to prevent them from changing during acquisition,
+        # especially features that can change the payload size.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         # Buffer size
         payload_size = cast(ids_peak.IntegerNode,
@@ -164,6 +169,9 @@ class RecordVideoExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
+        # Allocate buffers for the acquisition.
+        self._alloc_buffers()
+
         # Get acquisition frame rate
         frame_rate = cast(ids_peak.FloatNode,
                           self.remote_nodemap.FindNode("AcquisitionFrameRate")).Value()
@@ -180,10 +188,6 @@ class RecordVideoExample:
                 sys.exit(-1)
         video_writer.Open(self._out_file)
         cast(ids_peak_ipl.AVIContainer, video_writer.Container()).SetFramerate(frame_rate)
-
-        # Lock writable nodes, which could influence the payload size or
-        # similar information during acquisition.
-        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         self.data_stream.StartAcquisition()
         acquisition_start_node = cast(ids_peak.CommandNode,
@@ -241,7 +245,7 @@ class RecordVideoExample:
         acquisition_stop_node.WaitUntilDone()
         self.data_stream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
 
-        # Unlock writable nodes again. See `Lock writable nodes`.
+        # Unlock writable nodes again. See `Lock critical features`.
         cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
         # AVI framerate sets the playback speed.
@@ -272,10 +276,8 @@ class RecordVideoExample:
             # Applies the command line parameters.
             self.apply_camera_configuration()
 
-            # Allocate buffers for the acquisition.
-            self.alloc_buffers()
-
-            # Run acquisition loop until an error occurs or the user presses Ctrl+C.
+            # Prepare and run acquisition loop until an error occurs
+            # or the user presses Ctrl+C.
             self.run_acquisition_loop()
 
             # Revoke all buffers.

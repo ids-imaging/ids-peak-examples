@@ -122,9 +122,14 @@ class SoftwareTriggerExample:
 
             gain_node.SetValue(self._gain)
 
-    def alloc_buffers(self) -> None:
+    def _alloc_buffers(self) -> None:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
+
+        # Lock critical features to prevent them from changing during acquisition,
+        # especially features that can change the payload size.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
 
         # Buffer size
         payload_size = cast(ids_peak.IntegerNode,
@@ -209,9 +214,8 @@ class SoftwareTriggerExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
-        # Lock writable nodes, which could influence the payload size or
-        # similar information during acquisition.
-        cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
+        # Allocate buffers for the acquisition.
+        self._alloc_buffers()
 
         # Start acquisition both locally and on device.
         self.data_stream.StartAcquisition()
@@ -238,7 +242,7 @@ class SoftwareTriggerExample:
         # They remain in the announced buffer pool.
         self.data_stream.Flush(ids_peak.DataStreamFlushMode_DiscardAll)
 
-        # Unlock writable nodes again. See `Lock writable nodes`.
+        # Unlock writable nodes again. See `Lock critical features`.
         cast(ids_peak.IntegerNode, self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(0)
 
     def software_trigger(self) -> None:
@@ -300,13 +304,10 @@ class SoftwareTriggerExample:
             # Applies the command line parameters.
             self.apply_camera_configuration()
 
-            # Allocate buffers for the acquisition.
-            self.alloc_buffers()
-
             # Configure the software trigger.
             self.init_software_trigger()
 
-            # Start the acquisition so we can receive images.
+            # Allocate buffers and start the acquisition so we can receive images.
             self.start_acquisition()
         except ids_peak.AbortedException:
             print("Aborted")

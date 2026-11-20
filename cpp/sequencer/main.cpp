@@ -133,13 +133,16 @@ int main()
         {
             // configure and start acquisition
             dataStream = device->DataStreams().at(0)->OpenDataStream();
+            // Lock critical features to prevent them from changing during acquisition,
+            // especially features that can change the payload size.
+            // Some devices require this to be done before starting acquisition.
+            nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
             const auto payloadSize = dataStream->DefinesPayloadSize() ?
                 dataStream->PayloadSize() :
                 static_cast<std::size_t>(
                     nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value());
             const auto numBuffersMinRequired = dataStream->NumBuffersAnnouncedMinRequired();
             dataStream->AddAcquisitionBuffers(payloadSize, numBuffersMinRequired);
-            nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
             dataStream->StartAcquisition(peak::core::AcquisitionStartMode::Default);
             nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->ExecuteAndWait();
         }

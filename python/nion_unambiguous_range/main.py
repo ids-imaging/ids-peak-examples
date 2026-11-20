@@ -96,6 +96,11 @@ def device_start_acquisition(device: Device, node_map: NodeMap) -> DataStream:
         node_map.FindNode("AcquisitionMode"),
     ).SetCurrentEntry("Continuous")
 
+    cast(
+        IntegerNode,
+        node_map.FindNode("TLParamsLocked"),
+    ).SetValue(1)
+
     payload_size = cast(
         IntegerNode,
         node_map.FindNode("PayloadSize"),
@@ -104,11 +109,6 @@ def device_start_acquisition(device: Device, node_map: NodeMap) -> DataStream:
         payload_size,
         data_stream.NumBuffersAnnouncedMinRequired(),
     )
-
-    cast(
-        IntegerNode,
-        node_map.FindNode("TLParamsLocked"),
-    ).SetValue(1)
 
     data_stream.StartAcquisition()
     cast(

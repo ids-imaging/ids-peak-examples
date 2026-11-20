@@ -329,14 +329,14 @@ namespace IDSImaging.Peak.Examples.NionPointCloud
 
             nodeMap.FindNode<EnumerationNode>("AcquisitionMode").SetCurrentEntry("Continuous");
 
+            nodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
             var payloadSize = (uint) nodeMap.FindNode<IntegerNode>("PayloadSize").Value();
 
             for (var i = 0; i < stream.NumBuffersAnnouncedMinRequired(); i++)
             {
                 stream.QueueBuffer(stream.AllocAndAnnounceBuffer(payloadSize, IntPtr.Zero));
             }
-
-            nodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
 
             stream.StartAcquisition();
 

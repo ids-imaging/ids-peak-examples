@@ -192,6 +192,14 @@ class Camera:
         if self.acquisition_running:
             return
 
+        # Lock nodes that may affect payload size or transport configuration.
+        # During acquisition, these parameters must remain unchanged or the
+        # announced buffers may become mismatched.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode, self.remote_device_nodemap.FindNode("TLParamsLocked")).SetValue(
+            1
+        )
+
         # Get the payload size, which determines our buffer size.
         payload_size = cast(
             ids_peak.IntegerNode, self.remote_device_nodemap.FindNode("PayloadSize")
@@ -205,13 +213,6 @@ class Camera:
             buffer = self.data_stream.AllocAndAnnounceBuffer(payload_size)
             # Queue the buffer so that the datastream is allowed to fill it with image data.
             self.data_stream.QueueBuffer(buffer)
-
-        # Lock nodes that may affect payload size or transport configuration.
-        # During acquisition, these parameters must remain unchanged or the
-        # announced buffers may become mismatched.
-        cast(ids_peak.IntegerNode, self.remote_device_nodemap.FindNode("TLParamsLocked")).SetValue(
-            1
-        )
 
         print("Starting acquisition...")
         self._acquisition_running = True

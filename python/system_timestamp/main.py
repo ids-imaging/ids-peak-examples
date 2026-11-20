@@ -141,6 +141,11 @@ def prepare_and_start_acquisition(
     data_stream = device.DataStreams()[0].OpenDataStream()
     node_map_remote_device = device.RemoteDevice().NodeMaps()[0]
 
+    # Lock critical features to prevent them from changing during acquisition,
+    # especially features that can change the payload size.
+    # Some devices require this to be done before starting acquisition.
+    cast(ids_peak.IntegerNode, node_map_remote_device.FindNode("TLParamsLocked")).SetValue(1)
+
     # Allocate and announce image buffers
     payload_size = cast(
         ids_peak.IntegerNode, node_map_remote_device.FindNode("PayloadSize")
@@ -150,9 +155,6 @@ def prepare_and_start_acquisition(
     for _ in range(num_buffers_min):
         buffer = data_stream.AllocAndAnnounceBuffer(payload_size)
         data_stream.QueueBuffer(buffer)
-
-    # Lock critical features during acquisition
-    cast(ids_peak.IntegerNode, node_map_remote_device.FindNode("TLParamsLocked")).SetValue(1)
 
     # Start acquisition
     data_stream.StartAcquisition()

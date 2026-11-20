@@ -54,6 +54,11 @@ int main()
         // Open the data stream and prepare the buffers
         auto dataStream = device->DataStreams().at(0)->OpenDataStream();
 
+        // Lock critical features to prevent them from changing during acquisition,
+        // especially features that can change the payload size.
+        // Some devices require this to be done before starting acquisition.
+        nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
+
         // Get the required payload size. If the data stream does not
         // define it, fall back to the remote device node map.
         auto payloadSizeNode = nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize");
@@ -64,10 +69,6 @@ int main()
 
         // Allocate buffers and queue them
         dataStream->AddAcquisitionBuffers(payloadSize, bufferCount);
-
-        // Lock transport layer parameters (TLParamsLocked = 1) to
-        // prevent irregular access to the remote device during acquisition
-        nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("TLParamsLocked")->SetValue(1);
 
         // Start acquisition on both data stream and device
         dataStream->StartAcquisition();
