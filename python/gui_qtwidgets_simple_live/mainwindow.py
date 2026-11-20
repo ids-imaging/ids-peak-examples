@@ -62,6 +62,7 @@ class MainWindow(QMainWindow):
         # Each `Initialize` call must be matched with a corresponding call
         # to `Close`.
         ids_peak.Library.Initialize()
+        self._library_opened = True
 
         # Create an instance of the default pixel pipeline which defines a
         # sequence of processing steps that are applied to an acquired image.
@@ -103,6 +104,11 @@ class MainWindow(QMainWindow):
         self._destroy_all()
 
     def _destroy_all(self) -> None:
+        # Prevent cleaning up more than once in case of explicit calls
+        # combined with automatic ones to `__del__`
+        if not self._library_opened:
+            return
+
         # Stop acquisition
         self._stop_acquisition()
 
@@ -111,6 +117,8 @@ class MainWindow(QMainWindow):
         # Each `Initialize` call must be matched with a corresponding call
         # to `Close`.
         ids_peak.Library.Close()
+
+        self._library_opened = False
 
     def _open_device(self) -> bool:
         """
