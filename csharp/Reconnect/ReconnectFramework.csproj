@@ -127,7 +127,7 @@
   </ImportGroup>
   <ItemGroup>
     <PackageReference Include="IDSImaging.Peak.Common" Version="2.*" />
-    <PackageReference Include="IDSImaging.Peak.API" Version="1.*" />
+    <PackageReference Include="IDSImaging.Peak.API" Version="[1.17.0,)" />
   </ItemGroup>
   <PropertyGroup>
     <BuildDependsOn>
