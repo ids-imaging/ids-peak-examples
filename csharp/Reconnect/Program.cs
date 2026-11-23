@@ -149,6 +149,11 @@ namespace IDSImaging.Peak.Examples.Reconnect
                 // remoteDeviceNodeMap.FindNode<IntegerNode>("Height").SetValue(512);
                 // remoteDeviceNodeMap.FindNode<IntegerNode>("Width").SetValue(512);
 
+                // Lock critical features to prevent them from changing during acquisition,
+                // especially features that can change the payload size.
+                // Some devices require this to be done before starting acquisition.
+                remoteDeviceNodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
                 using var dataStream = device.DataStreams()[0].OpenDataStream();
 
                 var payloadSize = (uint) remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
@@ -187,6 +192,16 @@ namespace IDSImaging.Peak.Examples.Reconnect
                     }
                 }
 
+                // Stop acquisition
+                remoteDeviceNodeMap.FindNode<CommandNode>("AcquisitionStop").ExecuteAndWait();
+                dataStream.StopAcquisition(AcquisitionStopMode.Default);
+
+                // Unlock transport layer parameters
+                remoteDeviceNodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(0);
+
+                // Release acquisition buffers
+                dataStream.FlushAndRevokeAllBuffers();
+
                 device?.Dispose();
             }
             catch (Exception e)
@@ -205,6 +220,12 @@ namespace IDSImaging.Peak.Examples.Reconnect
             using var device = reconnectedDevice.OpenedDevice();
             using var remoteDeviceNodeMap = device.RemoteDevice().NodeMaps()[0];
             using var dataStream = device.DataStreams()[0].OpenedDataStream();
+
+            // `TLParamsLocked` might have been reset to 0 during the disconnect.
+            // Lock it again to prevent changes to critical features,
+            // as some devices require this to be done before starting acquisition.
+            remoteDeviceNodeMap.FindNode<IntegerNode>("TLParamsLocked").SetValue(1);
+
             var payloadSize = (uint) remoteDeviceNodeMap.FindNode<IntegerNode>("PayloadSize").Value();
 
             bool hasPayloadSizeMismatch = payloadSize != dataStream.AnnouncedBuffers()[0].Size();

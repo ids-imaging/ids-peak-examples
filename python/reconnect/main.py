@@ -93,6 +93,12 @@ class ReconnectExample:
         if self.remote_nodemap is None or self.data_stream is None:
             raise RuntimeError("Device is not opened!")
 
+        # `TLParamsLocked` might have been reset to 0 during the disconnect.
+        # Lock it again to prevent changes to critical features,
+        # as some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode,
+             self.remote_nodemap.FindNode("TLParamsLocked")).SetValue(1)
+
         payload_size = cast(ids_peak.IntegerNode,
                             self.remote_nodemap.FindNode("PayloadSize")).Value()
 

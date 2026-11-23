@@ -124,6 +124,12 @@ class NodePollingExample:
         """
         Allocate minimum amount of required buffers and add them to the buffer queue.
         """
+        # Lock critical features to prevent them from changing during acquisition,
+        # especially features that can change the payload size.
+        # Some devices require this to be done before starting acquisition.
+        cast(ids_peak.IntegerNode,
+             self._remote_device_node_map.FindNode("TLParamsLocked")).SetValue(1)
+
         num_buffers_required = self._datastream.NumBuffersAnnouncedMinRequired()
         if self._datastream.DefinesPayloadSize():
             payload_size: int = self._datastream.PayloadSize()
@@ -168,6 +174,13 @@ class NodePollingExample:
         Sets a stop flag to tell the main loop and the polling thread to stop.
         """
         self._should_stop = True
+        # Stop acquisition
+        self._remote_device_node_map["AcquisitionStop", ids_peak.CommandNode].ExecuteAndWait()
+        self._datastream.StopAcquisition(ids_peak.AcquisitionStopMode_Default)
+
+        # Unlock critical features again after stopping the acquisition.
+        cast(ids_peak.IntegerNode,
+             self._remote_device_node_map.FindNode("TLParamsLocked")).SetValue(0)
         self._polling_thread.join()
 
 
