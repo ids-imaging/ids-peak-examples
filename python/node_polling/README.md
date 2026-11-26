@@ -32,6 +32,10 @@ pip install -r requirements.txt
 
 In addition, a suitable GenTL must be installed, for example via the [IDS peak Setup](https://en.ids-imaging.com/download-peak.html).
 
+Because this example reads the `ExposureTime` node
+while automatic exposure is enabled,
+the camera must support the GenICam `ExposureAuto` feature.
+
 ## Running the example
 
 After installing all requirements the demo can be run by executing `main.py` with the Python interpreter
